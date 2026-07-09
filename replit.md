@@ -1,6 +1,6 @@
-# [Project name]
+# Madhan Kumar — Portfolio
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A cinematic personal portfolio website for Madhan Kumar, a Full-Stack/AI/IoT developer, featuring 7 interactive sections with a dark crimson nebula aesthetic, animated skills visualizer, project case-study navigator, education flight trajectory, and contact form.
 
 ## Run & Operate
 
@@ -22,15 +22,22 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/portfolio/src/components/` — all section components (Hero, About, Projects, Skills, Credentials, Education, Contact, Navbar, NebulaBackground)
+- `artifacts/portfolio/src/pages/Home.tsx` — assembles all sections
+- `artifacts/portfolio/src/index.css` — theme tokens, Space Grotesk font import, HUD utility classes
+- `attached_assets/Professional_Photo_1783621096294.jpeg` — user's profile photo (aliased as `@assets/` in Vite config)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- **Presentation-first, no backend** — static single-page portfolio; all data is hardcoded constants in each component file.
+- **User photo** at `attached_assets/Professional_Photo_1783621096294.jpeg` is imported via `@assets/` Vite alias (configured in `vite.config.ts`).
+- **Resume/CV links** are placeholder `href="#"` — marked with `// RESUME LINK PLACEHOLDER` and `// CV DOWNLOAD PLACEHOLDER` comments throughout the components.
+- **Skills charts** use Recharts (recharts ^2.15.2 already in devDeps); Bar, Donut, and Radar chart tabs.
+- **Education trajectory** uses Framer Motion `animate={{ top }}` with spring physics to move the rocket icon between stage markers.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+7-section portfolio: Hero → About → Projects (6 case studies with orbit navigator) → Skills (interactive chart visualizer with telemetry panel) → Credentials (Wall of Fame grid) → Education (flight trajectory visualization) → Contact (form + footer).
 
 ## User preferences
 

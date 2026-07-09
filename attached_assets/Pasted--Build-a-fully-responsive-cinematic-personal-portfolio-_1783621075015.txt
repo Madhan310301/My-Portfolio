@@ -1,0 +1,241 @@
+```
+Build a fully responsive, cinematic personal portfolio website for a Computer
+Science undergraduate and full-stack/AI/IoT developer.
+
+TECH STACK
+Next.js 14, React Three Fiber or a lightweight canvas/particle library for the
+ambient background, GSAP + ScrollTrigger for scroll-reveal animation, Framer
+Motion for micro-interactions, Recharts or Chart.js for the skills visualizer,
+Tailwind CSS for styling.
+
+──────────────────────────────────────────────
+DESIGN LANGUAGE
+──────────────────────────────────────────────
+Dark theme built around a deep black background with a slow-drifting crimson-
+red nebula/vortex glow behind every section (soft swirling gradient, subtle
+star-particle field scattered throughout, occasional small glowing dots).
+Accent color: deep red-to-orange gradient (#E11D48 → #F97316) used for CTAs,
+underlines, badges, and card highlights, against near-black (#0A0A0F) panels.
+Cards use a sci-fi HUD aesthetic: thin glowing corner-bracket decorations on
+each card (like a targeting reticle), monospace micro-labels prefixed with
+"//" (e.g. "// STACK_CORE", "// SENSOR_LOG"), and small pill-shaped status
+tags in the corner of cards. Bold, rounded, heavy-weight sans-serif typography
+for headlines (e.g. Space Grotesk or Clash Display), clean readable sans for
+body copy. A short red accent line sits before every section's small overline
+label. Generous spacing, confident type-first hierarchy.
+
+Navbar: circular logo/initials mark + name + role tagline on the left, center
+nav links (About, Projects, Skills, Credentials, Contact — exactly 5 links,
+no separate "Education" link), a solid red "View Resume" button on the right.
+Navbar stays fixed with a subtle blur/darken on scroll. The Education section
+is NOT a separate nav destination — it appears as a continuation immediately
+after Credentials in the scroll flow, under the same nav highlight.
+
+Every section animates in on scroll (fade + slight rise + soft glow bloom),
+buttons have a hover glow/scale, cards lift slightly and their border glows
+brighter on hover.
+
+──────────────────────────────────────────────
+SECTION 1 — HERO
+──────────────────────────────────────────────
+Small overline tag: "WELCOME TO MY PORTFOLIO"
+Large bold two-to-three-line headline: "Full-Stack Developer & AI / IoT
+Builder." (split across lines for visual weight)
+Short intro paragraph: "I'm Madhan Kumar, a Computer Science undergraduate at
+BIHER who loves building real, working systems — across web, AI, and hardware.
+I've shipped 12+ projects, from a hackathon-winning IoT safety wearable to a
+live client pharmacy platform."
+Two CTA buttons: solid red "Explore Work" (with arrow icon), outlined dark
+"Download CV" (with download icon).
+Three stat cards beneath the CTAs: "12+ Projects Delivered", "25+ Technical
+Skills Mapped", "9.5 Current CGPA".
+Right side: a circular portrait photo with a glowing red ring border and a
+small orbiting accent dot [PHOTO PLACEHOLDER 1 — Hero circular portrait].
+Below/beside it, a floating terminal-style card
+(three colored traffic-light dots at top) containing a short rotating status
+line like "Currently building full-stack, AI, and IoT systems — one prototype
+at a time." with small skill pill tags beneath it (React, Python, Node.js,
+ESP32).
+
+──────────────────────────────────────────────
+SECTION 2 — ABOUT
+──────────────────────────────────────────────
+Three numbered specialty cards at the top (01 / 02 / 03): "AI & Machine
+Learning" (applied ML models, predictive systems, computer vision), "Full-
+Stack Development" (React, Node.js, REST APIs, secure auth), "IoT & Embedded
+Systems" (ESP32, sensors, real-time hardware-software integration).
+
+Below, a large featured panel: overline "ABOUT ME", big bold name treatment
+("MADHAN KUMAR" with the last word in the accent color), a tag with dot
+indicator reading "Google Student Ambassador" and a pill badge reading
+"B.Tech Computer Science & Engineering", a portrait-oriented photo card
+(rounded rectangle, not circular) with a glowing red border and a small
+pagination dot beneath it [PHOTO PLACEHOLDER 2 — About section portrait],
+and a "View / Download Resume" button.
+
+Beneath that, a three-column grid:
+- "ABOUT ME": short bio ("Passionate about turning ideas into real, working
+  systems — bridging full-stack engineering, applied AI, and embedded
+  hardware.") plus a contact list: location (Chennai, Tamil Nadu), email
+  (madhannarayanan.t@gmail.com), phone (+91 81484 96380), GitHub
+  (github.com/Madhan310301), LinkedIn (linkedin.com/in/madhankumart).
+- "WHAT I CAN DO": bullet list — Full-stack web development (React, Node.js),
+  AI/ML model development & applied computer vision, IoT hardware integration
+  (ESP32, sensors), Database design (SQL & NoSQL), Problem solving & DSA,
+  End-to-end product delivery.
+- "PASSIONS": icon list — Building side projects, Public speaking & workshops,
+  Exploring new tech stacks, Blender & 3D design, Mentoring student developers.
+
+Below that: a "TECH STACK" icon grid — React, Node.js, Python, TypeScript,
+MongoDB, MySQL, PostgreSQL, TensorFlow, OpenCV, scikit-learn, ESP32, Git,
+Figma.
+
+A "WHAT I HAVE DONE" stat card row: "12+ Projects Built", "2 Ambassador Roles"
+(Google Student Ambassador + HCLTech Campus Ambassador), "1 Hackathon Win"
+(Genesis 2026 — Overall 2nd + Domain 1st), "9.5 CGPA".
+
+A bottom stat bar: CGPA 9.5 | College BIHER | Branch CSE | Year 2024–Present |
+Focus Full-Stack, AI & IoT.
+
+──────────────────────────────────────────────
+SECTION 3 — PROJECTS
+──────────────────────────────────────────────
+Bold section headline (e.g. "THINGS I'VE BUILT" or "PROJECT LOG").
+Main content: a large featured project card with a tag like "[BUILD-01]",
+"LIVE DEMO" and "SOURCE" buttons, project title, one-line description,
+completion date, tech-stack tag pills, a short paragraph explaining the
+project, and a small grid of "MILESTONE", "KEY FEATURE", "PROBLEM", and
+"CHALLENGE" callouts.
+
+To the side: a small instructional note ("Scroll, use arrow keys, or select a
+node — the active project expands into the full case-study card.") above a
+vertical orbit-style navigator showing each project as a glowing node the
+user can click through.
+
+Populate with these real projects (rotate through as separate nodes/cards):
+1. SafeGuard AI — IoT child-safety wearable with GPS tracking, MPU6050 fall
+   detection, GSM alerts, and an RBAC dashboard. Built end-to-end (hardware,
+   web, 3D animation) for Genesis Hackathon 2026; won Overall 2nd Prize and
+   Domain-Wise 1st Prize.
+2. SarvaJeevaID — role-based identity platform (React, TypeScript, Supabase,
+   PostgreSQL) with secure authentication, multi-role access control, and
+   real-time data sync.
+3. AI Financial Coach — AI-driven financial planning platform (React, Python,
+   scikit-learn, Flask, PostgreSQL) with expense prediction, spending-pattern
+   analysis, and personalized investment recommendations.
+4. AI Cloud-Edge Healthcare Framework — distributed health-monitoring system
+   (React, Node.js, MongoDB, Python ML) with predictive alerts and 25% lower
+   API latency.
+5. Pharmacy Medicals App — real-client pharmacy management system (React,
+   Node.js, Express, MongoDB) with inventory management, billing, and a
+   customer-facing ordering interface.
+6. ML Machine Health Tracker — predictive maintenance model (Python,
+   scikit-learn) with anomaly detection, reducing simulated downtime by 20%.
+
+──────────────────────────────────────────────
+SECTION 4 — SKILLS
+──────────────────────────────────────────────
+Headline: "Core Engineering Stack" (or similar).
+A "SKILLS_VISUALIZER" panel with a three-way tab switcher: Bar Chart / Donut
+Chart / Spider Web Chart, plus a small "TELEMETRY" status indicator reading
+"SYSTEM READY".
+Animated gradient bar chart (red-to-orange gradient bars) listing: React,
+Node.js, Python, TypeScript, MongoDB, MySQL, PostgreSQL, TensorFlow, OpenCV,
+scikit-learn, ESP32, Git, Figma.
+Selecting/hovering a bar opens a detail panel on the side showing: skill name
+and proficiency percentage, a short description of how it's used, a year-by-
+year growth readout (2023 → 2026), and a "mapped projects" list linking to
+which real projects used that skill (e.g. "View Proof: SafeGuard AI").
+
+──────────────────────────────────────────────
+SECTION 5 — CREDENTIALS
+──────────────────────────────────────────────
+Headline with a small trophy/medal icon: "Recognition & Milestones".
+A grid of cards with glowing corner-bracket styling, each showing a year, an
+issuing tag/badge, a title, a short description, and a small reference ID:
+- 2026 — Hackathon: "Genesis Hackathon — Overall 2nd Prize & Domain 1st
+  Prize" — Built and presented SafeGuard AI at SRMEEC Chennai.
+- 2026 — Google: "Google Student Ambassador" — Represents Google's developer
+  programs (GDG, Gemini, Cloud) within the campus community.
+- 2026 — HCLTech: "HCLTech Campus Ambassador" — Selected to represent HCLTech
+  outreach and hiring initiatives on campus.
+- 2024–Present — Leadership: "Event Coordinator, BIHER" — Plans and runs
+  technical workshops and inter-batch events.
+
+──────────────────────────────────────────────
+SECTION 6 — EDUCATION
+──────────────────────────────────────────────
+Headline: "The academic runway behind every project I've shipped." (original
+line, not a paraphrase of any existing site).
+
+This section is NOT reached via its own nav link — it appears directly below
+Credentials in the scroll flow.
+
+An interactive vertical ascent/trajectory visualization: a thin vertical path
+with altitude markers (e.g. "120 km", "400 km", "1,000 km") next to glowing
+stage markers, and a small vehicle/marker icon that travels up the path to
+whichever stage is active. Clicking or hovering a stage marker updates a
+detail readout panel on the right with a small "MISSION_NOMINAL"-style status
+badge in the corner, containing these fields:
+- STAGE — the education level (e.g. "SSLC (Class X)")
+- ALTITUDE — a fictional altitude value paired with a real-world label in
+  parentheses (e.g. "120 km (Foundational Ascent)")
+- STATUS — a short all-caps status word (e.g. "STAGE_COMPLETED",
+  "IN_PROGRESS")
+- INSTITUTION — the real school/college name
+- PERIOD — the real date range
+- GRADE — the real percentage or CGPA
+- OBJECTIVE — a short one-line focus description
+- A "SENSOR_LOG" text block underneath with one or two sentences describing
+  what was learned/built at that stage.
+
+Populate the three stages with:
+- SSLC (Class X) — Dawn Shikshalaya Public School, 2022, 78.80%, general
+  academic foundation; sensor log: "Built early foundations in math and
+  science reasoning."
+- HSC (Class XII) — Dawn Shikshalaya Public School, 2024, 86.80%, focus on
+  core science and computer fundamentals; sensor log: "Sharpened logical
+  thinking and first exposure to programming concepts."
+- B.Tech, Computer Science & Engineering — BIHER, Chennai, 2024–Present, CGPA
+  9.5/10, focus on full-stack engineering, AI/ML systems, and IoT; sensor
+  log: "Actively building full-stack, AI, and IoT systems across 12+ real
+  projects."
+
+──────────────────────────────────────────────
+SECTION 7 — CONTACT
+──────────────────────────────────────────────
+Bold large headline: "Got a project, internship, or idea worth building?"
+Short paragraph: "Reach out directly below, or connect through LinkedIn and
+GitHub. Open to internships, full-stack roles, AI/ML collaboration, and IoT
+projects."
+Quick-link pills: Email, LinkedIn, GitHub, Resume.
+A contact form: Name, Email, Message fields, and a solid red "Send Message"
+button with a paper-plane icon.
+Footer: a short original tagline in a similar spirit (e.g. "Every idea starts
+as a prototype.") and a "Back to top" link.
+
+──────────────────────────────────────────────
+INTERACTIONS & POLISH
+──────────────────────────────────────────────
+- Ambient background: a slow, continuous crimson nebula/vortex drift with a
+  scattered star-particle field behind every section for visual continuity.
+- Every card has glowing corner-bracket accents, a hover lift + border-glow
+  intensification, and a soft shadow.
+- Scroll-triggered reveal animations (fade + rise) for every section and card,
+  staggered for grouped elements like the stat rows and project grids.
+- Fully responsive: stack all multi-column grids to a single column on
+  mobile, simplify the ambient background animation for performance, and keep
+  the interactive timeline/orbit navigator usable via tap instead of hover.
+- Respect prefers-reduced-motion by disabling the nebula drift, orbit
+  animation, and scroll-pin effects, replacing them with simple static
+  fades.
+
+──────────────────────────────────────────────
+DELIVERABLE
+──────────────────────────────────────────────
+Clean, componentized code (Hero, About, Projects, Skills, Credentials,
+Education, Contact as separate components), Tailwind config with the custom
+red/black glow utility classes, and clear comments marking PHOTO PLACEHOLDER
+1 (hero) and PHOTO PLACEHOLDER 2 (about section) as the two spots to plug in
+the actual profile photo, plus where to link the resume file.
+```
