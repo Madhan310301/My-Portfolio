@@ -1,7 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Github, ExternalLink } from 'lucide-react';
 
-const PROJECTS = [
+interface Project {
+  id: number;
+  tag: string;
+  title: string;
+  category: string;
+  desc: string;
+  duration: string;
+  stack: string[];
+  fullDesc1: string;
+  fullDesc2: string;
+  milestone: string;
+  keyFeature: string;
+  problem: string;
+  challenge: string;
+  github?: string;
+  liveDemo?: string;
+}
+
+const PROJECTS: Project[] = [
   {
     id: 1,
     tag: "[BUILD-01]",
@@ -11,11 +30,12 @@ const PROJECTS = [
     duration: "Completed Jan 2026",
     stack: ["ESP32", "GPS", "GSM", "MPU6050", "Node.js", "React"],
     fullDesc1: "SafePathAI is an IoT wearable designed to keep children safe in unsupervised outdoor environments. The device combines a GPS module for real-time location tracking, an MPU6050 accelerometer for fall/motion detection, and a GSM module for offline emergency alerts — working even without internet.",
-    fullDesc2: "An ML risk-scoring layer analyzes motion patterns to distinguish normal movement from distress indicators, triggering parent alerts only when the threshold is crossed. A React dashboard provides live map tracking. Won Genesis Hackathon 2026 — Overall 2nd Prize & IoT Domain 1st Prize at SRMEEC Chennai.",
+    fullDesc2: "An ML risk-scoring layer analyzes motion patterns to distinguish normal movement from distress indicators, triggering parent alerts only when the threshold is crossed. A React dashboard provides live map tracking. Won Genesis Hackathon 2026.",
     milestone: "Won Genesis Hackathon 2026 — Overall 2nd Prize & Domain 1st Prize at SRMEEC, Chennai.",
     keyFeature: "Offline SMS/call alerts via GSM + ML risk scoring from accelerometer data.",
     problem: "Children in unsupervised outdoor environments have no reliable, real-time safety alert system.",
-    challenge: "Integrating hardware sensor telemetry with low-latency dashboard under hackathon time pressure."
+    challenge: "Integrating hardware sensor telemetry with low-latency dashboard under hackathon time pressure.",
+    github: "https://github.com/Madhan310301/safepathAI",
   },
   {
     id: 2,
@@ -30,7 +50,8 @@ const PROJECTS = [
     milestone: "Functional multi-role platform with real-time sync and DPDP Act-compliant consent layer.",
     keyFeature: "Offline-first QR citizen cards with blockchain-style consent audit trail.",
     problem: "Citizen records are siloed across departments — no single source of truth for a person's life records.",
-    challenge: "Designing a RBAC schema that stays performant under concurrent multi-department access patterns."
+    challenge: "Designing a RBAC schema that stays performant under concurrent multi-department access patterns.",
+    github: "https://github.com/Madhan310301/SarvaJeevaID",
   },
   {
     id: 3,
@@ -45,7 +66,8 @@ const PROJECTS = [
     milestone: "Adaptive reminder engine successfully reduces habit skip rate in user testing.",
     keyFeature: "AI-driven nudge system that learns and adapts from individual habit completion history.",
     problem: "Static reminder apps ignore behavioral patterns, leading to notification fatigue and abandonment.",
-    challenge: "Tuning the OpenAI prompt to generate contextually relevant (not generic) motivational nudges."
+    challenge: "Tuning the OpenAI prompt to generate contextually relevant (not generic) motivational nudges.",
+    github: "https://github.com/Madhan310301/Habit_Tracker",
   },
   {
     id: 4,
@@ -60,7 +82,8 @@ const PROJECTS = [
     milestone: "Achieved 94–97% test accuracy on held-out agricultural image datasets.",
     keyFeature: "MobileNetV2-based CNN with Flask web interface for instant on-site grading.",
     problem: "Manual agricultural grading is slow, inconsistent, and requires expert labour at every stage.",
-    challenge: "Building a robust model that generalizes across varied lighting, angles, and produce sizes."
+    challenge: "Building a robust model that generalizes across varied lighting, angles, and produce sizes.",
+    github: "https://github.com/Madhan310301/AgriGradeAI",
   },
   {
     id: 5,
@@ -70,12 +93,13 @@ const PROJECTS = [
     desc: "Conversational AI agent turning natural-language renovation requests into design visualizations, cost estimates, and material recommendations.",
     duration: "Completed 2025",
     stack: ["Python", "LangChain", "GPT-4o", "Stable Diffusion XL", "ControlNet", "FastAPI", "FAISS"],
-    fullDesc1: "RenoAI is a multi-turn conversational agent that takes a natural-language renovation brief ('turn my living room Scandinavian-minimal') and returns rendered design visualizations using Stable Diffusion XL + ControlNet image-to-image generation.",
+    fullDesc1: "RenoAI is a multi-turn conversational agent that takes a natural-language renovation brief and returns rendered design visualizations using Stable Diffusion XL + ControlNet image-to-image generation.",
     fullDesc2: "A RAG pipeline grounded on a material/product catalog (FAISS vector store) powers the cost estimation (XGBoost regressor) and material recommendation engine. FastAPI serves the backend; users chat their way to a full renovation plan.",
     milestone: "End-to-end pipeline from text prompt to rendered room visualization + cost breakdown.",
     keyFeature: "ControlNet-guided image-to-image generation from room photos + XGBoost cost estimator.",
     problem: "Home renovation planning is expensive, slow, and hard to visualize before committing to a contractor.",
-    challenge: "Grounding LLM suggestions in real product catalog data to prevent hallucinated cost estimates."
+    challenge: "Grounding LLM suggestions in real product catalog data to prevent hallucinated cost estimates.",
+    github: "https://github.com/Madhan310301/RenoAI",
   },
   {
     id: 6,
@@ -86,11 +110,12 @@ const PROJECTS = [
     duration: "Completed 2025",
     stack: ["Python", "PyMuPDF", "Tesseract OCR", "LangChain", "GPT-4", "FastAPI"],
     fullDesc1: "DocuAI ingests PDFs and scanned documents using PyMuPDF for digital PDFs and Tesseract OCR for scanned pages, then builds a LangChain RAG pipeline over the extracted text with GPT-4 as the QA backbone.",
-    fullDesc2: "Users can ask natural-language questions ('What is the penalty clause in section 7?') and get precise, cited answers. The system also auto-generates document summaries and highlights critical clauses for legal, financial, and research documents.",
+    fullDesc2: "Users can ask natural-language questions and get precise, cited answers. The system also auto-generates document summaries and highlights critical clauses for legal, financial, and research documents.",
     milestone: "Accurate RAG-based QA over 100+ page PDFs with source-highlighted responses.",
     keyFeature: "Hybrid OCR + vector retrieval pipeline for both digital and scanned document querying.",
     problem: "Reading and extracting specific information from long, dense PDFs is time-consuming and error-prone.",
-    challenge: "Handling scanned PDF quality variance and maintaining citation accuracy across chunked embeddings."
+    challenge: "Handling scanned PDF quality variance and maintaining citation accuracy across chunked embeddings.",
+    github: "https://github.com/Madhan310301/Docu-AI",
   },
   {
     id: 7,
@@ -101,11 +126,12 @@ const PROJECTS = [
     duration: "Completed Jun 2025",
     stack: ["Solidity", "Ethereum", "IPFS", "AES-256", "Python", "React.js"],
     fullDesc1: "HealAI is a decentralized healthcare data platform where patient records are AES-256 encrypted and stored on IPFS, with only the content hash anchored on-chain via Ethereum smart contracts. Patients hold sovereign control over who accesses their data.",
-    fullDesc2: "On-chain consent management means every access request is an auditable blockchain transaction. A federated-learning layer enables hospitals to collaboratively improve diagnostic models without sharing raw patient data — preserving privacy at every layer.",
+    fullDesc2: "On-chain consent management means every access request is an auditable blockchain transaction. A federated-learning layer enables hospitals to collaboratively improve diagnostic models without sharing raw patient data.",
     milestone: "25% reduction in API latency vs. baseline centralized architecture in benchmarks.",
     keyFeature: "Patient-sovereign consent via Ethereum smart contracts + federated ML diagnostics.",
     problem: "Centralized healthcare databases expose patient data to breaches and remove patient agency.",
-    challenge: "Synchronizing edge model inference with on-chain consent state without gas cost explosion."
+    challenge: "Synchronizing edge model inference with on-chain consent state without gas cost explosion.",
+    github: "https://github.com/Madhan310301/MediChainAI",
   },
   {
     id: 8,
@@ -120,7 +146,8 @@ const PROJECTS = [
     milestone: "Multi-modal assistant with persistent cross-session memory and 5+ integrated tools.",
     keyFeature: "LangChain tool-calling agent with Whisper voice input and persistent vector memory.",
     problem: "Existing personal assistants lose context between sessions and lack deep task automation.",
-    challenge: "Designing a tool-routing agent that doesn't hallucinate tool selection on ambiguous user inputs."
+    challenge: "Designing a tool-routing agent that doesn't hallucinate tool selection on ambiguous user inputs.",
+    github: "https://github.com/Madhan310301/NexusAI",
   },
   {
     id: 9,
@@ -130,12 +157,13 @@ const PROJECTS = [
     desc: "ML system fusing vibration, temperature, and acoustic sensor data into a Machine Health Index with fault classification and anomaly detection.",
     duration: "Completed Dec 2024",
     stack: ["Python", "Scikit-learn", "TensorFlow", "XGBoost", "Kafka", "InfluxDB", "Grafana"],
-    fullDesc1: "PredMaintain is an industrial IoT predictive maintenance system that fuses vibration, temperature, and acoustic sensor streams into a unified Machine Health Index (MHI). LSTM autoencoders detect subtle multivariate anomalies that threshold alarms miss.",
+    fullDesc1: "PredMaintain is an industrial IoT predictive maintenance system that fuses vibration, temperature, and acoustic sensor streams into a unified Machine Health Index. LSTM autoencoders detect subtle multivariate anomalies that threshold alarms miss.",
     fullDesc2: "XGBoost classifies fault types; Kafka handles real-time sensor ingestion; InfluxDB stores time-series data; and Grafana dashboards give maintenance teams live visibility. SHAP-based explainability surfaces the root cause for each flagged anomaly.",
     milestone: "Reduced simulated machine downtime by 20% compared to threshold-based baseline.",
     keyFeature: "LSTM autoencoder anomaly detection + SHAP root cause explainability for maintenance teams.",
     problem: "Reactive industrial maintenance causes costly unplanned downtime from failures that were predictable.",
-    challenge: "Building an interpretable model that non-ML maintenance engineers can trust and act on."
+    challenge: "Building an interpretable model that non-ML maintenance engineers can trust and act on.",
+    github: "https://github.com/Madhan310301/PredMaintain",
   },
   {
     id: 10,
@@ -150,7 +178,8 @@ const PROJECTS = [
     milestone: "Deployed to a real pharmacy client — currently managing live daily operations.",
     keyFeature: "End-to-end customer ordering portal with real-time inventory sync and Razorpay checkout.",
     problem: "Small pharmacies lack affordable custom digital systems integrating inventory, billing, and ordering.",
-    challenge: "Ensuring data integrity between concurrent live inventory updates and simultaneous billing transactions."
+    challenge: "Ensuring data integrity between concurrent live inventory updates and simultaneous billing transactions.",
+    github: "https://github.com/Madhan310301/RM-App",
   },
   {
     id: 11,
@@ -165,7 +194,8 @@ const PROJECTS = [
     milestone: "Achieved 85%+ accuracy on personal expense prediction model in testing.",
     keyFeature: "XGBoost financial health grader + NLP report generation for personalized investment advice.",
     problem: "Most financial apps report spending but don't predict future behavior or advise on investments.",
-    challenge: "Training a generalizable ML model on sparse, noisy personal financial transaction data."
+    challenge: "Training a generalizable ML model on sparse, noisy personal financial transaction data.",
+    github: "https://github.com/Madhan310301/Auditly",
   },
   {
     id: 12,
@@ -180,7 +210,8 @@ const PROJECTS = [
     milestone: "Real-time crowd density monitoring with sub-second alert latency on live CCTV feeds.",
     keyFeature: "YOLOv8 + DeepSORT tracking pipeline with zone-based density threshold alerting.",
     problem: "Manual crowd monitoring at large events fails to detect dangerous density build-ups in time.",
-    challenge: "Maintaining accurate person counts in occluded, overlapping crowd scenes at high density."
+    challenge: "Maintaining accurate person counts in occluded, overlapping crowd scenes at high density.",
+    github: "https://github.com/Madhan310301/People-Watcher",
   },
   {
     id: 13,
@@ -195,7 +226,8 @@ const PROJECTS = [
     milestone: "Accurate multi-food classification from a single meal photo with macro breakdown.",
     keyFeature: "CNN food classifier + portion size estimator feeding into a live nutrition database API.",
     problem: "Manual calorie logging is tedious and inaccurate — most people don't track meals consistently.",
-    challenge: "Estimating portion sizes from 2D photos without depth information for reliable calorie counts."
+    challenge: "Estimating portion sizes from 2D photos without depth information for reliable calorie counts.",
+    github: "https://github.com/Madhan310301/NutriLensAI",
   },
   {
     id: 14,
@@ -210,7 +242,8 @@ const PROJECTS = [
     milestone: "Tone-preserving journal expansion from 3-word voice notes to full diary entries.",
     keyFeature: "Tone-matched LLM expansion with automatic reflection prompt insertion.",
     problem: "People want to journal but lack the time or energy to write fully formed entries every day.",
-    challenge: "Preserving the user's unique voice and tone across LLM expansion without it sounding generic."
+    challenge: "Preserving the user's unique voice and tone across LLM expansion without it sounding generic.",
+    github: "https://github.com/Madhan310301/DiaryAlchemist",
   },
   {
     id: 15,
@@ -225,7 +258,8 @@ const PROJECTS = [
     milestone: "Fully offline Braille-to-speech pipeline with zero external API dependency.",
     keyFeature: "Offline CNN Braille decoder + pyttsx3 text-to-speech with rule-based error correction.",
     problem: "Visually impaired individuals in low-connectivity areas lack accessible digital Braille reading tools.",
-    challenge: "Building a robust dot-pattern detector that works on varied surfaces, lighting, and camera angles."
+    challenge: "Building a robust dot-pattern detector that works on varied surfaces, lighting, and camera angles.",
+    github: "https://github.com/Madhan310301/VisionX",
   },
   {
     id: 16,
@@ -240,7 +274,8 @@ const PROJECTS = [
     milestone: "Full e-commerce funnel from design upload to Razorpay checkout live and functional.",
     keyFeature: "Custom design upload + live T-shirt mockup preview with Cloudinary + Razorpay checkout.",
     problem: "Small custom T-shirt businesses lack affordable digital storefronts with design preview tools.",
-    challenge: "Real-time design overlay rendering on product mockups without perceptible UI lag."
+    challenge: "Real-time design overlay rendering on product mockups without perceptible UI lag.",
+    // No public repo, no liveDemo
   },
   {
     id: 17,
@@ -255,7 +290,8 @@ const PROJECTS = [
     milestone: "Built for BAH 2026 Grand Finale — cross-modal retrieval over 75K SAR–optical pairs.",
     keyFeature: "Dual-encoder shared embedding space for SAR↔optical retrieval via FAISS similarity search.",
     problem: "SAR and optical satellite images of the same scene look completely different — retrieving matches is non-trivial.",
-    challenge: "Aligning SAR and optical feature spaces in a shared embedding without paired training data at inference time."
+    challenge: "Aligning SAR and optical feature spaces in a shared embedding without paired training data at inference.",
+    github: "https://github.com/Madhan310301/isro-bah",
   },
   {
     id: 18,
@@ -270,7 +306,8 @@ const PROJECTS = [
     milestone: "Full booking-to-payment flow live with admin occupancy management dashboard.",
     keyFeature: "Real-time room availability system with Razorpay payment integration and admin panel.",
     problem: "Manual hostel room allocation is error-prone, opaque, and slow for both students and management.",
-    challenge: "Preventing double-booking under concurrent room selection without distributed locking overhead."
+    challenge: "Preventing double-booking under concurrent room selection without distributed locking overhead.",
+    // No public repo
   },
   {
     id: 19,
@@ -285,7 +322,8 @@ const PROJECTS = [
     milestone: "Solo-built in ~1 week for Vibe2Ship hackathon — fully deployable civic reporting pipeline.",
     keyFeature: "Gemini 1.5 Flash auto-classification and authority routing from citizen photo + GPS.",
     problem: "Citizens have no easy, structured way to report and track local civic issues to the right authority.",
-    challenge: "Building a reliable authority-routing layer without a complete, accurate municipal department API."
+    challenge: "Building a reliable authority-routing layer without a complete, accurate municipal department API.",
+    github: "https://github.com/Madhan310301/CivicPulse",
   },
   {
     id: 20,
@@ -296,25 +334,124 @@ const PROJECTS = [
     duration: "Ongoing 2026",
     stack: ["React", "Vite", "TypeScript", "Framer Motion", "Recharts", "Tailwind CSS"],
     fullDesc1: "This very site — built as a cinematic, dark-space themed portfolio to showcase 20+ projects, skills, credentials, and the complete engineering journey from SSLC to B.Tech. Every section is a custom-designed interactive experience.",
-    fullDesc2: "Features include a Recharts skills visualizer (Bar/Donut/Spider tabs), a 20-project orbit navigator with animated case-study cards, an education flight trajectory with Framer Motion rocket animation, and a Nebula particle background. Built with React + Vite + Framer Motion.",
+    fullDesc2: "Features include a Recharts skills visualizer (Bar/Donut/Spider tabs), a 20-project orbit navigator with scoped scroll/keyboard/swipe navigation, an education flight trajectory with Framer Motion rocket animation, and a Nebula particle background.",
     milestone: "Full cinematic portfolio with 7 interactive sections live and deployed.",
     keyFeature: "Recharts skills visualizer, Framer Motion education trajectory, 20-project case-study navigator.",
     problem: "Static PDF resumes don't convey the depth, variety, and personality behind a developer's work.",
-    challenge: "Designing interactive data visualizations and animations that feel cinematic without sacrificing performance."
-  }
+    challenge: "Designing interactive data visualizations and animations that feel cinematic without sacrificing performance.",
+    liveDemo: "/",
+  },
 ];
+
+const SCROLL_THRESHOLD = 65;
 
 const Projects: React.FC = () => {
   const [activeId, setActiveId] = useState(1);
-  
-  const activeProject = PROJECTS.find(p => p.id === activeId) || PROJECTS[0];
+
+  const sectionRef       = useRef<HTMLElement>(null);
+  const isHoveringRef    = useRef(false);
+  const scrollAccRef     = useRef(0);
+  const activeIdRef      = useRef(activeId);
+  const touchStart       = useRef({ x: 0, y: 0 });
+
+  const activeProject = PROJECTS.find(p => p.id === activeId) ?? PROJECTS[0];
+  const isFirst = activeId === 1;
+  const isLast  = activeId === PROJECTS.length;
+
+  /* keep ref in sync, reset accumulator whenever project changes */
+  useEffect(() => {
+    activeIdRef.current  = activeId;
+    scrollAccRef.current = 0;
+  }, [activeId]);
+
+  /* scroll capture ─ must be non-passive to allow preventDefault */
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!isHoveringRef.current) return;
+      const curr = activeIdRef.current;
+      /* release at boundary so page can scroll past the section */
+      if (curr === 1 && e.deltaY < 0) return;
+      if (curr === PROJECTS.length && e.deltaY > 0) return;
+
+      e.preventDefault();
+      scrollAccRef.current += e.deltaY;
+
+      if (scrollAccRef.current >= SCROLL_THRESHOLD) {
+        scrollAccRef.current = 0;
+        setActiveId(prev => Math.min(prev + 1, PROJECTS.length));
+      } else if (scrollAccRef.current <= -SCROLL_THRESHOLD) {
+        scrollAccRef.current = 0;
+        setActiveId(prev => Math.max(prev - 1, 1));
+      }
+    };
+
+    section.addEventListener('wheel', handleWheel, { passive: false });
+    return () => section.removeEventListener('wheel', handleWheel);
+  }, []);
+
+  /* keyboard navigation — active when section is in viewport */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!sectionRef.current) return;
+      const { top, bottom } = sectionRef.current.getBoundingClientRect();
+      const inView = top < window.innerHeight * 0.8 && bottom > window.innerHeight * 0.2;
+      if (!inView) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActiveId(prev => Math.min(prev + 1, PROJECTS.length));
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActiveId(prev => Math.max(prev - 1, 1));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  /* touch / swipe */
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = touchStart.current.x - e.changedTouches[0].clientX;
+    const dy = Math.abs(touchStart.current.y - e.changedTouches[0].clientY);
+    if (Math.abs(dx) > 50 && Math.abs(dx) > dy) {
+      if (dx > 0) setActiveId(prev => Math.min(prev + 1, PROJECTS.length));
+      else        setActiveId(prev => Math.max(prev - 1, 1));
+    }
+  };
+
+  const nav = (dir: 1 | -1) =>
+    setActiveId(prev => Math.max(1, Math.min(PROJECTS.length, prev + dir)));
+
+  /* card transition variants */
+  const variants = {
+    enter:  (dir: number) => ({ opacity: 0, x: dir > 0 ? 30 : -30 }),
+    center: { opacity: 1, x: 0 },
+    exit:   (dir: number) => ({ opacity: 0, x: dir > 0 ? -30 : 30 }),
+  };
+  const [direction, setDirection] = useState(1);
+  const handleSetActive = (id: number) => {
+    setDirection(id > activeId ? 1 : -1);
+    setActiveId(id);
+  };
 
   return (
-    <section className="py-24 relative" id="projects">
+    <section
+      className="py-24 relative"
+      id="projects"
+      ref={sectionRef}
+      onMouseEnter={() => { isHoveringRef.current = true; }}
+      onMouseLeave={() => { isHoveringRef.current = false; scrollAccRef.current = 0; }}
+    >
       <div className="container mx-auto px-6">
-        
+
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -322,45 +459,90 @@ const Projects: React.FC = () => {
         >
           <div className="font-mono text-sm text-primary mb-2">// LAUNCHED MISSIONS</div>
           <h2 className="text-4xl md:text-5xl font-display font-bold text-white">PROJECT LOG</h2>
+          <p className="text-xs font-mono text-white/30 mt-2 hidden md:block">
+            scroll · ←→ arrow keys · or click a node to navigate projects
+          </p>
+          <p className="text-xs font-mono text-white/30 mt-2 md:hidden">
+            swipe the card or tap a node to navigate
+          </p>
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-          
-          {/* Left Side: Featured Case Study Card */}
-          <div className="lg:w-[70%]">
-            <AnimatePresence mode="wait">
+
+          {/* ── LEFT: Case Study Card ── */}
+          <div className="lg:w-[70%] flex flex-col">
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeProject.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-                className="hud-bracket bg-card p-6 md:p-8 border-2 border-white/10 hover:border-primary/50 transition-colors shadow-lg"
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+                className="hud-bracket bg-card p-6 md:p-8 border-2 border-white/10 hover:border-primary/50 transition-colors shadow-lg flex-1"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
               >
-                <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                {/* Tag + source buttons */}
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                   <div className="font-mono text-primary font-bold">{activeProject.tag}</div>
-                  <span className="text-xs font-mono text-white/40 border border-white/10 px-3 py-1 rounded-full">{activeProject.duration}</span>
-                </div>
-
-                <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">{activeProject.title}</h3>
-                <p className="text-xl text-muted-foreground mb-6">{activeProject.desc}</p>
-
-                <div className="mb-8 pb-8 border-b border-white/10">
-                  <div className="font-mono text-xs text-white/50 mb-2">// STACK_CORE</div>
-                  <div className="flex flex-wrap gap-2">
-                    {activeProject.stack.map(tech => (
-                      <span key={tech} className="text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded text-white/80">
-                        {tech}
-                      </span>
-                    ))}
+                  <div className="flex gap-2">
+                    {activeProject.github && (
+                      <a
+                        href={activeProject.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 border border-white/15 text-white/70 text-xs font-bold rounded-full hover:border-white/40 hover:text-white transition-colors"
+                      >
+                        <Github size={12} /> SOURCE
+                      </a>
+                    )}
+                    {activeProject.liveDemo && (
+                      <a
+                        href={activeProject.liveDemo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 border border-primary/30 text-primary text-xs font-bold rounded-full hover:bg-primary/20 transition-colors"
+                      >
+                        <ExternalLink size={12} /> LIVE DEMO
+                      </a>
+                    )}
                   </div>
                 </div>
 
-                <div className="space-y-4 text-muted-foreground mb-8 text-sm md:text-base leading-relaxed">
+                <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
+                  {activeProject.title}
+                </h3>
+                <p className="text-lg text-muted-foreground mb-6">{activeProject.desc}</p>
+
+                {/* Duration + Stack */}
+                <div className="mb-8 pb-8 border-b border-white/10">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div>
+                      <div className="font-mono text-xs text-white/40 mb-1">// DURATION</div>
+                      <div className="text-sm text-white">{activeProject.duration}</div>
+                    </div>
+                    <div className="sm:ml-8">
+                      <div className="font-mono text-xs text-white/40 mb-1">// STACK_CORE</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {activeProject.stack.map(tech => (
+                          <span key={tech} className="text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded text-white/70">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Full description */}
+                <div className="space-y-3 text-muted-foreground mb-8 text-sm md:text-base leading-relaxed">
                   <p>{activeProject.fullDesc1}</p>
                   <p>{activeProject.fullDesc2}</p>
                 </div>
 
+                {/* Detail panels */}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
                     <div className="font-mono text-xs text-primary mb-2">// MILESTONE</div>
@@ -381,47 +563,85 @@ const Projects: React.FC = () => {
                 </div>
               </motion.div>
             </AnimatePresence>
+
+            {/* ── Counter + Prev / Next ── */}
+            <div className="flex items-center justify-between mt-4 px-1">
+              <button
+                onClick={() => { setDirection(-1); nav(-1); }}
+                disabled={isFirst}
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft size={14} /> PREV
+              </button>
+
+              <div className="font-mono text-sm text-white/40 tabular-nums">
+                <span className="text-white/70">{String(activeId).padStart(2, '0')}</span>
+                <span className="mx-1.5 text-white/20">/</span>
+                {String(PROJECTS.length).padStart(2, '0')}
+              </div>
+
+              <button
+                onClick={() => { setDirection(1); nav(1); }}
+                disabled={isLast}
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+              >
+                NEXT <ChevronRight size={14} />
+              </button>
+            </div>
           </div>
 
-          {/* Right Side: Vertical Orbit Navigator */}
+          {/* ── RIGHT: Scrollable Node Navigator ── */}
           <div className="lg:w-[30%] flex flex-col">
             <div className="bg-[#0f0f15] p-4 rounded-t border border-white/10 border-b-0">
-              <p className="font-mono text-xs text-white/60 leading-relaxed">
-                // MISSION_LOG — {PROJECTS.length} builds. Select any node to load the case study.
+              <p className="font-mono text-xs text-white/50 leading-relaxed">
+                // {PROJECTS.length} missions logged
               </p>
             </div>
-            
-            <div className="flex-1 bg-card border border-white/10 rounded-b overflow-y-auto" style={{ maxHeight: '640px' }}>
-              {/* Vertical line connecting nodes */}
-              <div className="relative p-2">
-                <div className="absolute left-[22px] top-4 bottom-4 w-[2px] bg-white/5 z-0"></div>
 
-                <div className="flex flex-col gap-1 z-10 relative">
-                  {PROJECTS.map((project) => (
-                    <button
-                      key={project.id}
-                      onClick={() => setActiveId(project.id)}
-                      className={`flex items-center gap-4 p-3 rounded-lg transition-all text-left w-full ${
-                        activeId === project.id 
-                          ? 'bg-white/5 border border-primary/30 shadow-[0_0_15px_rgba(225,29,72,0.15)]' 
-                          : 'hover:bg-white/5 border border-transparent'
-                      }`}
-                    >
-                      <div className={`relative flex-shrink-0 w-4 h-4 rounded-full border-2 transition-colors ${
-                        activeId === project.id ? 'border-primary bg-primary' : 'border-white/20 bg-card'
-                      }`}>
-                        {activeId === project.id && (
-                          <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-50"></div>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <div className={`font-bold text-sm transition-colors truncate ${activeId === project.id ? 'text-white' : 'text-white/60'}`}>
-                          {project.title}
+            <div
+              className="flex-1 bg-card border border-white/10 rounded-b overflow-y-auto"
+              style={{ maxHeight: '600px' }}
+            >
+              <div className="relative p-2">
+                {/* Vertical rail */}
+                <div className="absolute left-[22px] top-4 bottom-4 w-[2px] bg-white/5 pointer-events-none" />
+
+                <div className="flex flex-col gap-0.5 relative">
+                  {PROJECTS.map((project) => {
+                    const isActive = activeId === project.id;
+                    return (
+                      <button
+                        key={project.id}
+                        onClick={() => handleSetActive(project.id)}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left w-full ${
+                          isActive
+                            ? 'bg-white/5 border border-primary/30 shadow-[0_0_12px_rgba(225,29,72,0.12)]'
+                            : 'hover:bg-white/5 border border-transparent'
+                        }`}
+                      >
+                        {/* Node dot */}
+                        <div className={`relative flex-shrink-0 w-4 h-4 rounded-full border-2 transition-all z-10 ${
+                          isActive ? 'border-primary bg-primary' : 'border-white/20 bg-card'
+                        }`}>
+                          {isActive && (
+                            <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-40" />
+                          )}
                         </div>
-                        <div className="text-xs text-muted-foreground mt-0.5 truncate">{project.category}</div>
-                      </div>
-                    </button>
-                  ))}
+
+                        {/* Label */}
+                        <div className="min-w-0">
+                          <div className={`font-semibold text-sm truncate transition-colors ${
+                            isActive ? 'text-white' : 'text-white/50'
+                          }`}>
+                            {project.title}
+                          </div>
+                          <div className="text-[10px] text-white/30 truncate mt-0.5">
+                            {project.category}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

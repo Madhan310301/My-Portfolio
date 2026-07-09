@@ -1,0 +1,66 @@
+```
+FEATURE 1 — SCOPED SCROLL/KEYBOARD NAVIGATION FOR THE PROJECTS SECTION
+
+The Projects section already has a main case-study card (left) and a project
+list/node panel (right) with click-to-select working. Add a scroll-scoped
+navigation layer on top of it:
+
+- When the visitor's cursor is hovering over the Projects section (the main
+  card or the side project list), capture mouse wheel/trackpad scroll input
+  and use it to move to the next/previous project instead of scrolling the
+  page. Scrolling down = next project, scrolling up = previous project.
+- Add a scroll-accumulation threshold (roughly 50–80px of wheel delta) so one
+  scroll gesture advances exactly one project, not several at once — this
+  prevents rapid-fire flickering through the list.
+- Once the visitor scrolls past the first project (scrolling up) or the last
+  project (scrolling down), release the scroll capture and let the page
+  scroll normally into the previous/next section.
+- Left/Right (or Up/Down) arrow keys also move to the previous/next project
+  whenever the Projects section is in view.
+- Clicking a node in the side list still works exactly as it does now —
+  clicking immediately syncs the main card, highlights that node, and updates
+  the position counter.
+- Add a small counter beneath the main card (e.g. "01 / 20", matching total
+  project count) with Previous/Next arrow buttons as a manual alternative to
+  scroll/keyboard. Grey out/disable Previous on the first project and Next on
+  the last.
+- Transition between projects: outgoing card content fades + shifts slightly
+  out, incoming card fades + slides in — quick, around 200–300ms, no layout
+  jump.
+- On mobile/touch: swipe left/right on the case-study card moves to the
+  next/previous project, since wheel-scroll capture doesn't apply there.
+
+──────────────────────────────────────────────
+FEATURE 2 — SOURCE BUTTON → REAL GITHUB LINKS
+──────────────────────────────────────────────
+
+Each project's "SOURCE" button should open its real GitHub repository in a
+new tab (not a placeholder). Wire up each project to its actual repo URL:
+
+| Project (display name)                                  | Source link |
+|-----------------------------------------------------------|-------------|
+| AI Based Habit Tracker For Daily Life                     | https://github.com/Madhan310301/Habit_Tracker |
+| AI Based Tender Coconut and Turmeric Grader (AgriGradeAI)  | https://github.com/Madhan310301/AgriGradeAI |
+| AI Based Home Renovation Agent (RenoAI)                    | https://github.com/Madhan310301/RenoAI |
+| AI-Based Document Reader AI (Docu-AI)                      | https://github.com/Madhan310301/Docu-AI |
+| AI-Optimized Cloud-Edge Framework for Decentralized Healthcare (MediChainAI) | https://github.com/Madhan310301/MediChainAI |
+| AI-Personal Assistant (NexusAI)                            | https://github.com/Madhan310301/NexusAI |
+| SarvaJeevaID                                               | https://github.com/Madhan310301/SarvaJeevaID |
+| IoT Based Child Safety Wearable (SafePathAI)               | https://github.com/Madhan310301/safepathAI |
+| ML Based Machine Health Tracker (PredMaintain)              | https://github.com/Madhan310301/PredMaintain |
+| A Pharmacy Online Ordering App (RM-App)                    | https://github.com/Madhan310301/RM-App |
+| AI Based Crowd Management Software (People-Watcher)         | https://github.com/Madhan310301/People-Watcher |
+| AI Based Financial Coach and Grader (Auditly)               | https://github.com/Madhan310301/Auditly |
+| AI-Based Calories Calculator (NutriLensAI)                  | https://github.com/Madhan310301/NutriLensAI |
+| AI-Based Diary Text-To-Words Writer (DiaryAlchemist)        | https://github.com/Madhan310301/DiaryAlchemist |
+| AI Based Braille Language Detector (VisionX)                | https://github.com/Madhan310301/VisionX |
+| Cross-Modal Satellite Image Retrieval / SatBridge (isro-bah) | https://github.com/Madhan310301/isro-bah |
+| AI Based Civilian Community Reporting Software (CivicPulse)  | https://github.com/Madhan310301/CivicPulse |
+
+Projects with no public repo — hide the "SOURCE" button for these (show only
+"LIVE DEMO" if applicable, or neither):
+- Online Printed T-Shirt Ordering Website
+- Hostel Room Booking Software
+- Madhan Kumar T - Portfolio Website (this is the site itself — omit both
+  buttons or link "Live Demo" to the site's own root URL)
+```
