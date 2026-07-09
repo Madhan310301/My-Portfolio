@@ -47,16 +47,16 @@ const Contact: React.FC = () => {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <a href="#" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-primary hover:bg-primary/10 transition-colors">
+              <a href="mailto:madhankumartbharathuniv@gmail.com" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-primary hover:bg-primary/10 transition-colors">
                 Email
               </a>
-              <a href="#" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-[#0077b5] hover:bg-[#0077b5]/10 transition-colors">
+              <a href="https://linkedin.com/in/madhankumart" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-[#0077b5] hover:bg-[#0077b5]/10 transition-colors">
                 LinkedIn
               </a>
-              <a href="#" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-white/50 hover:bg-white/10 transition-colors">
+              <a href="https://github.com/Madhan310301" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-white/50 hover:bg-white/10 transition-colors">
                 GitHub
               </a>
-              <a href="#" className="px-6 py-3 border border-primary/30 rounded-full text-sm font-bold text-primary hover:bg-primary hover:text-white transition-colors">
+              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-primary/30 rounded-full text-sm font-bold text-primary hover:bg-primary hover:text-white transition-colors">
                 Resume
               </a>
             </div>

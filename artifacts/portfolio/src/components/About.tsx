@@ -54,14 +54,26 @@ const About: React.FC = () => {
                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
                 Google Student Ambassador
               </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium">
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                HCLTech Campus Ambassador
+              </div>
               <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-sm font-medium">
                 B.Tech Computer Science & Engineering
               </div>
             </div>
             
-            <p className="text-lg text-muted-foreground mt-4">
-              Passionate about turning ideas into real, working systems — bridging full-stack engineering, applied AI, and embedded hardware. 
-            </p>
+            <div className="flex flex-col gap-4 mt-4">
+              <p className="text-lg text-muted-foreground">
+                I'm Madhan Kumar — a Computer Science undergraduate at BIHER, Chennai, driven by a single obsession: building things that actually work in the real world. I don't just study technology; I ship it.
+              </p>
+              <p className="text-base text-muted-foreground">
+                From winning hackathons with IoT safety wearables to deploying a live pharmacy platform for a real client, my work spans the full spectrum of modern tech — full-stack web, applied AI/ML, IoT embedded systems, blockchain, and satellite image intelligence. I've built 20+ projects across domains no single label can contain: predictive maintenance for industrial IoT, cross-modal satellite retrieval for defense hackathons, blockchain-based healthcare platforms, and offline Braille recognition systems.
+              </p>
+              <p className="text-base text-muted-foreground">
+                Beyond building, I represent Google, HCLTech, and BIHER as a Student Ambassador and Event Coordinator — because I believe the best engineers also teach, connect, and inspire. I hold a 9.5 CGPA not because I memorize, but because I understand deeply enough to build.
+              </p>
+            </div>
           </div>
 
           <div className="lg:col-span-5 relative group">
@@ -80,7 +92,9 @@ const About: React.FC = () => {
             
             <div className="mt-6 flex justify-center">
               <a 
-                href="#" // RESUME LINK PLACEHOLDER
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full text-center py-3 border border-white/20 text-white font-bold rounded-md hover:bg-white/5 transition-all"
               >
                 View / Download Resume
@@ -100,7 +114,7 @@ const About: React.FC = () => {
             <div className="font-mono text-sm text-primary mb-4">// CONTACT_MATRIX</div>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li className="flex items-center gap-3"><MapPin size={16} className="text-primary" /> Chennai, Tamil Nadu</li>
-              <li className="flex items-center gap-3"><Mail size={16} className="text-primary" /> madhannarayanan.t@gmail.com</li>
+              <li className="flex items-center gap-3"><Mail size={16} className="text-primary" /> madhankumartbharathuniv@gmail.com</li>
               <li className="flex items-center gap-3"><Phone size={16} className="text-primary" /> +91 81484 96380</li>
               <li className="flex items-center gap-3"><Github size={16} className="text-primary" /> github.com/Madhan310301</li>
               <li className="flex items-center gap-3"><Linkedin size={16} className="text-primary" /> linkedin.com/in/madhankumart</li>
@@ -158,7 +172,7 @@ const About: React.FC = () => {
         {/* Part E: "WHAT I HAVE DONE" stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { value: "12+", label: "Projects Built" },
+            { value: "20+", label: "Projects Built" },
             { value: "2", label: "Ambassador Roles" },
             { value: "1", label: "Hackathon Win" },
             { value: "9.5", label: "CGPA" }

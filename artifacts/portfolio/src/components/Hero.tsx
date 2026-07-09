@@ -42,7 +42,7 @@ const Hero: React.FC = () => {
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
-              I'm Madhan Kumar, a Computer Science undergraduate at BIHER who loves building real, working systems — across web, AI, and hardware. I've shipped 12+ projects, from a hackathon-winning IoT safety wearable to a live client pharmacy platform.
+              I'm Madhan Kumar, a Computer Science undergraduate at BIHER who loves building real, working systems — across web, AI, and hardware. I've shipped 20+ projects, from a hackathon-winning IoT safety wearable to cross-modal satellite retrieval systems.
             </p>
             
             <div className="flex flex-wrap items-center gap-4 pt-4">
@@ -53,7 +53,9 @@ const Hero: React.FC = () => {
                 → Explore Work
               </a>
               <a 
-                href="#" // CV DOWNLOAD PLACEHOLDER
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-8 py-4 border border-white/20 text-white font-bold rounded-md hover:bg-white/5 transition-all flex items-center gap-2"
               >
                 ↓ Download CV
@@ -62,7 +64,7 @@ const Hero: React.FC = () => {
 
             <div className="grid grid-cols-3 gap-4 pt-12">
               {[
-                { value: "12+", label: "Projects Delivered" },
+                { value: "20+", label: "Projects Delivered" },
                 { value: "25+", label: "Technical Skills Mapped" },
                 { value: "9.5", label: "Current CGPA" }
               ].map((stat, i) => (
