@@ -364,55 +364,198 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const SCROLL_THRESHOLD = 65;
+const SCROLL_THRESHOLD = 80;
 
 const Projects: React.FC = () => {
   const [activeId, setActiveId] = useState(1);
   const [direction, setDirection] = useState(1);
 
-  const containerRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const listContainerRef = useRef<HTMLDivElement>(null);
   const activeIdRef = useRef(activeId);
-  const isProgrammaticScrollRef = useRef(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const touchStart = useRef({ x: 0, y: 0 });
+  const touchStartRef = useRef({ x: 0, y: 0 });
 
-  // Update activeIdRef whenever activeId changes
+  /* ── scroll-jack state refs (must be refs, not state, for event handlers) ── */
+  const isLockedRef = useRef(false);       // is page scroll currently locked?
+  const scrollAccRef = useRef(0);          // accumulated wheel delta
+  const cooldownRef = useRef(false);       // prevents re-entry flicker at boundary
+  const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastNavTimeRef = useRef(0);        // debounce rapid-fire nav
+
+  // Keep ref in sync with state
   useEffect(() => {
     activeIdRef.current = activeId;
   }, [activeId]);
 
-  // Scroll to target project by index
-  const scrollToProject = (id: number, smooth: boolean = true) => {
-    const container = containerRef.current;
-    if (!container) return;
+  /* ── helpers ─────────────────────────────────────────────────────────────── */
 
-    const rect = container.getBoundingClientRect();
-    const offsetTop = window.scrollY + rect.top;
-    const scrollHeight = rect.height;
-    const viewportHeight = window.innerHeight;
-    const totalScrollable = scrollHeight - viewportHeight;
-
-    // Place scroll position in the center of the range for this project id
-    const targetProgress = (id - 0.5) / PROJECTS.length;
-    const targetScrollY = offsetTop + targetProgress * totalScrollable;
-
-    isProgrammaticScrollRef.current = true;
-    setDirection(id > activeIdRef.current ? 1 : -1);
-    setActiveId(id);
-
-    window.scrollTo({
-      top: targetScrollY,
-      behavior: smooth ? 'smooth' : 'auto'
-    });
-
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    scrollTimeoutRef.current = setTimeout(() => {
-      isProgrammaticScrollRef.current = false;
-    }, 650);
+  /** Lock page scroll by hiding overflow on documentElement */
+  const lockScroll = () => {
+    if (isLockedRef.current) return;
+    isLockedRef.current = true;
+    document.documentElement.style.overflow = 'hidden';
   };
 
-  // Synchronize active project from URL hash
+  /** Unlock page scroll */
+  const unlockScroll = () => {
+    if (!isLockedRef.current) return;
+    isLockedRef.current = false;
+    scrollAccRef.current = 0;
+    document.documentElement.style.overflow = '';
+  };
+
+  /** Navigate to a specific project index with direction animation */
+  const navigateTo = (id: number) => {
+    const clamped = Math.max(1, Math.min(PROJECTS.length, id));
+    if (clamped === activeIdRef.current) return;
+    const now = Date.now();
+    if (now - lastNavTimeRef.current < 180) return; // debounce 180ms
+    lastNavTimeRef.current = now;
+    setDirection(clamped > activeIdRef.current ? 1 : -1);
+    setActiveId(clamped);
+  };
+
+  /** Release the lock and set a cooldown so we don't re-lock immediately */
+  const releaseWithCooldown = () => {
+    unlockScroll();
+    cooldownRef.current = true;
+    if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+    cooldownTimerRef.current = setTimeout(() => {
+      cooldownRef.current = false;
+    }, 600);
+  };
+
+  /* ── IntersectionObserver: engage lock when section is ~fully in view ──── */
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (cooldownRef.current) return; // don't re-engage during cooldown
+
+        if (entry.isIntersecting && entry.intersectionRatio > 0.85) {
+          // Section is nearly fully visible — snap it into view and lock
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => {
+            if (!cooldownRef.current) lockScroll();
+          }, 350);
+        }
+      },
+      { threshold: [0.85] }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  /* ── Wheel handler: intercept scroll while locked ─────────────────────── */
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (!isLockedRef.current) return;
+
+      e.preventDefault();
+      scrollAccRef.current += e.deltaY;
+
+      const curr = activeIdRef.current;
+
+      if (scrollAccRef.current >= SCROLL_THRESHOLD) {
+        scrollAccRef.current = 0;
+        if (curr >= PROJECTS.length) {
+          // At last project, scrolling down → release
+          releaseWithCooldown();
+          return;
+        }
+        navigateTo(curr + 1);
+      } else if (scrollAccRef.current <= -SCROLL_THRESHOLD) {
+        scrollAccRef.current = 0;
+        if (curr <= 1) {
+          // At first project, scrolling up → release
+          releaseWithCooldown();
+          return;
+        }
+        navigateTo(curr - 1);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => window.removeEventListener('wheel', handleWheel);
+  }, []);
+
+  /* ── Touch handlers: same logic for swipe on mobile ───────────────────── */
+  useEffect(() => {
+    let touchStartY = 0;
+    let touchAccY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (!isLockedRef.current) return;
+      touchStartY = e.touches[0].clientY;
+      touchAccY = 0;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isLockedRef.current) return;
+      e.preventDefault();
+
+      const deltaY = touchStartY - e.touches[0].clientY;
+      touchStartY = e.touches[0].clientY;
+      touchAccY += deltaY;
+
+      const curr = activeIdRef.current;
+
+      if (touchAccY >= SCROLL_THRESHOLD) {
+        touchAccY = 0;
+        if (curr >= PROJECTS.length) {
+          releaseWithCooldown();
+          return;
+        }
+        navigateTo(curr + 1);
+      } else if (touchAccY <= -SCROLL_THRESHOLD) {
+        touchAccY = 0;
+        if (curr <= 1) {
+          releaseWithCooldown();
+          return;
+        }
+        navigateTo(curr - 1);
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
+
+  /* ── Keyboard navigation (arrows, Page Down/Up) ───────────────────────── */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isLockedRef.current) return;
+
+      if (['ArrowRight', 'ArrowDown', 'PageDown'].includes(e.key)) {
+        e.preventDefault();
+        const curr = activeIdRef.current;
+        if (curr >= PROJECTS.length) {
+          releaseWithCooldown();
+          return;
+        }
+        navigateTo(curr + 1);
+      } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) {
+        e.preventDefault();
+        const curr = activeIdRef.current;
+        if (curr <= 1) {
+          releaseWithCooldown();
+          return;
+        }
+        navigateTo(curr - 1);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  /* ── Synchronize active project from URL hash ─────────────────────────── */
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
@@ -420,11 +563,14 @@ const Projects: React.FC = () => {
         const slug = hash.replace('#project=', '');
         const project = PROJECTS.find(p => p.slug === slug);
         if (project && project.id !== activeIdRef.current) {
-          scrollToProject(project.id, true);
+          navigateTo(project.id);
+          // Scroll section into view + lock
+          sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => lockScroll(), 400);
         }
       }
     };
-    
+
     // Check initial hash on mount
     const hash = window.location.hash;
     if (hash.startsWith('#project=')) {
@@ -432,7 +578,9 @@ const Projects: React.FC = () => {
       const project = PROJECTS.find(p => p.slug === slug);
       if (project) {
         setTimeout(() => {
-          scrollToProject(project.id, false);
+          setActiveId(project.id);
+          sectionRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
+          setTimeout(() => lockScroll(), 200);
         }, 150);
       }
     }
@@ -441,100 +589,50 @@ const Projects: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Window scroll event listener to map progress to project index
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isProgrammaticScrollRef.current) return;
-      const container = containerRef.current;
-      if (!container) return;
-
-      const rect = container.getBoundingClientRect();
-      const offsetTop = window.scrollY + rect.top;
-      const scrollHeight = rect.height;
-      const viewportHeight = window.innerHeight;
-      const totalScrollable = scrollHeight - viewportHeight;
-
-      const scrolledInContainer = window.scrollY - offsetTop;
-      const progress = Math.max(0, Math.min(1, scrolledInContainer / totalScrollable));
-
-      // We only update state if we are scrolling within the sticky bounds
-      if (progress > 0 && progress < 1) {
-        const projectIndex = Math.max(1, Math.min(PROJECTS.length, Math.floor(progress * PROJECTS.length) + 1));
-        if (projectIndex !== activeIdRef.current) {
-          setDirection(projectIndex > activeIdRef.current ? 1 : -1);
-          setActiveId(projectIndex);
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Run once on load to sync initial state
-    setTimeout(handleScroll, 100);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Keyboard navigation when section is in viewport
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const container = containerRef.current;
-      if (!container) return;
-
-      const { top, bottom } = container.getBoundingClientRect();
-      const inView = top < window.innerHeight * 0.8 && bottom > window.innerHeight * 0.2;
-      if (!inView) return;
-
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        const nextId = Math.min(activeIdRef.current + 1, PROJECTS.length);
-        if (nextId !== activeIdRef.current) {
-          scrollToProject(nextId, true);
-        }
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        const prevId = Math.max(activeIdRef.current - 1, 1);
-        if (prevId !== activeIdRef.current) {
-          scrollToProject(prevId, true);
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Auto scroll active node in the side list
+  /* ── Auto-scroll active node into view in side list ───────────────────── */
   useEffect(() => {
     const list = listContainerRef.current;
     if (!list) return;
 
     const activeEl = list.querySelector(`[data-project-id="${activeId}"]`) as HTMLElement;
     if (activeEl) {
-      activeEl.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      });
+      activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [activeId]);
 
-  // Touch swipe support
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  /* ── Cleanup on unmount ───────────────────────────────────────────────── */
+  useEffect(() => {
+    return () => {
+      unlockScroll();
+      if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+    };
+  }, []);
+
+  /* ── Card swipe on mobile (horizontal swipe on the card itself) ──────── */
+  const handleCardTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
-  
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const dx = touchStart.current.x - e.changedTouches[0].clientX;
-    const dy = Math.abs(touchStart.current.y - e.changedTouches[0].clientY);
+
+  const handleCardTouchEnd = (e: React.TouchEvent) => {
+    const dx = touchStartRef.current.x - e.changedTouches[0].clientX;
+    const dy = Math.abs(touchStartRef.current.y - e.changedTouches[0].clientY);
     if (Math.abs(dx) > 50 && Math.abs(dx) > dy) {
-      if (dx > 0) {
-        const nextId = Math.min(activeId + 1, PROJECTS.length);
-        if (nextId !== activeId) scrollToProject(nextId, true);
-      } else {
-        const prevId = Math.max(activeId - 1, 1);
-        if (prevId !== activeId) scrollToProject(prevId, true);
-      }
+      if (dx > 0) navigateTo(activeId + 1);
+      else navigateTo(activeId - 1);
     }
   };
 
+  /* ── Click handler for node list and prev/next buttons ────────────────── */
+  const handleNodeClick = (id: number) => {
+    navigateTo(id);
+    // If not locked yet, scroll section into view and lock
+    if (!isLockedRef.current) {
+      sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => lockScroll(), 400);
+    }
+  };
+
+  /* ── Derived values ───────────────────────────────────────────────────── */
   const activeProject = PROJECTS.find(p => p.id === activeId) ?? PROJECTS[0];
   const isFirst = activeId === 1;
   const isLast  = activeId === PROJECTS.length;
@@ -546,220 +644,218 @@ const Projects: React.FC = () => {
   };
 
   return (
-    <section 
-      className="relative h-[420vh]" 
-      id="projects" 
-      ref={containerRef}
+    <section
+      className="relative py-24"
+      id="projects"
+      ref={sectionRef}
     >
-      {/* Sticky viewport container */}
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="section-panel w-full"
-          >
-            {/* Section Header */}
-            <div className="mb-8">
-              <div className="font-mono text-sm text-primary mb-2">// LAUNCHED MISSIONS</div>
-              <h2 className="text-3xl md:text-5xl font-display font-bold text-white">PROJECT LOG</h2>
-              <p className="text-xs font-mono text-white/30 mt-2 hidden md:block">
-                scroll · ←→ arrow keys · or click a node to navigate projects
-              </p>
-              <p className="text-xs font-mono text-white/30 mt-2 md:hidden">
-                swipe the card or tap a node to navigate
-              </p>
-            </div>
+      <div className="container mx-auto px-4 sm:px-6 w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="section-panel w-full"
+        >
+          {/* Section Header */}
+          <div className="mb-8">
+            <div className="font-mono text-sm text-primary mb-2">// LAUNCHED MISSIONS</div>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-white">PROJECT LOG</h2>
+            <p className="text-xs font-mono text-white/30 mt-2 hidden md:block">
+              scroll · ←→ arrow keys · or click a node to navigate projects
+            </p>
+            <p className="text-xs font-mono text-white/30 mt-2 md:hidden">
+              swipe the card or tap a node to navigate
+            </p>
+          </div>
 
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
             {/* ── LEFT: Case Study Card ── */}
-            <div className="lg:w-[70%] flex flex-col">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={activeProject.id}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
-                className="hud-bracket bg-card p-6 md:p-8 border-2 border-white/10 hover:border-primary/50 transition-colors shadow-lg flex-1"
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-              >
-                {/* Tag + source buttons */}
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                  <div className="font-mono text-primary font-bold">{activeProject.tag}</div>
-                  <div className="flex gap-2">
-                    {activeProject.github && (
-                      <a
-                        href={activeProject.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 border border-white/15 text-white/70 text-xs font-bold rounded-full hover:border-white/40 hover:text-white transition-colors"
-                      >
-                        <Github size={12} /> SOURCE
-                      </a>
-                    )}
-                    {activeProject.liveDemo && (
-                      <a
-                        href={activeProject.liveDemo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 border border-primary/30 text-primary text-xs font-bold rounded-full hover:bg-primary/20 transition-colors"
-                      >
-                        <ExternalLink size={12} /> LIVE DEMO
-                      </a>
-                    )}
-                  </div>
-                </div>
-
-                <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
-                  {activeProject.title}
-                </h3>
-                <p className="text-lg text-muted-foreground mb-6">{activeProject.desc}</p>
-
-                {/* Duration + Stack */}
-                <div className="mb-8 pb-8 border-b border-white/10">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <div>
-                      <div className="font-mono text-xs text-white/40 mb-1">// DURATION</div>
-                      <div className="text-sm text-white">{activeProject.duration}</div>
+            <div className="w-full lg:w-[70%] flex flex-col">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={activeProject.id}
+                  custom={direction}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  className="hud-bracket bg-card p-6 md:p-8 border-2 border-white/10 hover:border-primary/50 transition-colors shadow-lg flex-1"
+                  onTouchStart={handleCardTouchStart}
+                  onTouchEnd={handleCardTouchEnd}
+                >
+                  {/* Tag + source buttons */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                    <div className="font-mono text-primary font-bold">{activeProject.tag}</div>
+                    <div className="flex gap-2">
+                      {activeProject.github && (
+                        <a
+                          href={activeProject.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 border border-white/15 text-white/70 text-xs font-bold rounded-full hover:border-white/40 hover:text-white transition-colors"
+                        >
+                          <Github size={12} /> SOURCE
+                        </a>
+                      )}
+                      {activeProject.liveDemo && (
+                        <a
+                          href={activeProject.liveDemo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 border border-primary/30 text-primary text-xs font-bold rounded-full hover:bg-primary/20 transition-colors"
+                        >
+                          <ExternalLink size={12} /> LIVE DEMO
+                        </a>
+                      )}
                     </div>
-                    <div className="sm:ml-8">
-                      <div className="font-mono text-xs text-white/40 mb-1">// STACK_CORE</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {activeProject.stack.map(tech => (
-                          <span key={tech} className="text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded text-white/70">
-                            {tech}
-                          </span>
-                        ))}
+                  </div>
+
+                  <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
+                    {activeProject.title}
+                  </h3>
+                  <p className="text-lg text-muted-foreground mb-6">{activeProject.desc}</p>
+
+                  {/* Duration + Stack */}
+                  <div className="mb-8 pb-8 border-b border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                      <div>
+                        <div className="font-mono text-xs text-white/40 mb-1">// DURATION</div>
+                        <div className="text-sm text-white">{activeProject.duration}</div>
+                      </div>
+                      <div className="sm:ml-8">
+                        <div className="font-mono text-xs text-white/40 mb-1">// STACK_CORE</div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {activeProject.stack.map(tech => (
+                            <span key={tech} className="text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded text-white/70">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Full description */}
+                  <div className="space-y-3 text-muted-foreground mb-8 text-sm md:text-base leading-relaxed">
+                    <p>{activeProject.fullDesc1}</p>
+                    <p>{activeProject.fullDesc2}</p>
+                  </div>
+
+                  {/* Detail panels */}
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
+                      <div className="font-mono text-xs text-primary mb-2">// MILESTONE</div>
+                      <p className="text-white/90">{activeProject.milestone}</p>
+                    </div>
+                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
+                      <div className="font-mono text-xs text-primary mb-2">// KEY FEATURE</div>
+                      <p className="text-white/90">{activeProject.keyFeature}</p>
+                    </div>
+                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
+                      <div className="font-mono text-xs text-orange-500 mb-2">// PROBLEM</div>
+                      <p className="text-white/90">{activeProject.problem}</p>
+                    </div>
+                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
+                      <div className="font-mono text-xs text-orange-500 mb-2">// CHALLENGE</div>
+                      <p className="text-white/90">{activeProject.challenge}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* ── Counter + Prev / Next ── */}
+              <div className="flex items-center justify-between mt-4 px-1">
+                <button
+                  onClick={() => handleNodeClick(activeId - 1)}
+                  disabled={isFirst}
+                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={14} /> PREV
+                </button>
+
+                <div className="font-mono text-sm text-white/40 tabular-nums">
+                  <span className="text-white/70">{String(activeId).padStart(2, '0')}</span>
+                  <span className="mx-1.5 text-white/20">/</span>
+                  {String(PROJECTS.length).padStart(2, '0')}
                 </div>
 
-                {/* Full description */}
-                <div className="space-y-3 text-muted-foreground mb-8 text-sm md:text-base leading-relaxed">
-                  <p>{activeProject.fullDesc1}</p>
-                  <p>{activeProject.fullDesc2}</p>
-                </div>
+                <button
+                  onClick={() => handleNodeClick(activeId + 1)}
+                  disabled={isLast}
+                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                >
+                  NEXT <ChevronRight size={14} />
+                </button>
+              </div>
+            </div>
 
-                {/* Detail panels */}
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                    <div className="font-mono text-xs text-primary mb-2">// MILESTONE</div>
-                    <p className="text-white/90">{activeProject.milestone}</p>
-                  </div>
-                  <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                    <div className="font-mono text-xs text-primary mb-2">// KEY FEATURE</div>
-                    <p className="text-white/90">{activeProject.keyFeature}</p>
-                  </div>
-                  <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                    <div className="font-mono text-xs text-orange-500 mb-2">// PROBLEM</div>
-                    <p className="text-white/90">{activeProject.problem}</p>
-                  </div>
-                  <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                    <div className="font-mono text-xs text-orange-500 mb-2">// CHALLENGE</div>
-                    <p className="text-white/90">{activeProject.challenge}</p>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* ── Counter + Prev / Next ── */}
-            <div className="flex items-center justify-between mt-4 px-1">
-              <button
-                onClick={() => scrollToProject(activeId - 1, true)}
-                disabled={isFirst}
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft size={14} /> PREV
-              </button>
-
-              <div className="font-mono text-sm text-white/40 tabular-nums">
-                <span className="text-white/70">{String(activeId).padStart(2, '0')}</span>
-                <span className="mx-1.5 text-white/20">/</span>
-                {String(PROJECTS.length).padStart(2, '0')}
+            {/* ── RIGHT: Node Navigator (no independent scrollbar) ── */}
+            <div className="hidden lg:flex lg:w-[30%] flex-col">
+              <div className="bg-[#0f0f15] p-4 rounded-t border border-white/10 border-b-0">
+                <p className="font-mono text-xs text-white/50 leading-relaxed">
+                  // {PROJECTS.length} missions logged
+                </p>
               </div>
 
-              <button
-                onClick={() => scrollToProject(activeId + 1, true)}
-                disabled={isLast}
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+              <div
+                ref={listContainerRef}
+                className="flex-1 bg-card border border-white/10 rounded-b overflow-y-auto no-scrollbar pointer-events-auto"
+                style={{ maxHeight: '550px' }}
+                onWheel={(e) => e.stopPropagation()} // prevent list scroll from leaking to window
               >
-                NEXT <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
+                <div className="relative p-2">
+                  {/* Vertical rail */}
+                  <div className="absolute left-[22px] top-4 bottom-4 w-[2px] bg-white/5 pointer-events-none" />
 
-          {/* ── RIGHT: Scrollable Node Navigator ── */}
-          <div className="hidden lg:flex lg:w-[30%] flex-col">
-            <div className="bg-[#0f0f15] p-4 rounded-t border border-white/10 border-b-0">
-              <p className="font-mono text-xs text-white/50 leading-relaxed">
-                // {PROJECTS.length} missions logged
-              </p>
-            </div>
-
-            <div
-              ref={listContainerRef}
-              className="flex-1 bg-card border border-white/10 rounded-b overflow-y-auto no-scrollbar"
-              style={{ maxHeight: '550px' }}
-            >
-              <div className="relative p-2">
-                {/* Vertical rail */}
-                <div className="absolute left-[22px] top-4 bottom-4 w-[2px] bg-white/5 pointer-events-none" />
-
-                <div className="flex flex-col gap-0.5 relative">
-                  {PROJECTS.map((project) => {
-                    const isActive = activeId === project.id;
-                    return (
-                      <button
-                        key={project.id}
-                        data-project-id={project.id}
-                        onClick={() => scrollToProject(project.id, true)}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left w-full cursor-pointer ${
-                          isActive
-                            ? 'bg-white/5 border border-primary/30 shadow-[0_0_12px_rgba(225,29,72,0.12)]'
-                            : 'hover:bg-white/5 border border-transparent'
-                        }`}
-                      >
-                        {/* Node dot */}
-                        <div className={`relative flex-shrink-0 w-4 h-4 rounded-full border-2 transition-all z-10 ${
-                          isActive ? 'border-primary bg-primary' : 'border-white/20 bg-card'
-                        }`}>
-                          {isActive && (
-                            <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-40" />
-                          )}
-                        </div>
-
-                        {/* Label */}
-                        <div className="min-w-0">
-                          <div className={`font-semibold text-sm truncate transition-colors ${
-                            isActive ? 'text-white' : 'text-white/50'
+                  <div className="flex flex-col gap-0.5 relative">
+                    {PROJECTS.map((project) => {
+                      const isActive = activeId === project.id;
+                      return (
+                        <button
+                          key={project.id}
+                          data-project-id={project.id}
+                          onClick={() => handleNodeClick(project.id)}
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left w-full cursor-pointer ${
+                            isActive
+                              ? 'bg-white/5 border border-primary/30 shadow-[0_0_12px_rgba(225,29,72,0.12)]'
+                              : 'hover:bg-white/5 border border-transparent'
+                          }`}
+                        >
+                          {/* Node dot */}
+                          <div className={`relative flex-shrink-0 w-4 h-4 rounded-full border-2 transition-all z-10 ${
+                            isActive ? 'border-primary bg-primary' : 'border-white/20 bg-card'
                           }`}>
-                            {project.title}
+                            {isActive && (
+                              <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-40" />
+                            )}
                           </div>
-                          <div className="text-[10px] text-white/30 truncate mt-0.5">
-                            {project.category}
+
+                          {/* Label */}
+                          <div className="min-w-0">
+                            <div className={`font-semibold text-sm truncate transition-colors ${
+                              isActive ? 'text-white' : 'text-white/50'
+                            }`}>
+                              {project.title}
+                            </div>
+                            <div className="text-[10px] text-white/30 truncate mt-0.5">
+                              {project.category}
+                            </div>
                           </div>
-                        </div>
-                      </button>
-                    );
-                  })}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-        </div>
-      </motion.div>
-    </div>
-  </div>
-</section>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 };
 
