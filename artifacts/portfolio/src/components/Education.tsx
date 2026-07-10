@@ -59,25 +59,27 @@ const Education: React.FC = () => {
   const activeStage = ED_STAGES.find(s => s.id === activeStageId) || ED_STAGES[2];
 
   return (
-    <section className="py-24 relative">
+    <section className="py-24 relative" id="education">
       <div className="container mx-auto px-6">
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16"
+          transition={{ duration: 0.6 }}
+          className="section-panel"
         >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-8 h-[2px] bg-primary"></div>
-            <span className="text-primary font-mono text-sm tracking-wider uppercase">— EDUCATION</span>
+          <div className="mb-16">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-[2px] bg-primary"></div>
+              <span className="text-primary font-mono text-sm tracking-wider uppercase">— EDUCATION</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-white max-w-3xl leading-tight">
+              The academic runway behind every project I've shipped.
+            </h2>
           </div>
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-white max-w-3xl leading-tight">
-            The academic runway behind every project I've shipped.
-          </h2>
-        </motion.div>
 
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left: Flight Trajectory */}
           <div className="lg:col-span-5 relative h-[500px] flex justify-center py-8">
@@ -191,8 +193,9 @@ const Education: React.FC = () => {
           </div>
 
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </div>
+  </section>
   );
 };
 

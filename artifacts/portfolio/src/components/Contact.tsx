@@ -2,29 +2,75 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const Contact: React.FC = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Reset errors
+    const newErrors = { name: '', email: '', message: '' };
+    let hasError = false;
+
+    if (!name.trim()) {
+      newErrors.name = 'Name is required';
+      hasError = true;
+    }
+    
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+      hasError = true;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Please enter a valid email address';
+      hasError = true;
+    }
+
+    if (!message.trim()) {
+      newErrors.message = 'Message is required';
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+    if (hasError) return;
+
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setToastMessage('Message launched! I\'ll respond soon 🚀');
-      (e.target as HTMLFormElement).reset();
-      
-      // Clear toast after 3s
-      setTimeout(() => setToastMessage(''), 3000);
-    }, 1000);
+    // Construct pre-filled Gmail compose URL
+    const subject = encodeURIComponent(name);
+    const body = encodeURIComponent(`${message}\n\n— Reply to: ${email}`);
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=madhannarayanan.t@gmail.com&su=${subject}&body=${body}`;
+
+    // Open in a new tab
+    window.open(gmailUrl, '_blank');
+
+    setIsSubmitting(false);
+    setToastMessage('Opening Gmail — finish sending from there.');
+    
+    // Clear fields
+    setName('');
+    setEmail('');
+    setMessage('');
+    
+    // Clear toast after 5s
+    setTimeout(() => setToastMessage(''), 5000);
   };
 
   return (
-    <section className="relative mt-12 bg-card border-t border-white/5 pt-24 pb-12" id="contact">
+    <section className="py-24 relative mt-12" id="contact">
       <div className="container mx-auto px-6">
         
-        <div className="grid lg:grid-cols-2 gap-16 mb-24">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="section-panel mb-16"
+        >
+          <div className="grid lg:grid-cols-2 gap-16">
           
           {/* Left Column */}
           <motion.div 
@@ -47,7 +93,7 @@ const Contact: React.FC = () => {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <a href="mailto:madhankumartbharathuniv@gmail.com" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-primary hover:bg-primary/10 transition-colors">
+              <a href="mailto:madhannarayanan.t@gmail.com" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-primary hover:bg-primary/10 transition-colors">
                 Email
               </a>
               <a href="https://linkedin.com/in/madhankumart" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-[#0077b5] hover:bg-[#0077b5]/10 transition-colors">
@@ -72,16 +118,23 @@ const Contact: React.FC = () => {
             <div className="hud-bracket bg-[#0A0A0F] p-8 border border-white/10 relative z-10 box-glow">
               <div className="font-mono text-xs text-primary mb-6">// SECURE_CHANNEL_OPEN</div>
               
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
                 <div>
                   <label htmlFor="name" className="block text-xs font-mono text-white/50 mb-2 uppercase">Name</label>
                   <input 
                     type="text" 
                     id="name" 
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-sans"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                    }}
+                    className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-primary'} rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary transition-all font-sans`}
                     placeholder="John Doe"
                   />
+                  {errors.name && (
+                    <span className="text-red-400 text-xs mt-1 block font-mono">{errors.name}</span>
+                  )}
                 </div>
                 
                 <div>
@@ -89,27 +142,41 @@ const Contact: React.FC = () => {
                   <input 
                     type="email" 
                     id="email" 
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-sans"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
+                    }}
+                    className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-primary'} rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary transition-all font-sans`}
                     placeholder="john@example.com"
                   />
+                  {errors.email && (
+                    <span className="text-red-400 text-xs mt-1 block font-mono">{errors.email}</span>
+                  )}
                 </div>
                 
                 <div>
                   <label htmlFor="message" className="block text-xs font-mono text-white/50 mb-2 uppercase">Message</label>
                   <textarea 
                     id="message" 
-                    required
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                      if (errors.message) setErrors(prev => ({ ...prev, message: '' }));
+                    }}
                     rows={4}
-                    className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-sans resize-none"
+                    className={`w-full bg-white/5 border ${errors.message ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-primary'} rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary transition-all font-sans resize-none`}
                     placeholder="Tell me about your project..."
                   ></textarea>
+                  {errors.message && (
+                    <span className="text-red-400 text-xs mt-1 block font-mono">{errors.message}</span>
+                  )}
                 </div>
                 
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full bg-primary text-white font-bold py-4 rounded hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.4)] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2"
+                  className="w-full bg-primary text-white font-bold py-4 rounded hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.4)] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2 cursor-pointer"
                 >
                   {isSubmitting ? 'Transmitting...' : '→ Send Message'}
                 </button>
@@ -127,6 +194,7 @@ const Contact: React.FC = () => {
           </motion.div>
 
         </div>
+      </motion.div>
 
         {/* Footer */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
@@ -136,7 +204,7 @@ const Contact: React.FC = () => {
           
           <button 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-sm font-mono text-primary hover:text-white transition-colors flex items-center gap-1"
+            className="text-sm font-mono text-primary hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
           >
             Back to top ↑
           </button>

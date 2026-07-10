@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Github, ExternalLink } from 'lucide-react';
 
 interface Project {
   id: number;
+  slug: string;
   tag: string;
   title: string;
   category: string;
@@ -23,6 +24,7 @@ interface Project {
 const PROJECTS: Project[] = [
   {
     id: 1,
+    slug: "safepath-ai",
     tag: "[BUILD-01]",
     title: "SafePathAI",
     category: "IoT Child Safety Wearable",
@@ -39,6 +41,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 2,
+    slug: "sarvajeevaid",
     tag: "[BUILD-02]",
     title: "SarvaJeevaID",
     category: "National Identity Platform",
@@ -55,6 +58,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 3,
+    slug: "habiai",
     tag: "[BUILD-03]",
     title: "HabiAI",
     category: "AI Habit Tracker",
@@ -71,6 +75,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 4,
+    slug: "agrigrade",
     tag: "[BUILD-04]",
     title: "AgriGrade",
     category: "AI Agricultural Grader",
@@ -87,6 +92,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 5,
+    slug: "renoai",
     tag: "[BUILD-05]",
     title: "RenoAI",
     category: "AI Home Renovation Agent",
@@ -103,6 +109,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 6,
+    slug: "docuai",
     tag: "[BUILD-06]",
     title: "DocuAI",
     category: "AI Document Reader",
@@ -119,6 +126,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 7,
+    slug: "healai",
     tag: "[BUILD-07]",
     title: "HealAI",
     category: "Decentralized Healthcare Platform",
@@ -135,6 +143,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 8,
+    slug: "nexusai",
     tag: "[BUILD-08]",
     title: "NexusAI",
     category: "AI Personal Assistant",
@@ -151,6 +160,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 9,
+    slug: "predmaintain",
     tag: "[BUILD-09]",
     title: "PredMaintain",
     category: "Predictive Maintenance System",
@@ -167,6 +177,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 10,
+    slug: "rm-online-app",
     tag: "[BUILD-10]",
     title: "RM Online App",
     category: "Client Pharmacy System",
@@ -183,6 +194,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 11,
+    slug: "fintech",
     tag: "[BUILD-11]",
     title: "FinTech",
     category: "AI Financial Coach",
@@ -199,6 +211,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 12,
+    slug: "people-watcher",
     tag: "[BUILD-12]",
     title: "People Watcher",
     category: "AI Crowd Management",
@@ -215,6 +228,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 13,
+    slug: "nutrilensai",
     tag: "[BUILD-13]",
     title: "NutriLensAI",
     category: "AI Calorie Calculator",
@@ -231,6 +245,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 14,
+    slug: "memoai",
     tag: "[BUILD-14]",
     title: "MemoAI",
     category: "AI Diary Writer",
@@ -247,6 +262,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 15,
+    slug: "neurodot",
     tag: "[BUILD-15]",
     title: "NeuroDot",
     category: "AI Braille Detector",
@@ -263,6 +279,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 16,
+    slug: "drakozu",
     tag: "[BUILD-16]",
     title: "DrakoZu",
     category: "Custom T-Shirt E-Commerce",
@@ -279,6 +296,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 17,
+    slug: "satbridge",
     tag: "[BUILD-17]",
     title: "SatBridge",
     category: "Cross-Modal Satellite Retrieval",
@@ -295,6 +313,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 18,
+    slug: "amh-hostel-app",
     tag: "[BUILD-18]",
     title: "AMH Hostel App",
     category: "Hostel Room Booking Platform",
@@ -311,6 +330,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 19,
+    slug: "civicpulse",
     tag: "[BUILD-19]",
     title: "CivicPulse",
     category: "AI Civic Reporting Platform",
@@ -327,6 +347,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 20,
+    slug: "portfolio",
     tag: "[BUILD-20]",
     title: "Madhan Kumar Portfolio",
     category: "Personal Portfolio Website",
@@ -347,130 +368,215 @@ const SCROLL_THRESHOLD = 65;
 
 const Projects: React.FC = () => {
   const [activeId, setActiveId] = useState(1);
+  const [direction, setDirection] = useState(1);
 
-  const sectionRef       = useRef<HTMLElement>(null);
-  const isHoveringRef    = useRef(false);
-  const scrollAccRef     = useRef(0);
-  const activeIdRef      = useRef(activeId);
-  const touchStart       = useRef({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLElement>(null);
+  const listContainerRef = useRef<HTMLDivElement>(null);
+  const activeIdRef = useRef(activeId);
+  const isProgrammaticScrollRef = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStart = useRef({ x: 0, y: 0 });
 
-  const activeProject = PROJECTS.find(p => p.id === activeId) ?? PROJECTS[0];
-  const isFirst = activeId === 1;
-  const isLast  = activeId === PROJECTS.length;
-
-  /* keep ref in sync, reset accumulator whenever project changes */
+  // Update activeIdRef whenever activeId changes
   useEffect(() => {
-    activeIdRef.current  = activeId;
-    scrollAccRef.current = 0;
+    activeIdRef.current = activeId;
   }, [activeId]);
 
-  /* scroll capture ─ must be non-passive to allow preventDefault */
+  // Scroll to target project by index
+  const scrollToProject = (id: number, smooth: boolean = true) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const offsetTop = window.scrollY + rect.top;
+    const scrollHeight = rect.height;
+    const viewportHeight = window.innerHeight;
+    const totalScrollable = scrollHeight - viewportHeight;
+
+    // Place scroll position in the center of the range for this project id
+    const targetProgress = (id - 0.5) / PROJECTS.length;
+    const targetScrollY = offsetTop + targetProgress * totalScrollable;
+
+    isProgrammaticScrollRef.current = true;
+    setDirection(id > activeIdRef.current ? 1 : -1);
+    setActiveId(id);
+
+    window.scrollTo({
+      top: targetScrollY,
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    scrollTimeoutRef.current = setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 650);
+  };
+
+  // Synchronize active project from URL hash
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#project=')) {
+        const slug = hash.replace('#project=', '');
+        const project = PROJECTS.find(p => p.slug === slug);
+        if (project && project.id !== activeIdRef.current) {
+          scrollToProject(project.id, true);
+        }
+      }
+    };
+    
+    // Check initial hash on mount
+    const hash = window.location.hash;
+    if (hash.startsWith('#project=')) {
+      const slug = hash.replace('#project=', '');
+      const project = PROJECTS.find(p => p.slug === slug);
+      if (project) {
+        setTimeout(() => {
+          scrollToProject(project.id, false);
+        }, 150);
+      }
+    }
 
-    const handleWheel = (e: WheelEvent) => {
-      if (!isHoveringRef.current) return;
-      const curr = activeIdRef.current;
-      /* release at boundary so page can scroll past the section */
-      if (curr === 1 && e.deltaY < 0) return;
-      if (curr === PROJECTS.length && e.deltaY > 0) return;
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
-      e.preventDefault();
-      scrollAccRef.current += e.deltaY;
+  // Window scroll event listener to map progress to project index
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isProgrammaticScrollRef.current) return;
+      const container = containerRef.current;
+      if (!container) return;
 
-      if (scrollAccRef.current >= SCROLL_THRESHOLD) {
-        scrollAccRef.current = 0;
-        setActiveId(prev => Math.min(prev + 1, PROJECTS.length));
-      } else if (scrollAccRef.current <= -SCROLL_THRESHOLD) {
-        scrollAccRef.current = 0;
-        setActiveId(prev => Math.max(prev - 1, 1));
+      const rect = container.getBoundingClientRect();
+      const offsetTop = window.scrollY + rect.top;
+      const scrollHeight = rect.height;
+      const viewportHeight = window.innerHeight;
+      const totalScrollable = scrollHeight - viewportHeight;
+
+      const scrolledInContainer = window.scrollY - offsetTop;
+      const progress = Math.max(0, Math.min(1, scrolledInContainer / totalScrollable));
+
+      // We only update state if we are scrolling within the sticky bounds
+      if (progress > 0 && progress < 1) {
+        const projectIndex = Math.max(1, Math.min(PROJECTS.length, Math.floor(progress * PROJECTS.length) + 1));
+        if (projectIndex !== activeIdRef.current) {
+          setDirection(projectIndex > activeIdRef.current ? 1 : -1);
+          setActiveId(projectIndex);
+        }
       }
     };
 
-    section.addEventListener('wheel', handleWheel, { passive: false });
-    return () => section.removeEventListener('wheel', handleWheel);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Run once on load to sync initial state
+    setTimeout(handleScroll, 100);
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  /* keyboard navigation — active when section is in viewport */
+  // Keyboard navigation when section is in viewport
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!sectionRef.current) return;
-      const { top, bottom } = sectionRef.current.getBoundingClientRect();
+      const container = containerRef.current;
+      if (!container) return;
+
+      const { top, bottom } = container.getBoundingClientRect();
       const inView = top < window.innerHeight * 0.8 && bottom > window.innerHeight * 0.2;
       if (!inView) return;
 
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
-        setActiveId(prev => Math.min(prev + 1, PROJECTS.length));
+        const nextId = Math.min(activeIdRef.current + 1, PROJECTS.length);
+        if (nextId !== activeIdRef.current) {
+          scrollToProject(nextId, true);
+        }
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
-        setActiveId(prev => Math.max(prev - 1, 1));
+        const prevId = Math.max(activeIdRef.current - 1, 1);
+        if (prevId !== activeIdRef.current) {
+          scrollToProject(prevId, true);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  /* touch / swipe */
+  // Auto scroll active node in the side list
+  useEffect(() => {
+    const list = listContainerRef.current;
+    if (!list) return;
+
+    const activeEl = list.querySelector(`[data-project-id="${activeId}"]`) as HTMLElement;
+    if (activeEl) {
+      activeEl.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }
+  }, [activeId]);
+
+  // Touch swipe support
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
+  
   const handleTouchEnd = (e: React.TouchEvent) => {
     const dx = touchStart.current.x - e.changedTouches[0].clientX;
     const dy = Math.abs(touchStart.current.y - e.changedTouches[0].clientY);
     if (Math.abs(dx) > 50 && Math.abs(dx) > dy) {
-      if (dx > 0) setActiveId(prev => Math.min(prev + 1, PROJECTS.length));
-      else        setActiveId(prev => Math.max(prev - 1, 1));
+      if (dx > 0) {
+        const nextId = Math.min(activeId + 1, PROJECTS.length);
+        if (nextId !== activeId) scrollToProject(nextId, true);
+      } else {
+        const prevId = Math.max(activeId - 1, 1);
+        if (prevId !== activeId) scrollToProject(prevId, true);
+      }
     }
   };
 
-  const nav = (dir: 1 | -1) =>
-    setActiveId(prev => Math.max(1, Math.min(PROJECTS.length, prev + dir)));
+  const activeProject = PROJECTS.find(p => p.id === activeId) ?? PROJECTS[0];
+  const isFirst = activeId === 1;
+  const isLast  = activeId === PROJECTS.length;
 
-  /* card transition variants */
   const variants = {
     enter:  (dir: number) => ({ opacity: 0, x: dir > 0 ? 30 : -30 }),
     center: { opacity: 1, x: 0 },
     exit:   (dir: number) => ({ opacity: 0, x: dir > 0 ? -30 : 30 }),
   };
-  const [direction, setDirection] = useState(1);
-  const handleSetActive = (id: number) => {
-    setDirection(id > activeId ? 1 : -1);
-    setActiveId(id);
-  };
 
   return (
-    <section
-      className="py-24 relative"
-      id="projects"
-      ref={sectionRef}
-      onMouseEnter={() => { isHoveringRef.current = true; }}
-      onMouseLeave={() => { isHoveringRef.current = false; scrollAccRef.current = 0; }}
+    <section 
+      className="relative h-[420vh]" 
+      id="projects" 
+      ref={containerRef}
     >
-      <div className="container mx-auto px-6">
+      {/* Sticky viewport container */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="section-panel w-full"
+          >
+            {/* Section Header */}
+            <div className="mb-8">
+              <div className="font-mono text-sm text-primary mb-2">// LAUNCHED MISSIONS</div>
+              <h2 className="text-3xl md:text-5xl font-display font-bold text-white">PROJECT LOG</h2>
+              <p className="text-xs font-mono text-white/30 mt-2 hidden md:block">
+                scroll · ←→ arrow keys · or click a node to navigate projects
+              </p>
+              <p className="text-xs font-mono text-white/30 mt-2 md:hidden">
+                swipe the card or tap a node to navigate
+              </p>
+            </div>
 
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-12"
-        >
-          <div className="font-mono text-sm text-primary mb-2">// LAUNCHED MISSIONS</div>
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-white">PROJECT LOG</h2>
-          <p className="text-xs font-mono text-white/30 mt-2 hidden md:block">
-            scroll · ←→ arrow keys · or click a node to navigate projects
-          </p>
-          <p className="text-xs font-mono text-white/30 mt-2 md:hidden">
-            swipe the card or tap a node to navigate
-          </p>
-        </motion.div>
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-
-          {/* ── LEFT: Case Study Card ── */}
-          <div className="lg:w-[70%] flex flex-col">
+            {/* ── LEFT: Case Study Card ── */}
+            <div className="lg:w-[70%] flex flex-col">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeProject.id}
@@ -567,7 +673,7 @@ const Projects: React.FC = () => {
             {/* ── Counter + Prev / Next ── */}
             <div className="flex items-center justify-between mt-4 px-1">
               <button
-                onClick={() => { setDirection(-1); nav(-1); }}
+                onClick={() => scrollToProject(activeId - 1, true)}
                 disabled={isFirst}
                 className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
               >
@@ -581,7 +687,7 @@ const Projects: React.FC = () => {
               </div>
 
               <button
-                onClick={() => { setDirection(1); nav(1); }}
+                onClick={() => scrollToProject(activeId + 1, true)}
                 disabled={isLast}
                 className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
               >
@@ -591,7 +697,7 @@ const Projects: React.FC = () => {
           </div>
 
           {/* ── RIGHT: Scrollable Node Navigator ── */}
-          <div className="lg:w-[30%] flex flex-col">
+          <div className="hidden lg:flex lg:w-[30%] flex-col">
             <div className="bg-[#0f0f15] p-4 rounded-t border border-white/10 border-b-0">
               <p className="font-mono text-xs text-white/50 leading-relaxed">
                 // {PROJECTS.length} missions logged
@@ -599,8 +705,9 @@ const Projects: React.FC = () => {
             </div>
 
             <div
-              className="flex-1 bg-card border border-white/10 rounded-b overflow-y-auto"
-              style={{ maxHeight: '600px' }}
+              ref={listContainerRef}
+              className="flex-1 bg-card border border-white/10 rounded-b overflow-y-auto no-scrollbar"
+              style={{ maxHeight: '550px' }}
             >
               <div className="relative p-2">
                 {/* Vertical rail */}
@@ -612,8 +719,9 @@ const Projects: React.FC = () => {
                     return (
                       <button
                         key={project.id}
-                        onClick={() => handleSetActive(project.id)}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left w-full ${
+                        data-project-id={project.id}
+                        onClick={() => scrollToProject(project.id, true)}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left w-full cursor-pointer ${
                           isActive
                             ? 'bg-white/5 border border-primary/30 shadow-[0_0_12px_rgba(225,29,72,0.12)]'
                             : 'hover:bg-white/5 border border-transparent'
@@ -648,8 +756,10 @@ const Projects: React.FC = () => {
           </div>
 
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </div>
+  </div>
+</section>
   );
 };
 

@@ -39,57 +39,60 @@ const CREDENTIALS = [
 
 const Credentials: React.FC = () => {
   return (
-    <section className="py-24 relative bg-[#0A0A0F]/50 border-y border-white/5" id="credentials">
+    <section className="py-24 relative" id="credentials">
       <div className="container mx-auto px-6">
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          transition={{ duration: 0.6 }}
+          className="section-panel"
         >
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-primary/10 rounded-full border border-primary/20 shadow-[0_0_15px_rgba(225,29,72,0.2)]">
-              <Trophy size={24} className="text-primary" />
+          <div className="text-center mb-16">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-primary/10 rounded-full border border-primary/20 shadow-[0_0_15px_rgba(225,29,72,0.2)]">
+                <Trophy size={24} className="text-primary" />
+              </div>
             </div>
+            <div className="font-mono text-sm text-primary mb-2">// WALL OF FAME</div>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-white">Recognition & Milestones</h2>
           </div>
-          <div className="font-mono text-sm text-primary mb-2">// WALL OF FAME</div>
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-white">Recognition & Milestones</h2>
-        </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {CREDENTIALS.map((cred, i) => (
-            <motion.div 
-              key={cred.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="hud-bracket bg-card p-6 border border-white/10 hover:border-primary/40 transition-colors flex flex-col h-full box-glow group"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <span className="font-mono text-sm font-bold text-primary">{cred.year}</span>
-                <span className={`text-xs px-2.5 py-1 rounded-full border ${cred.badgeColor}`}>
-                  {cred.badgeType}
-                </span>
-              </div>
-              
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
-                {cred.title}
-              </h3>
-              
-              <p className="text-muted-foreground text-sm flex-grow mb-6">
-                {cred.desc}
-              </p>
-              
-              <div className="pt-4 border-t border-white/5 mt-auto">
-                <span className="font-mono text-[10px] text-white/30">
-                  // ID: {cred.id}
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {CREDENTIALS.map((cred, i) => (
+              <motion.div 
+                key={cred.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="hud-bracket bg-card p-6 border border-white/10 hover:border-primary/40 transition-colors flex flex-col h-full box-glow group"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <span className="font-mono text-sm font-bold text-primary">{cred.year}</span>
+                  <span className={`text-xs px-2.5 py-1 rounded-full border ${cred.badgeColor}`}>
+                    {cred.badgeType}
+                  </span>
+                </div>
+                
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
+                  {cred.title}
+                </h3>
+                
+                <p className="text-muted-foreground text-sm flex-grow mb-6">
+                  {cred.desc}
+                </p>
+                
+                <div className="pt-4 border-t border-white/5 mt-auto">
+                  <span className="font-mono text-[10px] text-white/30">
+                    // ID: {cred.id}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
       </div>
     </section>

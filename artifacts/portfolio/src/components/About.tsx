@@ -83,7 +83,7 @@ const About: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="border border-white/10 bg-card/30 backdrop-blur-sm rounded-xl overflow-hidden"
+          className="section-panel !p-0"
         >
 
           {/* ── TOP: Name + Photo ──────────────────────────────────────── */}

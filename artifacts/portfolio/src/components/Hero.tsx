@@ -89,14 +89,18 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative flex flex-col items-center lg:items-end justify-center"
           >
-            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full border border-primary/30 p-2">
-              <div className="absolute inset-0 rounded-full border border-primary/20 animate-[spin_10s_linear_infinite]" style={{ borderTopColor: 'transparent', borderRightColor: 'transparent' }}></div>
-              <div className="absolute inset-0 rounded-full border border-orange-500/20 animate-[spin_15s_linear_infinite_reverse]" style={{ borderBottomColor: 'transparent', borderLeftColor: 'transparent' }}></div>
+            {/* Photo container — overflow-visible so the outer rings are never clipped */}
+            <div className="relative w-64 h-64 md:w-80 md:h-80">
+              {/* Outer decorative spinning rings — sized larger than the photo via negative inset */}
+              <div className="absolute -inset-3 rounded-full border border-primary/30"></div>
+              <div className="absolute -inset-3 rounded-full border border-primary/20 animate-[spin_10s_linear_infinite]" style={{ borderTopColor: 'transparent', borderRightColor: 'transparent' }}></div>
+              <div className="absolute -inset-3 rounded-full border border-orange-500/20 animate-[spin_15s_linear_infinite_reverse]" style={{ borderBottomColor: 'transparent', borderLeftColor: 'transparent' }}></div>
               
-              {/* Orbiting dot */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-[0_0_10px_rgba(225,29,72,0.8)] animate-pulse"></div>
+              {/* Orbiting dot — sits on the outer ring circumference (top center) */}
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-[0_0_10px_rgba(225,29,72,0.8)] animate-pulse z-20"></div>
 
-              <div className="w-full h-full rounded-full overflow-hidden border-2 border-primary/50 relative">
+              {/* Circular photo — overflow-hidden is only on this inner element */}
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-primary/50 z-10">
                 <img 
                   src={profilePhoto} 
                   alt="Madhan Kumar" 
