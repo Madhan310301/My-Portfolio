@@ -1,7 +1,4 @@
 {
-  "framework": "vite",
-  "buildCommand": "pnpm run build",
-  "outputDirectory": "artifacts/portfolio/dist",
   "cleanUrls": true,
   "routes": [
     {
