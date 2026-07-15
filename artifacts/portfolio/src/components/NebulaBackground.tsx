@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const NebulaBackground: React.FC = () => {
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; delay: number; duration: number }[]>([]);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const isMobile = useIsMobile(768); // Mobile/Tablet check
 
   useEffect(() => {
     // Detect prefers-reduced-motion
@@ -15,17 +17,18 @@ const NebulaBackground: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Generate scattered star-particle field
-    const generatedStars = Array.from({ length: 80 }).map((_, i) => ({
+    // Generate scattered star-particle field (fewer on mobile for performance)
+    const starCount = isMobile ? 30 : 80;
+    const generatedStars = Array.from({ length: starCount }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 1.8 + 0.8, // 0.8px to 2.6px
+      size: Math.random() * 1.4 + 0.6, // Smaller range on mobile (0.6px to 2px) to prevent heavy paint bounds
       delay: Math.random() * 8,
       duration: Math.random() * 5 + 3, // 3s to 8s pulse rate
     }));
     setStars(generatedStars);
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#020204]">
@@ -81,15 +84,15 @@ const NebulaBackground: React.FC = () => {
               <stop offset="100%" stopColor="#020204" stopOpacity="0" />
             </radialGradient>
 
-            {/* Standard blurs */}
+            {/* Standard blurs - disabled (stdDeviation="0") on mobile/tablet to boost GPU performance dramatically */}
             <filter id="blur-inner" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="30" />
+              <feGaussianBlur stdDeviation={isMobile ? "5" : "30"} />
             </filter>
             <filter id="blur-mid" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="55" />
+              <feGaussianBlur stdDeviation={isMobile ? "8" : "55"} />
             </filter>
             <filter id="blur-outer" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="80" />
+              <feGaussianBlur stdDeviation={isMobile ? "12" : "80"} />
             </filter>
           </defs>
 
@@ -104,16 +107,16 @@ const NebulaBackground: React.FC = () => {
               d="M 500,500 C 560,380 700,350 780,480 C 860,610 750,750 600,780 C 480,800 350,680 380,550"
               fill="none"
               stroke="url(#swirl-grad-inner)"
-              strokeWidth="90"
+              strokeWidth={isMobile ? "70" : "90"}
               strokeLinecap="round"
               filter="url(#blur-inner)"
             />
           </g>
 
-          {/* Middle Swirl Layer - Rotating Reverse (Counter-Clockwise) */}
-          {!prefersReducedMotion && (
+          {/* Middle Swirl Layer - Rotating Reverse (Counter-Clockwise) - Completely omitted on mobile/tablet */}
+          {!prefersReducedMotion && !isMobile && (
             <g 
-              className="origin-center hidden sm:block"
+              className="origin-center"
               style={{
                 animation: 'spin-ccw 105s linear infinite',
               }}
@@ -129,22 +132,24 @@ const NebulaBackground: React.FC = () => {
             </g>
           )}
 
-          {/* Outermost Swirl Layer - Largest & Most Blurred (Clockwise) */}
-          <g 
-            className="origin-center"
-            style={{
-              animation: prefersReducedMotion ? 'none' : 'spin-cw 150s linear infinite',
-            }}
-          >
-            <path 
-              d="M 500,500 C 620,620 850,560 880,400 C 910,220 650,100 480,180 C 280,250 120,480 250,680"
-              fill="none"
-              stroke="url(#swirl-grad-outer)"
-              strokeWidth="130"
-              strokeLinecap="round"
-              filter="url(#blur-outer)"
-            />
-          </g>
+          {/* Outermost Swirl Layer - Largest & Most Blurred (Clockwise) - Omitted on mobile/tablet to save layers */}
+          {!isMobile && (
+            <g 
+              className="origin-center"
+              style={{
+                animation: prefersReducedMotion ? 'none' : 'spin-cw 150s linear infinite',
+              }}
+            >
+              <path 
+                d="M 500,500 C 620,620 850,560 880,400 C 910,220 650,100 480,180 C 280,250 120,480 250,680"
+                fill="none"
+                stroke="url(#swirl-grad-outer)"
+                strokeWidth="130"
+                strokeLinecap="round"
+                filter="url(#blur-outer)"
+              />
+            </g>
+          )}
         </svg>
 
         {/* Central Celestial Void (Planet Silhouette / Black Hole) */}

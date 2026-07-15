@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, PieChart, Pie, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const SKILLS_DATA = [
   { name: 'React', level: 90, type: 'Frontend' },
@@ -30,106 +31,109 @@ const SKILL_DETAILS: Record<string, any> = {
     ]
   },
   'Node.js': {
-    desc: "Backend runtime for REST APIs, real-time services, and middleware layers.",
-    growth: { '2023': 10, '2024': 40, '2025': 70, '2026': 85 },
+    desc: "Backend engine, microservices API architectures, socket integrations.",
+    growth: { '2023': 20, '2024': 45, '2025': 65, '2026': 85 },
     projects: [
-      { name: 'SafePathAI', slug: 'safepath-ai' },
-      { name: 'HealAI', slug: 'healai' },
-      { name: 'RM Online App', slug: 'rm-online-app' }
+      { name: 'AI Financial Coach', slug: 'fintech' },
+      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
+      { name: 'DocuQuery', slug: 'docuquery' }
     ]
   },
   'Python': {
-    desc: "Core language for AI/ML models, data pipelines, and backend scripting.",
-    growth: { '2023': 20, '2024': 55, '2025': 75, '2026': 88 },
+    desc: "Data modeling, ML pipelines, edge telemetry processing, agentic chains.",
+    growth: { '2023': 30, '2024': 60, '2025': 78, '2026': 88 },
     projects: [
-      { name: 'AI Financial Coach', slug: 'fintech' },
-      { name: 'PredMaintain', slug: 'predmaintain' },
-      { name: 'HealAI', slug: 'healai' }
+      { name: 'SafePathAI', slug: 'safepath-ai' },
+      { name: 'AgriGrade', slug: 'agrigrade' },
+      { name: 'RenoAI', slug: 'renoai' }
     ]
   },
   'TypeScript': {
-    desc: "Type-safe development for large-scale frontend and full-stack projects.",
-    growth: { '2023': 0, '2024': 30, '2025': 60, '2026': 80 },
+    desc: "Strict type safety across large enterprise apps and frontend interfaces.",
+    growth: { '2023': 10, '2024': 40, '2025': 60, '2026': 80 },
     projects: [
-      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' }
+      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
+      { name: 'HabiAI', slug: 'habiai' }
     ]
   },
   'MongoDB': {
-    desc: "NoSQL database for flexible, document-oriented application data.",
-    growth: { '2023': 10, '2024': 40, '2025': 65, '2026': 82 },
+    desc: "Primary NoSQL store for user models, flexible configuration, rapid prototyping.",
+    growth: { '2023': 35, '2024': 50, '2025': 70, '2026': 82 },
     projects: [
-      { name: 'HealAI', slug: 'healai' },
-      { name: 'RM Online App', slug: 'rm-online-app' }
+      { name: 'AI Financial Coach', slug: 'fintech' },
+      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' }
     ]
   },
   'MySQL': {
-    desc: "Relational database for structured, transactional backend systems.",
-    growth: { '2023': 20, '2024': 45, '2025': 65, '2026': 78 },
+    desc: "Relational modeling, traditional schema operations, performance indexing.",
+    growth: { '2023': 40, '2024': 55, '2025': 68, '2026': 78 },
     projects: [
-      { name: 'AI Financial Coach', slug: 'fintech' }
+      { name: 'RM Online App', slug: 'rm-online-app' }
     ]
   },
   'PostgreSQL': {
-    desc: "Advanced relational DB used in authentication and financial systems.",
-    growth: { '2023': 10, '2024': 35, '2025': 60, '2026': 78 },
+    desc: "Advanced relational operations, spatial queries, highly resilient data structures.",
+    growth: { '2023': 20, '2024': 40, '2025': 60, '2026': 78 },
     projects: [
-      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
-      { name: 'AI Financial Coach', slug: 'fintech' }
+      { name: 'DocuQuery', slug: 'docuquery' },
+      { name: 'HealAI', slug: 'healai' }
     ]
   },
   'TensorFlow': {
-    desc: "Deep learning framework for model training and deployment.",
-    growth: { '2023': 0, '2024': 20, '2025': 50, '2026': 72 },
+    desc: "Training convolutional nets, computer vision model logic, edge optimizations.",
+    growth: { '2023': 15, '2024': 35, '2025': 55, '2026': 72 },
     projects: [
-      { name: 'HealAI', slug: 'healai' }
+      { name: 'AgriGrade', slug: 'agrigrade' },
+      { name: 'SafePathAI', slug: 'safepath-ai' }
     ]
   },
   'OpenCV': {
-    desc: "Computer vision library for image processing and recognition tasks.",
-    growth: { '2023': 0, '2024': 25, '2025': 55, '2026': 75 },
+    desc: "Real-time frame manipulation, pixel threshold operations, edge detection.",
+    growth: { '2023': 25, '2024': 45, '2025': 60, '2026': 75 },
     projects: [
-      { name: 'HealAI', slug: 'healai' }
+      { name: 'AgriGrade', slug: 'agrigrade' },
+      { name: 'RenoAI', slug: 'renoai' }
     ]
   },
   'scikit-learn': {
-    desc: "ML library for classification, regression, and predictive modeling.",
-    growth: { '2023': 0, '2024': 30, '2025': 60, '2026': 80 },
+    desc: "Classical ML modeling, tabular data analytics, preprocessing, scoring models.",
+    growth: { '2023': 30, '2024': 50, '2025': 68, '2026': 80 },
     projects: [
-      { name: 'AI Financial Coach', slug: 'fintech' },
-      { name: 'PredMaintain', slug: 'predmaintain' }
+      { name: 'SafePathAI', slug: 'safepath-ai' },
+      { name: 'AgriGrade', slug: 'agrigrade' }
     ]
   },
   'ESP32': {
-    desc: "Microcontroller platform for IoT sensor integration and embedded systems.",
-    growth: { '2023': 0, '2024': 20, '2025': 50, '2026': 70 },
+    desc: "Microcontroller logic, sensor telemetry processing, peripheral communications.",
+    growth: { '2023': 20, '2024': 40, '2025': 55, '2026': 70 },
     projects: [
       { name: 'SafePathAI', slug: 'safepath-ai' }
     ]
   },
   'Git': {
-    desc: "Version control across all projects — branching, CI/CD, team collaboration.",
-    growth: { '2023': 20, '2024': 55, '2025': 78, '2026': 88 },
+    desc: "Source control, branching pipelines, collaborative codebase configuration.",
+    growth: { '2023': 50, '2024': 70, '2025': 80, '2026': 88 },
     projects: [
-      { name: 'All Projects', slug: 'all' }
+      { name: 'All Logged Projects', slug: 'all' }
     ]
   },
   'Figma': {
-    desc: "UI/UX design and prototyping before development handoff.",
-    growth: { '2023': 15, '2024': 40, '2025': 60, '2026': 72 },
+    desc: "UX flow wireframing, mockup configuration, interactive prototype layout.",
+    growth: { '2023': 30, '2024': 50, '2025': 65, '2026': 72 },
     projects: [
-      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
-      { name: 'RM Online App', slug: 'rm-online-app' }
+      { name: 'All Logged Projects', slug: 'all' }
     ]
   }
 };
 
 const Skills: React.FC = () => {
   const [activeChart, setActiveChart] = useState<'bar' | 'donut' | 'spider'>('bar');
-  const [selectedSkill, setSelectedSkill] = useState<string>('Python');
+  const [selectedSkill, setSelectedSkill] = useState('React');
+  const isMobile = useIsMobile(640); 
 
-  const topSkills = [...SKILLS_DATA].sort((a, b) => b.level - a.level).slice(0, 8);
-  const detail = SKILL_DETAILS[selectedSkill] || SKILL_DETAILS['Python'];
-  const skillObj = SKILLS_DATA.find(s => s.name === selectedSkill) || SKILLS_DATA[2];
+  const topSkills = SKILLS_DATA.slice(0, 6);
+  const detail = SKILL_DETAILS[selectedSkill] || { desc: '', growth: {}, projects: [] };
+  const skillObj = SKILLS_DATA.find(s => s.name === selectedSkill) || SKILLS_DATA[0];
 
   return (
     <section className="py-24 relative" id="skills">
@@ -152,20 +156,17 @@ const Skills: React.FC = () => {
 
           <div className="grid lg:grid-cols-12 gap-8">
             
-            {/* Left Side: Visualizer */}
-            <div className="lg:col-span-7 hud-bracket bg-card border border-white/10 p-6 flex flex-col">
+            <div className="lg:col-span-7 hud-bracket bg-card border border-white/10 p-4 sm:p-6 flex flex-col">
               <div className="flex flex-wrap items-center justify-between mb-8 gap-4">
                 <div className="font-mono text-primary">// SKILLS_VISUALIZER</div>
                 
-                {/* Telemetry Status */}
                 <div className="flex items-center gap-2 px-3 py-1 bg-[#0f0f15] border border-white/5 rounded">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                   <span className="font-mono text-xs text-green-400">SYS_NOMINAL</span>
                 </div>
               </div>
 
-              {/* Chart Tabs */}
-              <div className="flex gap-2 border-b border-white/10 pb-4 mb-8">
+              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar border-b border-white/10 pb-4 mb-8">
                 {[
                   { id: 'bar', label: '📊 Bar Chart' },
                   { id: 'donut', label: '🍩 Donut Chart' },
@@ -174,7 +175,7 @@ const Skills: React.FC = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveChart(tab.id as any)}
-                    className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                       activeChart === tab.id 
                         ? 'bg-primary text-white shadow-[0_0_10px_rgba(225,29,72,0.3)]' 
                         : 'bg-white/5 text-muted-foreground hover:text-white hover:bg-white/10'
@@ -185,8 +186,7 @@ const Skills: React.FC = () => {
                 ))}
               </div>
 
-              {/* Chart Area */}
-              <div className="flex-1 min-h-[350px] w-full">
+              <div className="flex-1 min-h-[320px] sm:min-h-[350px] w-full">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeChart}
@@ -198,29 +198,27 @@ const Skills: React.FC = () => {
                   >
                     {activeChart === 'bar' && (
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={SKILLS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
-                          <XAxis 
-                            dataKey="name" 
-                            angle={-45} 
-                            textAnchor="end" 
-                            tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} 
-                            interval={0} 
-                          />
-                          <YAxis tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} domain={[0, 100]} />
-                          <Bar 
-                            dataKey="level" 
-                            onClick={(data) => setSelectedSkill(data.name)}
-                            cursor="pointer"
-                          >
-                            {SKILLS_DATA.map((entry, index) => (
-                              <Cell 
-                                key={`cell-${index}`} 
-                                fill={entry.name === selectedSkill ? '#E11D48' : '#3f3f46'} 
-                                className="transition-colors hover:fill-orange-500"
-                              />
-                            ))}
-                          </Bar>
-                        </BarChart>
+                        {isMobile ? (
+                          <BarChart data={SKILLS_DATA} layout="vertical" margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+                            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }} />
+                            <YAxis dataKey="name" type="category" width={80} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }} />
+                            <Bar dataKey="level" onClick={(data) => setSelectedSkill(data.name)} cursor="pointer">
+                              {SKILLS_DATA.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#E11D48' : '#3f3f46'} className="transition-colors hover:fill-orange-500" />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        ) : (
+                          <BarChart data={SKILLS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
+                            <XAxis dataKey="name" angle={-45} textAnchor="end" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} interval={0} />
+                            <YAxis tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} domain={[0, 100]} />
+                            <Bar dataKey="level" onClick={(data) => setSelectedSkill(data.name)} cursor="pointer">
+                              {SKILLS_DATA.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#E11D48' : '#3f3f46'} className="transition-colors hover:fill-orange-500" />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        )}
                       </ResponsiveContainer>
                     )}
 
@@ -231,8 +229,8 @@ const Skills: React.FC = () => {
                             data={topSkills}
                             cx="50%"
                             cy="50%"
-                            innerRadius={80}
-                            outerRadius={130}
+                            innerRadius={isMobile ? 50 : 80}
+                            outerRadius={isMobile ? 80 : 130}
                             paddingAngle={2}
                             dataKey="level"
                             onClick={(data) => setSelectedSkill(data.name)}
@@ -240,11 +238,7 @@ const Skills: React.FC = () => {
                             stroke="none"
                           >
                             {topSkills.map((entry, index) => (
-                              <Cell 
-                                key={`cell-${index}`} 
-                                fill={entry.name === selectedSkill ? '#E11D48' : `hsl(347, 77%, ${20 + index * 5}%)`} 
-                                className="transition-colors hover:fill-orange-500"
-                              />
+                              <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#E11D48' : `hsl(347, 77%, ${20 + index * 5}%)`} className="transition-colors hover:fill-orange-500" />
                             ))}
                           </Pie>
                         </PieChart>
@@ -253,22 +247,28 @@ const Skills: React.FC = () => {
 
                     {activeChart === 'spider' && (
                       <ResponsiveContainer width="100%" height="100%">
-                        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILLS_DATA}>
-                          <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                          <PolarAngleAxis 
-                            dataKey="name" 
-                            tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 10 }} 
-                          />
-                          <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
-                          <Radar 
-                            name="Skills" 
-                            dataKey="level" 
-                            stroke="#E11D48" 
-                            fill="#E11D48" 
-                            fillOpacity={0.3} 
-                            className="drop-shadow-[0_0_10px_rgba(225,29,72,0.5)]"
-                          />
-                        </RadarChart>
+                        {isMobile ? (
+                          <div className="w-full h-full flex flex-col gap-3 justify-center px-4 max-h-[300px] overflow-y-auto no-scrollbar">
+                            {SKILLS_DATA.map(skill => (
+                              <div key={skill.name} className="flex flex-col gap-1 cursor-pointer" onClick={() => setSelectedSkill(skill.name)}>
+                                <div className="flex justify-between text-xs font-mono">
+                                  <span className={skill.name === selectedSkill ? "text-primary font-bold" : "text-white/80"}>{skill.name}</span>
+                                  <span className="text-white/40">{skill.level}%</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-white/5 rounded overflow-hidden">
+                                  <div className={`h-full transition-all ${skill.name === selectedSkill ? 'bg-primary' : 'bg-white/20'}`} style={{ width: `${skill.level}%` }} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILLS_DATA}>
+                            <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                            <PolarAngleAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 10 }} />
+                            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
+                            <Radar name="Skills" dataKey="level" stroke="#E11D48" fill="#E11D48" fillOpacity={0.3} className="drop-shadow-[0_0_10px_rgba(225,29,72,0.5)]" />
+                          </RadarChart>
+                        )}
                       </ResponsiveContainer>
                     )}
                   </motion.div>
@@ -276,10 +276,8 @@ const Skills: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Side: Detail Panel */}
             <div className="lg:col-span-5 flex flex-col gap-6">
               <div className="hud-bracket bg-[#0A0A0F] border border-primary/30 p-6 relative overflow-hidden h-full box-glow">
-                {/* Background gradient hint */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
                 
                 <div className="relative z-10">

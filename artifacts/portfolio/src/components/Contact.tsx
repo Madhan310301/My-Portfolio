@@ -182,7 +182,7 @@ const Contact: React.FC = () => {
                 </button>
 
                 {toastMessage && (
-                  <div className="absolute -bottom-16 left-0 right-0 bg-green-500/20 border border-green-500/50 text-green-400 text-sm py-3 px-4 rounded text-center font-medium animate-in fade-in slide-in-from-bottom-2">
+                  <div className="mt-4 bg-green-500/20 border border-green-500/50 text-green-400 text-sm py-3 px-4 rounded text-center font-medium animate-in fade-in slide-in-from-bottom-2">
                     {toastMessage}
                   </div>
                 )}
