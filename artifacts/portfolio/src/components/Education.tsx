@@ -48,7 +48,7 @@ const ED_STAGES = [
     period: "2024–Present",
     grade: "CGPA: 9.5/10",
     objective: "Full-stack engineering, AI/ML systems, and IoT.",
-    log: "Actively building full-stack, AI, and IoT systems across 12+ real projects. Representing Google and HCLTech as campus ambassador.",
+    log: "Actively building full-stack, AI, and IoT systems across 12+ real projects. Selected as Google Cloud Facilitator, GSA, and HCLTech Campus Ambassador.",
     yPosition: "20%" // Top
   }
 ];

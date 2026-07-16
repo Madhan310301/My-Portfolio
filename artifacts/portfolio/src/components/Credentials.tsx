@@ -4,6 +4,14 @@ import { Trophy } from 'lucide-react';
 
 const CREDENTIALS = [
   {
+    id: "GCAF_2026",
+    year: "2026",
+    badgeType: "Google Cloud",
+    badgeColor: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+    title: "Google Cloud Arcade Facilitator '26",
+    desc: "Guides participants through hands-on labs, gamified cloud-learning campaigns, and cloud milestones while mentoring the developer community."
+  },
+  {
     id: "GENESIS_2026",
     year: "2026",
     badgeType: "Hackathon",

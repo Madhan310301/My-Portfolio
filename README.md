@@ -1,6 +1,6 @@
 # Madhan Kumar T 🚀
 
-> **Google Student Ambassador** | **HCLTech Campus Ambassador** | **Full-Stack & AI/ML Engineer**
+> **Google Cloud Arcade Facilitator '26** | **Google Student Ambassador** | **HCLTech Campus Ambassador** | **Full-Stack & AI/ML Engineer**
 > Driven by building tangible, production-grade solutions that merge hardware telemetry, machine learning, and modern web architectures.
 
 ---
@@ -17,7 +17,7 @@ From developing hackathon-winning child safety wearables to architecting decentr
 
 - 🎓 **B.Tech in Computer Science & Engineering** — BIHER, Chennai (2024 – Present)
 - 📈 **Academic Performance**: **9.5 CGPA**
-- 🌟 **Ambassador Roles**: Google Student Ambassador (GSA) & HCLTech Campus Ambassador
+- 🌟 **Ambassador & Facilitator Roles**: Google Cloud Arcade Facilitator '26, Google Student Ambassador (GSA), & HCLTech Campus Ambassador
 - 🏆 **Hackathon Feats**: 1st Place Domain & 2nd Place Overall Winner at the **Genesis Hackathon 2026** (SRMEEC, Chennai)
 - 🛠️ **Builds Logged**: **20+ completed projects** spanning IoT, AI/ML, Blockchain, and Full-Stack Web App developments
 

@@ -39,9 +39,9 @@ const PASSIONS = [
 
 const STATS = [
   { value: '20+', label: 'Project builds'    },
-  { value: '2',   label: 'Ambassador roles'  },
+  { value: '3',   label: 'Ambassador Roles'  },
   { value: '1',   label: 'Hackathon win'     },
-  { value: 'GSA', label: 'Google Ambassador' },
+  { value: 'GCAF', label: 'Google Cloud Facilitator' },
 ];
 
 const STAT_BAR = [
@@ -102,6 +102,7 @@ const About: React.FC = () => {
                 </h2>
 
                 <div className="flex flex-col gap-2 mb-4">
+                  <Badge dot="•" dotColor="bg-cyan-500"   label="Google Cloud Arcade Facilitator '26" textColor="text-cyan-400"   />
                   <Badge dot="•" dotColor="bg-blue-500"   label="Google Student Ambassador"  textColor="text-blue-400"   />
                   <Badge dot="•" dotColor="bg-purple-500" label="HCLTech Campus Ambassador"  textColor="text-purple-400" />
                 </div>
