@@ -52,20 +52,17 @@ const CREDENTIALS = [
 
 const Credentials: React.FC = () => {
   const [activePressedId, setActivePressedId] = useState<string | null>(null);
-  const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const touchStartPos = useRef({ x: 0, y: 0 });
-  const isHoldingRef = useRef(false);
+  const holdTimerRef = useRef<any>(null);
 
-  const startPress = (id: string, clientX: number, clientY: number) => {
-    isHoldingRef.current = false;
-    touchStartPos.current = { x: clientX, y: clientY };
+  const startPress = (id: string, e: React.PointerEvent) => {
+    // Only respond to primary button (usually left click / touch)
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
 
     if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
 
     holdTimerRef.current = setTimeout(() => {
-      isHoldingRef.current = true;
       setActivePressedId(id);
-    }, 250);
+    }, 200);
   };
 
   const endPress = () => {
@@ -73,27 +70,51 @@ const Credentials: React.FC = () => {
       clearTimeout(holdTimerRef.current);
       holdTimerRef.current = null;
     }
-    isHoldingRef.current = false;
     setActivePressedId(null);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!holdTimerRef.current) return;
-    const touch = e.touches[0];
-    const dx = Math.abs(touch.clientX - touchStartPos.current.x);
-    const dy = Math.abs(touch.clientY - touchStartPos.current.y);
-    if (dx > 10 || dy > 10) {
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!holdTimerRef.current && !activePressedId) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+
+    // Check if coordinates went out of bounds of the card
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      endPress();
+    }
+  };
+
+  // Prevent vertical scrolling on mobile touchmove when a card is actively pressed
+  useEffect(() => {
+    if (activePressedId) {
+      const preventDefault = (e: TouchEvent) => {
+        e.preventDefault();
+      };
+      window.addEventListener('touchmove', preventDefault, { passive: false });
+      return () => {
+        window.removeEventListener('touchmove', preventDefault);
+      };
+    }
+  }, [activePressedId]);
+
+  // Handle safety cleanups: unmount and window blur
+  useEffect(() => {
+    const handleBlur = () => {
+      setActivePressedId(null);
       if (holdTimerRef.current) {
         clearTimeout(holdTimerRef.current);
         holdTimerRef.current = null;
       }
-    }
-  };
-
-  // Clean up timer on unmount
-  useEffect(() => {
+    };
+    window.addEventListener('blur', handleBlur);
     return () => {
-      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      window.removeEventListener('blur', handleBlur);
+      if (holdTimerRef.current) {
+        clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = null;
+      }
     };
   }, []);
 
@@ -108,8 +129,7 @@ const Credentials: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm pointer-events-auto"
-            onMouseUp={endPress}
-            onTouchEnd={endPress}
+            onPointerUp={endPress}
           />
         )}
       </AnimatePresence>
@@ -144,21 +164,18 @@ const Credentials: React.FC = () => {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                   animate={isPressed ? { scale: 1.03 } : { scale: 1 }}
-                  className={`hud-bracket bg-card p-6 border transition-all flex flex-col h-full box-glow group select-none ${
+                  className={`hud-bracket bg-card p-6 border transition-all flex flex-col h-full box-glow group select-none touch-pan-y ${
                     isPressed ? 'z-50 border-primary/60 shadow-[0_0_25px_rgba(225,29,72,0.3)] relative' : 'border-white/10 hover:border-primary/40 relative'
                   }`}
-                  onMouseDown={(e) => {
-                    if (e.button === 0) startPress(cred.id, e.clientX, e.clientY);
+                  style={{
+                    WebkitTouchCallout: 'none',
+                    userSelect: 'none'
                   }}
-                  onMouseUp={endPress}
-                  onMouseLeave={endPress}
-                  onTouchStart={(e) => {
-                    const touch = e.touches[0];
-                    startPress(cred.id, touch.clientX, touch.clientY);
-                  }}
-                  onTouchEnd={endPress}
-                  onTouchMove={handleTouchMove}
-                  onTouchCancel={endPress}
+                  onPointerDown={(e) => startPress(cred.id, e)}
+                  onPointerUp={endPress}
+                  onPointerCancel={endPress}
+                  onPointerLeave={endPress}
+                  onPointerMove={handlePointerMove}
                   onContextMenu={(e) => e.preventDefault()}
                 >
                   <div className="flex justify-between items-start mb-4">
