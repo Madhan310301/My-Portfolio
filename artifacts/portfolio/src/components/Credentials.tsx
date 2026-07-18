@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Trophy } from 'lucide-react';
 
 const CREDENTIALS = [
@@ -51,89 +51,49 @@ const CREDENTIALS = [
 ];
 
 const Credentials: React.FC = () => {
-  const [activePressedId, setActivePressedId] = useState<string | null>(null);
-  const holdTimerRef = useRef<any>(null);
+  const [flippedId, setFlippedId] = useState<string | null>(null);
+  const revertTimerRef = useRef<any>(null);
 
-  const startPress = (id: string, e: React.PointerEvent) => {
-    // Only respond to primary button (usually left click / touch)
-    if (e.button !== 0 && e.pointerType === 'mouse') return;
-
-    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
-
-    holdTimerRef.current = setTimeout(() => {
-      setActivePressedId(id);
-    }, 200);
-  };
-
-  const endPress = () => {
-    if (holdTimerRef.current) {
-      clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
-    }
-    setActivePressedId(null);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!holdTimerRef.current && !activePressedId) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX;
-    const y = e.clientY;
-
-    // Check if coordinates went out of bounds of the card
-    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      endPress();
+  const clearRevertTimer = () => {
+    if (revertTimerRef.current) {
+      clearTimeout(revertTimerRef.current);
+      revertTimerRef.current = null;
     }
   };
 
-  // Prevent vertical scrolling on mobile touchmove when a card is actively pressed
-  useEffect(() => {
-    if (activePressedId) {
-      const preventDefault = (e: TouchEvent) => {
-        e.preventDefault();
-      };
-      window.addEventListener('touchmove', preventDefault, { passive: false });
-      return () => {
-        window.removeEventListener('touchmove', preventDefault);
-      };
-    }
-  }, [activePressedId]);
+  const handleCardClick = (id: string) => {
+    clearRevertTimer();
 
-  // Handle safety cleanups: unmount and window blur
+    if (flippedId === id) {
+      // Revert if clicking same card
+      setFlippedId(null);
+    } else {
+      // Set new flipped card
+      setFlippedId(id);
+      
+      // Auto revert after 60 seconds
+      revertTimerRef.current = setTimeout(() => {
+        setFlippedId(null);
+      }, 60000);
+    }
+  };
+
+  // Safety cleanups on window blur or unmount
   useEffect(() => {
     const handleBlur = () => {
-      setActivePressedId(null);
-      if (holdTimerRef.current) {
-        clearTimeout(holdTimerRef.current);
-        holdTimerRef.current = null;
-      }
+      setFlippedId(null);
+      clearRevertTimer();
     };
+
     window.addEventListener('blur', handleBlur);
     return () => {
       window.removeEventListener('blur', handleBlur);
-      if (holdTimerRef.current) {
-        clearTimeout(holdTimerRef.current);
-        holdTimerRef.current = null;
-      }
+      clearRevertTimer();
     };
   }, []);
 
   return (
     <section className="py-24 relative" id="credentials">
-      {/* Full-screen backdrop dimmer when a card is pressed */}
-      <AnimatePresence>
-        {activePressedId && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm pointer-events-auto"
-            onPointerUp={endPress}
-          />
-        )}
-      </AnimatePresence>
-
       <div className="container mx-auto px-6 relative z-10">
         
         <motion.div 
@@ -155,88 +115,85 @@ const Credentials: React.FC = () => {
 
           <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
             {CREDENTIALS.map((cred, i) => {
-              const isPressed = activePressedId === cred.id;
+              const isFlipped = flippedId === cred.id;
               return (
                 <motion.div 
                   key={cred.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  animate={isPressed ? { scale: 1.03 } : { scale: 1 }}
-                  className={`hud-bracket bg-card p-6 border transition-all flex flex-col h-full box-glow group select-none touch-pan-y ${
-                    isPressed ? 'z-50 border-primary/60 shadow-[0_0_25px_rgba(225,29,72,0.3)] relative' : 'border-white/10 hover:border-primary/40 relative'
-                  }`}
-                  style={{
-                    WebkitTouchCallout: 'none',
-                    userSelect: 'none'
-                  }}
-                  onPointerDown={(e) => startPress(cred.id, e)}
-                  onPointerUp={endPress}
-                  onPointerCancel={endPress}
-                  onPointerLeave={endPress}
-                  onPointerMove={handlePointerMove}
-                  onContextMenu={(e) => e.preventDefault()}
+                  transition={{ delay: i * 0.1, duration: 0.6 }}
+                  className="w-full h-full min-h-[280px]"
                 >
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="font-mono text-sm font-bold text-primary">{cred.year}</span>
-                    <span className={`text-xs px-2.5 py-1 rounded-full border ${cred.badgeColor}`}>
-                      {cred.badgeType}
-                    </span>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
-                    {cred.title}
-                  </h3>
-                  
-                  <div className="relative flex-grow mb-6 min-h-[72px]">
-                    <AnimatePresence mode="wait">
-                      {isPressed ? (
-                        <motion.p
-                          key="long"
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 5 }}
-                          transition={{ duration: 0.15 }}
-                          className="text-white text-sm leading-relaxed font-sans"
-                        >
-                          {cred.description}
-                        </motion.p>
-                      ) : (
-                        <motion.p
-                          key="short"
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          transition={{ duration: 0.15 }}
-                          className="text-muted-foreground text-sm"
-                        >
+                  <div 
+                    onClick={() => handleCardClick(cred.id)}
+                    className="w-full h-full min-h-[280px] perspective-1000 cursor-pointer select-none"
+                  >
+                    <div 
+                      className={`relative w-full h-full min-h-[280px] transition-transform duration-500 preserve-3d ${
+                        isFlipped ? 'rotate-y-180' : ''
+                      }`}
+                    >
+                      {/* FRONT FACE */}
+                      <div className="absolute inset-0 w-full h-full backface-hidden bg-card p-6 border border-white/10 hover:border-primary/40 transition-colors flex flex-col box-glow group">
+                        <div className="flex justify-between items-start mb-4">
+                          <span className="font-mono text-sm font-bold text-primary">{cred.year}</span>
+                          <span className={`text-xs px-2.5 py-1 rounded-full border ${cred.badgeColor}`}>
+                            {cred.badgeType}
+                          </span>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
+                          {cred.title}
+                        </h3>
+                        
+                        <p className="text-muted-foreground text-sm flex-grow mb-6">
                           {cred.desc}
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                  
-                  <div className="pt-4 border-t border-white/5 mt-auto flex justify-between items-center">
-                    {cred.id === "GSA_2026" ? (
-                      <span className="font-mono text-[10px] text-white/30">
-                        // GID: 3150
-                      </span>
-                    ) : (
-                      <span className="font-mono text-[10px] text-white/30" />
-                    )}
-                    
-                    {isPressed ? (
-                      <span className="font-mono text-[9px] text-green-400 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-ping"></span>
-                        ACTIVE PREVIEW
-                      </span>
-                    ) : (
-                      <span className="font-mono text-[9px] text-primary/70 flex items-center gap-1.5 animate-pulse">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
-                        HOLD TO PREVIEW
-                      </span>
-                    )}
+                        </p>
+                        
+                        <div className="pt-4 border-t border-white/5 mt-auto flex justify-between items-center">
+                          {cred.id === "GSA_2026" ? (
+                            <span className="font-mono text-[10px] text-white/30">
+                              // GID: 3150
+                            </span>
+                          ) : (
+                            <span className="font-mono text-[10px] text-white/30" />
+                          )}
+                          
+                          <span className="font-mono text-[9px] text-primary/70 flex items-center gap-1.5 hover:text-white transition-colors">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse"></span>
+                            TAP FOR DETAILS 🔄
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* BACK FACE */}
+                      <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-[#0C0C12] border-2 border-primary/40 p-6 flex flex-col box-glow">
+                        <div className="flex justify-between items-start mb-4">
+                          <span className="font-mono text-sm font-bold text-primary">// PREVIEW_DETAILS</span>
+                          <span className="text-[9px] font-mono text-white/40 bg-white/5 border border-white/10 px-2 py-0.5 rounded">
+                            CLICK TO CLOSE
+                          </span>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-primary mb-3 font-display">
+                          {cred.title}
+                        </h3>
+                        
+                        <p className="text-white/95 text-sm leading-relaxed flex-grow font-sans overflow-y-auto no-scrollbar mb-4">
+                          {cred.description}
+                        </p>
+                        
+                        <div className="pt-4 border-t border-white/5 mt-auto flex justify-between items-center text-[9px] font-mono text-white/30">
+                          <span>// SECURE_PREVIEW</span>
+                          <span className="text-primary/70 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+                            AUTO REVERTS IN 60S
+                          </span>
+                        </div>
+                      </div>
+
+                    </div>
                   </div>
                 </motion.div>
               );
