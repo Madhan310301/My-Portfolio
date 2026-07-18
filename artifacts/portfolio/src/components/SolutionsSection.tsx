@@ -32,18 +32,25 @@ const SolutionsSection: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap gap-4 justify-center max-w-4xl mx-auto">
-            {SOLUTIONS.map((sol, i) => (
-              <motion.div
-                key={sol}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white/80 bg-white/[0.02] hover:border-primary/50 hover:text-white transition-all cursor-default"
-              >
-                {sol}
-              </motion.div>
-            ))}
+            {SOLUTIONS.map((sol, i) => {
+              const waMessage = `Hi ! Madhan I have came across your Portfolio and saw that you build solutions for ${sol} , May I know Further Details about it !`;
+              const waUrl = `https://wa.me/917598036419?text=${encodeURIComponent(waMessage)}`;
+              return (
+                <motion.a
+                  key={sol}
+                  href={waUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white/80 bg-white/[0.02] hover:border-primary hover:bg-primary/10 hover:text-white transition-all cursor-pointer block"
+                >
+                  {sol}
+                </motion.a>
+              );
+            })}
           </div>
         </motion.div>
       </div>
