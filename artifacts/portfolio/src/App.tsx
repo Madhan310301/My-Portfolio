@@ -3,6 +3,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import Home from '@/pages/Home';
+import Terms from '@/pages/Terms';
+import Privacy from '@/pages/Privacy';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -12,6 +14,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
       <Route component={NotFound} />
     </Switch>
   );

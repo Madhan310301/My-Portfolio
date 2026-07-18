@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'wouter';
+import HireMeButton from './HireMeButton';
 
 const Contact: React.FC = () => {
   const [name, setName] = useState('');
@@ -8,6 +10,7 @@ const Contact: React.FC = () => {
   const [errors, setErrors] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +108,7 @@ const Contact: React.FC = () => {
               <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-primary/30 rounded-full text-sm font-bold text-primary hover:bg-primary hover:text-white transition-colors">
                 Resume
               </a>
+              <HireMeButton className="px-6 py-3 bg-primary text-white rounded-full text-sm font-bold hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.5)]" />
             </div>
           </motion.div>
 
@@ -173,10 +177,30 @@ const Contact: React.FC = () => {
                   )}
                 </div>
                 
+                <div className="flex items-start gap-3 mt-2">
+                  <input
+                    type="checkbox"
+                    id="consent"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="w-4 h-4 mt-0.5 accent-primary cursor-pointer rounded border-white/10 bg-white/5"
+                  />
+                  <label htmlFor="consent" className="text-xs text-white/60 font-sans leading-normal cursor-pointer select-none">
+                    I agree to the{' '}
+                    <Link to="/privacy" className="text-primary hover:underline font-semibold">
+                      Privacy Policy
+                    </Link>{' '}
+                    and{' '}
+                    <Link to="/terms" className="text-primary hover:underline font-semibold">
+                      Terms &amp; Conditions
+                    </Link>
+                  </label>
+                </div>
+                
                 <button 
                   type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full bg-primary text-white font-bold py-4 rounded hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.4)] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2 cursor-pointer"
+                  disabled={isSubmitting || !agreed}
+                  className="w-full bg-primary text-white font-bold py-4 rounded hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2 cursor-pointer"
                 >
                   {isSubmitting ? 'Transmitting...' : '→ Send Message'}
                 </button>
@@ -200,7 +224,11 @@ const Contact: React.FC = () => {
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="italic text-muted-foreground text-sm">"Every idea starts as a prototype."</p>
           
-          <p className="text-xs font-mono text-white/30">© 2025 Madhan Kumar. Built with passion.</p>
+          <p className="text-xs font-mono text-white/30">
+            © 2025 Madhan Kumar. Built with passion. ·{' '}
+            <Link to="/terms" className="hover:text-primary hover:underline transition-colors">Terms</Link> ·{' '}
+            <Link to="/privacy" className="hover:text-primary hover:underline transition-colors">Privacy</Link>
+          </p>
           
           <button 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

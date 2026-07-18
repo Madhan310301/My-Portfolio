@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import HireMeButton from './HireMeButton';
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
@@ -91,6 +92,7 @@ const Navbar: React.FC = () => {
             ))}
           </div>
 
+          <HireMeButton className="px-5 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.5)]" />
           <a
             href="/resume.pdf"
             target="_blank"
@@ -132,6 +134,7 @@ const Navbar: React.FC = () => {
                 {link.label}
               </a>
             ))}
+            <HireMeButton className="mt-3 px-5 py-3 text-center text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors" />
             <a
               href="/resume.pdf"
               target="_blank"

@@ -5,6 +5,8 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Projects from '@/components/Projects';
 import Skills from '@/components/Skills';
+import ServicesSection from '@/components/ServicesSection';
+import SolutionsSection from '@/components/SolutionsSection';
 import Credentials from '@/components/Credentials';
 import Education from '@/components/Education';
 import Contact from '@/components/Contact';
@@ -20,6 +22,8 @@ const Home: React.FC = () => {
         <About />
         <Projects />
         <Skills />
+        <ServicesSection />
+        <SolutionsSection />
         <Credentials />
         <Education />
         <Contact />
