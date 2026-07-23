@@ -53,18 +53,18 @@ const Navbar: React.FC = () => {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className={`max-w-6xl mx-auto rounded-2xl px-5 py-3 flex items-center justify-between pointer-events-auto transition-all duration-300 border ${
           isScrolled
-            ? 'bg-[#0A0A0F]/80 backdrop-blur-xl border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.04)]'
-            : 'bg-[#0A0A0F]/40 backdrop-blur-lg border-white/5 shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
+            ? 'bg-[#FAF6EC]/90 backdrop-blur-xl border-[#C9972E]/30 shadow-[0_8px_32px_rgba(120,90,40,0.1)]'
+            : 'bg-[#FAF6EC]/70 backdrop-blur-lg border-[#C9972E]/20 shadow-[0_4px_24px_rgba(120,90,40,0.06)]'
         }`}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full border border-primary/50 flex items-center justify-center bg-[#0A0A0F] shadow-[0_0_15px_rgba(225,29,72,0.25)]">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="w-10 h-10 rounded-full border border-[#C9972E]/60 flex items-center justify-center bg-gradient-to-br from-[#D9A94A] to-[#B9821F] shadow-[0_2px_12px_rgba(201,151,46,0.3)]">
             <span className="font-display font-bold text-lg tracking-tight text-white">MK</span>
           </div>
           <div className="hidden sm:block">
-            <h1 className="font-display font-bold text-base leading-tight text-white">Madhan Kumar</h1>
-            <p className="text-xs text-primary font-mono tracking-wider">Full-Stack · AI · IoT</p>
+            <h1 className="font-display font-bold text-base leading-tight text-[#241B10]">Madhan Kumar</h1>
+            <p className="text-xs text-[#C9972E] font-mono tracking-wider">Full-Stack · AI · IoT</p>
           </div>
         </div>
 
@@ -78,27 +78,27 @@ const Navbar: React.FC = () => {
                 onClick={(e) => scrollTo(e, link.href)}
                 className={`text-sm font-medium tracking-wide transition-colors relative ${
                   activeSection === link.href.substring(1)
-                    ? 'text-primary'
-                    : 'text-white/60 hover:text-white'
+                    ? 'text-[#C9972E] font-bold'
+                    : 'text-[#7A6B55] hover:text-[#241B10]'
                 }`}
               >
                 {link.label}
                 {activeSection === link.href.substring(1) && (
                   <motion.div
                     layoutId="activeNav"
-                    className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-primary rounded-full"
+                    className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-[#C9972E] rounded-full"
                   />
                 )}
               </a>
             ))}
           </div>
 
-          <HireMeButton className="px-5 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.5)]" />
+          <HireMeButton className="px-5 py-2 text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg hover:brightness-105 transition-all shadow-[0_2px_12px_rgba(201,151,46,0.3)]" />
           <a
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.5)]"
+            className="px-5 py-2 text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg hover:brightness-105 transition-all shadow-[0_2px_12px_rgba(201,151,46,0.3)]"
           >
             View Resume
           </a>
@@ -106,7 +106,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden text-white p-2 pointer-events-auto"
+          className="md:hidden text-[#241B10] p-2 pointer-events-auto"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={isMobileMenuOpen}
@@ -115,7 +115,7 @@ const Navbar: React.FC = () => {
         </button>
       </motion.div>
 
-      {/* Mobile Menu Drawer — separate floating card below the pill */}
+      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -123,24 +123,24 @@ const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.2 }}
-            className="max-w-6xl mx-auto mt-2 rounded-2xl bg-[#0A0A0F]/90 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] py-4 px-6 flex flex-col gap-1 pointer-events-auto md:hidden"
+            className="max-w-6xl mx-auto mt-2 rounded-2xl bg-[#FFFDF8]/95 backdrop-blur-xl border border-[#C9972E]/30 shadow-[0_8px_32px_rgba(120,90,40,0.12)] py-4 px-6 flex flex-col gap-1 pointer-events-auto md:hidden"
           >
             {NAV_LINKS.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => scrollTo(e, link.href)}
-                className="text-base font-medium text-white/70 hover:text-primary py-2.5 border-b border-white/5 transition-colors last:border-0"
+                className="text-base font-medium text-[#7A6B55] hover:text-[#C9972E] py-2.5 border-b border-[#C9972E]/10 transition-colors last:border-0"
               >
                 {link.label}
               </a>
             ))}
-            <HireMeButton className="mt-3 px-5 py-3 text-center text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors" />
+            <HireMeButton className="mt-3 px-5 py-3 text-center text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg" />
             <a
               href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 px-5 py-3 text-center text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="mt-3 px-5 py-3 text-center text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg"
             >
               View Resume
             </a>

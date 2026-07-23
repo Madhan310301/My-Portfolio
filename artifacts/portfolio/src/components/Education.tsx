@@ -9,15 +9,15 @@ const ED_STAGES = [
     altitude: "120 km",
     altLabel: "Karman Line Ascent",
     statusWord: "STAGE_COMPLETED",
-    statusColor: "text-cyan-400",
-    dotColor: "bg-cyan-500",
-    borderColor: "border-cyan-500",
+    statusColor: "text-[#C9972E]",
+    dotColor: "bg-[#C9972E]",
+    borderColor: "border-[#C9972E]",
     establishment: "Dawn Shikshalaya Public School",
     period: "2020–2022",
     grade: "Percentage: 78.80%",
     objective: "General academic foundation — mathematics and science core.",
     log: "Built early foundations in math and science reasoning. First exposure to logical thinking through structured academic programs.",
-    yPosition: "80%" // Bottom
+    yPosition: "80%"
   },
   {
     id: "hsc",
@@ -25,15 +25,15 @@ const ED_STAGES = [
     altitude: "400 km",
     altLabel: "Low Earth Orbit",
     statusWord: "BOOSTER_COMPLETED",
-    statusColor: "text-yellow-400",
-    dotColor: "bg-yellow-500",
-    borderColor: "border-yellow-500",
+    statusColor: "text-[#D9A94A]",
+    dotColor: "bg-[#D9A94A]",
+    borderColor: "border-[#D9A94A]",
     establishment: "Dawn Shikshalaya Public School",
     period: "2022–2024",
     grade: "Percentage: 86.80%",
     objective: "Core science and computer fundamentals.",
     log: "Sharpened logical thinking and gained first exposure to programming concepts. Chose Computer Science as specialization path.",
-    yPosition: "50%" // Middle
+    yPosition: "50%"
   },
   {
     id: "btech",
@@ -41,21 +41,20 @@ const ED_STAGES = [
     altitude: "1,000 km",
     altLabel: "Low Earth Orbit Exit",
     statusWord: "PROPULSION_ACTIVE",
-    statusColor: "text-red-500",
-    dotColor: "bg-primary",
-    borderColor: "border-primary",
+    statusColor: "text-[#B9821F]",
+    dotColor: "bg-[#C9972E]",
+    borderColor: "border-[#C9972E]",
     establishment: "BIHER, Chennai",
     period: "2024–Present",
     grade: "CGPA: 9.5/10",
     objective: "Full-stack engineering, AI/ML systems, and IoT.",
     log: "Actively building full-stack, AI, and IoT systems across 12+ real projects. Selected as Google Cloud Facilitator, GSA, and HCLTech Campus Ambassador.",
-    yPosition: "20%" // Top
+    yPosition: "20%"
   }
 ];
 
 const Education: React.FC = () => {
   const [activeStageId, setActiveStageId] = useState("btech");
-  
   const activeStage = ED_STAGES.find(s => s.id === activeStageId) || ED_STAGES[2];
 
   return (
@@ -71,10 +70,10 @@ const Education: React.FC = () => {
         >
           <div className="mb-16">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-8 h-[2px] bg-primary"></div>
-              <span className="text-primary font-mono text-sm tracking-wider uppercase">— EDUCATION</span>
+              <div className="w-8 h-[2px] bg-[#C9972E]"></div>
+              <span className="text-[#C9972E] font-mono text-sm tracking-wider uppercase font-semibold">— EDUCATION</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-white max-w-3xl leading-tight">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-[#241B10] max-w-3xl leading-tight">
               The academic runway behind every project I've shipped.
             </h2>
           </div>
@@ -83,11 +82,9 @@ const Education: React.FC = () => {
           
           {/* Left: Flight Trajectory */}
           <div className="lg:col-span-5 relative h-[500px] flex justify-center py-8">
-            {/* The line */}
-            <div className="absolute top-8 bottom-8 left-1/2 -translate-x-1/2 w-0.5 bg-white/10"></div>
-            <div className="absolute top-8 bottom-8 left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-t from-cyan-500/50 via-yellow-500/50 to-primary box-glow shadow-[0_0_15px_rgba(225,29,72,0.3)]"></div>
+            <div className="absolute top-8 bottom-8 left-1/2 -translate-x-1/2 w-0.5 bg-[#C9972E]/20"></div>
+            <div className="absolute top-8 bottom-8 left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-t from-[#D9A94A] via-[#C9972E] to-[#B9821F] shadow-[0_0_12px_rgba(201,151,46,0.3)]"></div>
 
-            {/* Stages */}
             {ED_STAGES.map((stage) => (
               <button
                 key={stage.id}
@@ -97,30 +94,25 @@ const Education: React.FC = () => {
                 aria-label={`Select education stage: ${stage.stage}`}
                 aria-pressed={activeStageId === stage.id}
               >
-                {/* Left Label */}
                 <div className="absolute right-[calc(50%+24px)] text-right w-32">
-                  <div className={`font-mono text-sm font-bold transition-colors ${activeStageId === stage.id ? 'text-white' : 'text-white/40'}`}>
+                  <div className={`font-mono text-sm font-bold transition-colors ${activeStageId === stage.id ? 'text-[#241B10]' : 'text-[#7A6B55]'}`}>
                     {stage.altitude}
                   </div>
-                  <div className="text-xs text-white/30 font-mono hidden sm:block">{stage.stage}</div>
+                  <div className="text-xs text-[#7A6B55]/70 font-mono hidden sm:block">{stage.stage}</div>
                 </div>
 
-                {/* The Dot */}
-                <div className={`w-6 h-6 rounded-full border-4 border-[#0A0A0F] z-10 transition-all duration-300 ${stage.dotColor} ${activeStageId === stage.id ? 'scale-125 shadow-[0_0_15px_currentColor]' : 'hover:scale-110'}`}></div>
-
-                {/* Right hidden hit area to make clicking easier */}
+                <div className={`w-6 h-6 rounded-full border-4 border-[#FFFDF8] z-10 transition-all duration-300 ${stage.dotColor} ${activeStageId === stage.id ? 'scale-125 shadow-[0_0_12px_rgba(201,151,46,0.5)]' : 'hover:scale-110'}`}></div>
                 <div className="absolute left-[calc(50%+24px)] w-32 h-8"></div>
               </button>
             ))}
 
-            {/* Rocket Icon */}
             <motion.div 
-              className="absolute left-1/2 -translate-x-1/2 -ml-[1px] z-20 text-white"
+              className="absolute left-1/2 -translate-x-1/2 -ml-[1px] z-20 text-[#241B10]"
               animate={{ top: activeStage.yPosition }}
               transition={{ type: "spring", stiffness: 100, damping: 20 }}
             >
-              <div className="bg-[#0A0A0F] p-1 rounded-full border border-primary/50 shadow-[0_0_10px_rgba(225,29,72,0.5)] -translate-y-1/2">
-                <Rocket size={16} className="text-primary fill-primary/20" />
+              <div className="bg-[#FFFDF8] p-1 rounded-full border border-[#C9972E]/60 shadow-[0_0_10px_rgba(201,151,46,0.3)] -translate-y-1/2">
+                <Rocket size={16} className="text-[#C9972E] fill-[#C9972E]/30" />
               </div>
             </motion.div>
           </div>
@@ -132,61 +124,58 @@ const Education: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="hud-bracket bg-[#0A0A0F] border border-white/10 p-6 md:p-8 font-mono shadow-2xl relative overflow-hidden"
+              className="hud-bracket bg-[#FFFDF8] border border-[#C9972E]/30 p-6 md:p-8 font-mono shadow-[0_4px_24px_rgba(120,90,40,0.08)] relative overflow-hidden rounded-xl"
             >
-              {/* Scanline effect */}
-              <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(255,255,255,0.02)_50%)] bg-[length:100%_4px] pointer-events-none"></div>
-
-              <div className="flex justify-between items-start mb-8 border-b border-white/10 pb-4 relative z-10">
-                <div className="text-primary font-bold">// SENSOR_READOUT: SPACE_FLIGHT_LOG</div>
-                <div className="px-2 py-0.5 bg-green-500/10 border border-green-500/30 text-green-400 text-xs rounded">MISSION_NOMINAL</div>
+              <div className="flex justify-between items-start mb-8 border-b border-[#C9972E]/20 pb-4 relative z-10">
+                <div className="text-[#C9972E] font-bold">// SENSOR_READOUT: SPACE_FLIGHT_LOG</div>
+                <div className="px-2 py-0.5 bg-green-500/10 border border-green-500/30 text-green-700 text-xs rounded font-semibold">MISSION_NOMINAL</div>
               </div>
 
               <div className="space-y-4 text-sm relative z-10">
                 <div className="flex flex-col sm:flex-row sm:gap-4">
-                  <span className="text-white/40 w-40 shrink-0">// FLIGHT_STAGE:</span>
-                  <span className="text-white font-bold">{activeStage.stage}</span>
+                  <span className="text-[#7A6B55] w-40 shrink-0">// FLIGHT_STAGE:</span>
+                  <span className="text-[#241B10] font-bold">{activeStage.stage}</span>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row sm:gap-4">
-                  <span className="text-white/40 w-40 shrink-0">// FLIGHT_ALTITUDE:</span>
-                  <span className="text-white">{activeStage.altitude} ({activeStage.altLabel})</span>
+                  <span className="text-[#7A6B55] w-40 shrink-0">// FLIGHT_ALTITUDE:</span>
+                  <span className="text-[#241B10]">{activeStage.altitude} ({activeStage.altLabel})</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:gap-4">
-                  <span className="text-white/40 w-40 shrink-0">// STAGE_STATUS:</span>
+                  <span className="text-[#7A6B55] w-40 shrink-0">// STAGE_STATUS:</span>
                   <span className={`font-bold ${activeStage.statusColor}`}>{activeStage.statusWord}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:gap-4">
-                  <span className="text-white/40 w-40 shrink-0">// ESTABLISHMENT:</span>
-                  <span className="text-white/90">{activeStage.establishment}</span>
+                  <span className="text-[#7A6B55] w-40 shrink-0">// ESTABLISHMENT:</span>
+                  <span className="text-[#241B10]">{activeStage.establishment}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:gap-4">
-                  <span className="text-white/40 w-40 shrink-0">// MISSION_PERIOD:</span>
-                  <span className="text-white/90">{activeStage.period}</span>
+                  <span className="text-[#7A6B55] w-40 shrink-0">// MISSION_PERIOD:</span>
+                  <span className="text-[#241B10]">{activeStage.period}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:gap-4">
-                  <span className="text-white/40 w-40 shrink-0">// GRADE_TELEMETRY:</span>
-                  <span className="text-yellow-400">{activeStage.grade}</span>
+                  <span className="text-[#7A6B55] w-40 shrink-0">// GRADE_TELEMETRY:</span>
+                  <span className="text-[#C9972E] font-bold">{activeStage.grade}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:gap-4">
-                  <span className="text-white/40 w-40 shrink-0">// STAGE_OBJECTIVE:</span>
-                  <span className="text-white/80">{activeStage.objective}</span>
+                  <span className="text-[#7A6B55] w-40 shrink-0">// STAGE_OBJECTIVE:</span>
+                  <span className="text-[#241B10]">{activeStage.objective}</span>
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
-                <div className="text-primary text-xs mb-2">// SENSOR_LOG:</div>
-                <div className="bg-white/5 border-l-2 border-primary p-4 text-white/90 text-sm leading-relaxed">
+              <div className="mt-8 pt-6 border-t border-[#C9972E]/20 relative z-10">
+                <div className="text-[#C9972E] text-xs mb-2 font-bold">// SENSOR_LOG:</div>
+                <div className="bg-[#FAF6EC] border-l-2 border-[#C9972E] p-4 text-[#241B10] text-sm leading-relaxed rounded-r">
                   "{activeStage.log}"
                 </div>
               </div>
 
-              <div className="mt-6 text-center text-xs text-white/30 relative z-10">
+              <div className="mt-6 text-center text-xs text-[#7A6B55] relative z-10">
                 Hover or tap launch trajectory stages to update cockpit flight logs.
               </div>
             </motion.div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Github, ExternalLink } from 'lucide-react';
+import SectionWatermark from './SectionWatermark';
 
 interface Project {
   id: number;
@@ -369,11 +370,40 @@ const SCROLL_THRESHOLD = 80;
 const Projects: React.FC = () => {
   const [activeId, setActiveId] = useState(1);
   const [direction, setDirection] = useState(1);
+  const [highlightedId, setHighlightedId] = useState<number | null>(null);
 
   const sectionRef = useRef<HTMLElement>(null);
   const listContainerRef = useRef<HTMLDivElement>(null);
   const activeIdRef = useRef(activeId);
   const touchStartRef = useRef({ x: 0, y: 0 });
+
+  /* ── Listen for custom select-project events from Skills section ──────── */
+  useEffect(() => {
+    const handleSelectProject = (e: Event) => {
+      const customEvent = e as CustomEvent<{ slug: string }>;
+      const slug = customEvent.detail?.slug;
+      if (!slug) return;
+
+      const project = PROJECTS.find(p => p.slug === slug || String(p.id) === String(slug));
+      if (project) {
+        if (project.id !== activeIdRef.current) {
+          setDirection(project.id > activeIdRef.current ? 1 : -1);
+          setActiveId(project.id);
+        }
+        sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setHighlightedId(project.id);
+        setTimeout(() => {
+          setHighlightedId(null);
+        }, 1500);
+      } else {
+        console.warn(`No matching project found for slug: "${slug}"`);
+        sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    window.addEventListener('select-project', handleSelectProject);
+    return () => window.removeEventListener('select-project', handleSelectProject);
+  }, []);
 
   /* ── scroll-jack state refs (must be refs, not state, for event handlers) ── */
   const isLockedRef = useRef(false);       // is page scroll currently locked?
@@ -651,11 +681,12 @@ const Projects: React.FC = () => {
 
   return (
     <section
-      className="relative py-24"
+      className="relative py-24 overflow-hidden"
       id="projects"
       ref={sectionRef}
     >
-      <div className="container mx-auto px-4 sm:px-6 w-full">
+      <SectionWatermark word="WORK" />
+      <div className="container mx-auto px-4 sm:px-6 w-full relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -665,12 +696,12 @@ const Projects: React.FC = () => {
         >
           {/* Section Header */}
           <div className="mb-8">
-            <div className="font-mono text-sm text-primary mb-2">// LAUNCHED MISSIONS</div>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-white">PROJECT LOG</h2>
-            <p className="text-xs font-mono text-white/30 mt-2 hidden md:block">
+            <div className="font-mono text-sm text-[#C9972E] mb-2 font-semibold">// LAUNCHED MISSIONS</div>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-[#241B10]">PROJECT LOG</h2>
+            <p className="text-xs font-mono text-[#7A6B55] mt-2 hidden md:block">
               scroll · ←→ arrow keys · or click a node to navigate projects
             </p>
-            <p className="text-xs font-mono text-white/30 mt-2 md:hidden">
+            <p className="text-xs font-mono text-[#7A6B55] mt-2 md:hidden">
               swipe the card or tap a node to navigate
             </p>
           </div>
@@ -688,20 +719,24 @@ const Projects: React.FC = () => {
                   animate="center"
                   exit="exit"
                   transition={{ duration: 0.25, ease: 'easeInOut' }}
-                  className="hud-bracket bg-card p-6 md:p-8 border-2 border-white/10 hover:border-primary/50 transition-colors shadow-lg flex-1"
+                  className={`hud-bracket bg-[#FFFDF8] p-6 md:p-8 border-2 transition-all flex-1 rounded-xl shadow-[0_4px_24px_rgba(120,90,40,0.08)] ${
+                    highlightedId === activeProject.id
+                      ? 'border-[#C9972E] ring-4 ring-[#C9972E]/40 shadow-[0_0_35px_rgba(201,151,46,0.4)] animate-pulse'
+                      : 'border-[#C9972E]/30 hover:border-[#C9972E]'
+                  }`}
                   onTouchStart={handleCardTouchStart}
                   onTouchEnd={handleCardTouchEnd}
                 >
                   {/* Tag + source buttons */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                    <div className="font-mono text-primary font-bold">{activeProject.tag}</div>
+                    <div className="font-mono text-[#C9972E] font-bold">{activeProject.tag}</div>
                     <div className="flex gap-2">
                       {activeProject.github && (
                         <a
                           href={activeProject.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-3 py-1.5 border border-white/15 text-white/70 text-xs font-bold rounded-full hover:border-white/40 hover:text-white transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-1.5 border border-[#C9972E]/30 text-[#7A6B55] text-xs font-bold rounded-full hover:border-[#C9972E] hover:text-[#241B10] transition-colors bg-[#FAF6EC]"
                         >
                           <Github size={12} /> SOURCE
                         </a>
@@ -711,7 +746,7 @@ const Projects: React.FC = () => {
                           href={activeProject.liveDemo}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 border border-primary/30 text-primary text-xs font-bold rounded-full hover:bg-primary/20 transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white text-xs font-bold rounded-full hover:brightness-105 transition-all shadow-sm"
                         >
                           <ExternalLink size={12} /> LIVE DEMO
                         </a>
@@ -719,23 +754,23 @@ const Projects: React.FC = () => {
                     </div>
                   </div>
 
-                  <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
+                  <h3 className="text-3xl md:text-4xl font-display font-bold text-[#241B10] mb-2">
                     {activeProject.title}
                   </h3>
-                  <p className="text-lg text-muted-foreground mb-6">{activeProject.desc}</p>
+                  <p className="text-lg text-[#7A6B55] mb-6">{activeProject.desc}</p>
 
                   {/* Duration + Stack */}
-                  <div className="mb-8 pb-8 border-b border-white/10">
+                  <div className="mb-8 pb-8 border-b border-[#C9972E]/20">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                       <div>
-                        <div className="font-mono text-xs text-white/40 mb-1">// DURATION</div>
-                        <div className="text-sm text-white">{activeProject.duration}</div>
+                        <div className="font-mono text-xs text-[#7A6B55] mb-1">// DURATION</div>
+                        <div className="text-sm font-semibold text-[#241B10]">{activeProject.duration}</div>
                       </div>
                       <div className="sm:ml-8">
-                        <div className="font-mono text-xs text-white/40 mb-1">// STACK_CORE</div>
+                        <div className="font-mono text-xs text-[#7A6B55] mb-1">// STACK_CORE</div>
                         <div className="flex flex-wrap gap-1.5">
                           {activeProject.stack.map(tech => (
-                            <span key={tech} className="text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded text-white/70">
+                            <span key={tech} className="text-xs bg-[#FAF6EC] border border-[#C9972E]/20 px-2 py-0.5 rounded text-[#241B10] font-mono">
                               {tech}
                             </span>
                           ))}
@@ -745,28 +780,28 @@ const Projects: React.FC = () => {
                   </div>
 
                   {/* Full description */}
-                  <div className="space-y-3 text-muted-foreground mb-8 text-sm md:text-base leading-relaxed">
+                  <div className="space-y-3 text-[#7A6B55] mb-8 text-sm md:text-base leading-relaxed">
                     <p>{activeProject.fullDesc1}</p>
                     <p>{activeProject.fullDesc2}</p>
                   </div>
 
                   {/* Detail panels */}
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                      <div className="font-mono text-xs text-primary mb-2">// MILESTONE</div>
-                      <p className="text-white/90">{activeProject.milestone}</p>
+                    <div className="bg-[#FAF6EC] border border-[#C9972E]/20 p-4 rounded-lg text-sm">
+                      <div className="font-mono text-xs text-[#C9972E] mb-2 font-bold">// MILESTONE</div>
+                      <p className="text-[#241B10] font-medium">{activeProject.milestone}</p>
                     </div>
-                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                      <div className="font-mono text-xs text-primary mb-2">// KEY FEATURE</div>
-                      <p className="text-white/90">{activeProject.keyFeature}</p>
+                    <div className="bg-[#FAF6EC] border border-[#C9972E]/20 p-4 rounded-lg text-sm">
+                      <div className="font-mono text-xs text-[#C9972E] mb-2 font-bold">// KEY FEATURE</div>
+                      <p className="text-[#241B10] font-medium">{activeProject.keyFeature}</p>
                     </div>
-                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                      <div className="font-mono text-xs text-orange-500 mb-2">// PROBLEM</div>
-                      <p className="text-white/90">{activeProject.problem}</p>
+                    <div className="bg-[#FAF6EC] border border-[#C9972E]/20 p-4 rounded-lg text-sm">
+                      <div className="font-mono text-xs text-[#B9821F] mb-2 font-bold">// PROBLEM</div>
+                      <p className="text-[#241B10] font-medium">{activeProject.problem}</p>
                     </div>
-                    <div className="bg-[#0f0f15] border border-white/5 p-4 rounded text-sm">
-                      <div className="font-mono text-xs text-orange-500 mb-2">// CHALLENGE</div>
-                      <p className="text-white/90">{activeProject.challenge}</p>
+                    <div className="bg-[#FAF6EC] border border-[#C9972E]/20 p-4 rounded-lg text-sm">
+                      <div className="font-mono text-xs text-[#B9821F] mb-2 font-bold">// CHALLENGE</div>
+                      <p className="text-[#241B10] font-medium">{activeProject.challenge}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -777,44 +812,43 @@ const Projects: React.FC = () => {
                 <button
                   onClick={() => handleNodeClick(activeId - 1)}
                   disabled={isFirst}
-                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-[#C9972E]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] transition-all disabled:opacity-25 disabled:cursor-not-allowed bg-[#FFFDF8]"
                 >
                   <ChevronLeft size={14} /> PREV
                 </button>
 
-                <div className="font-mono text-sm text-white/40 tabular-nums">
-                  <span className="text-white/70">{String(activeId).padStart(2, '0')}</span>
-                  <span className="mx-1.5 text-white/20">/</span>
+                <div className="font-mono text-sm text-[#7A6B55] tabular-nums">
+                  <span className="text-[#241B10] font-bold">{String(activeId).padStart(2, '0')}</span>
+                  <span className="mx-1.5 text-[#7A6B55]/50">/</span>
                   {String(PROJECTS.length).padStart(2, '0')}
                 </div>
 
                 <button
                   onClick={() => handleNodeClick(activeId + 1)}
                   disabled={isLast}
-                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-[#C9972E]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] transition-all disabled:opacity-25 disabled:cursor-not-allowed bg-[#FFFDF8]"
                 >
                   NEXT <ChevronRight size={14} />
                 </button>
               </div>
             </div>
 
-            {/* ── RIGHT: Node Navigator (no independent scrollbar) ── */}
+            {/* ── RIGHT: Node Navigator ── */}
             <div className="hidden lg:flex lg:w-[30%] flex-col">
-              <div className="bg-[#0f0f15] p-4 rounded-t border border-white/10 border-b-0">
-                <p className="font-mono text-xs text-white/50 leading-relaxed">
+              <div className="bg-[#FAF6EC] p-4 rounded-t-xl border border-[#C9972E]/25 border-b-0">
+                <p className="font-mono text-xs text-[#7A6B55] leading-relaxed font-semibold">
                   // {PROJECTS.length} missions logged
                 </p>
               </div>
 
               <div
                 ref={listContainerRef}
-                className="flex-1 bg-card border border-white/10 rounded-b overflow-y-auto no-scrollbar pointer-events-auto"
+                className="flex-1 bg-[#FFFDF8] border border-[#C9972E]/25 rounded-b-xl overflow-y-auto no-scrollbar pointer-events-auto shadow-sm"
                 style={{ maxHeight: '550px' }}
-                onWheel={(e) => e.stopPropagation()} // prevent list scroll from leaking to window
+                onWheel={(e) => e.stopPropagation()}
               >
                 <div className="relative p-2">
-                  {/* Vertical rail */}
-                  <div className="absolute left-[22px] top-4 bottom-4 w-[2px] bg-white/5 pointer-events-none" />
+                  <div className="absolute left-[22px] top-4 bottom-4 w-[2px] bg-[#C9972E]/15 pointer-events-none" />
 
                   <div className="flex flex-col gap-0.5 relative">
                     {PROJECTS.map((project) => {
@@ -826,27 +860,25 @@ const Projects: React.FC = () => {
                           onClick={() => handleNodeClick(project.id)}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left w-full cursor-pointer ${
                             isActive
-                              ? 'bg-white/5 border border-primary/30 shadow-[0_0_12px_rgba(225,29,72,0.12)]'
-                              : 'hover:bg-white/5 border border-transparent'
+                              ? 'bg-[#FAF6EC] border border-[#C9972E]/50 shadow-[0_2px_12px_rgba(201,151,46,0.15)]'
+                              : 'hover:bg-[#FAF6EC]/60 border border-transparent'
                           }`}
                         >
-                          {/* Node dot */}
                           <div className={`relative flex-shrink-0 w-4 h-4 rounded-full border-2 transition-all z-10 ${
-                            isActive ? 'border-primary bg-primary' : 'border-white/20 bg-card'
+                            isActive ? 'border-[#C9972E] bg-[#C9972E]' : 'border-[#C9972E]/30 bg-[#FFFDF8]'
                           }`}>
                             {isActive && (
-                              <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-40" />
+                              <div className="absolute inset-0 bg-[#C9972E] rounded-full animate-ping opacity-40" />
                             )}
                           </div>
 
-                          {/* Label */}
                           <div className="min-w-0">
                             <div className={`font-semibold text-sm truncate transition-colors ${
-                              isActive ? 'text-white' : 'text-white/50'
+                              isActive ? 'text-[#241B10]' : 'text-[#7A6B55]'
                             }`}>
                               {project.title}
                             </div>
-                            <div className="text-[10px] text-white/30 truncate mt-0.5">
+                            <div className="text-[10px] text-[#7A6B55]/70 truncate mt-0.5">
                               {project.category}
                             </div>
                           </div>

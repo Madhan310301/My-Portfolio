@@ -25,10 +25,10 @@ const SolutionsSection: React.FC = () => {
         >
           <div className="mb-12">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-8 h-[2px] bg-primary"></div>
-              <span className="text-primary font-mono text-sm tracking-wider uppercase">— WHO I BUILD FOR</span>
+              <div className="w-8 h-[2px] bg-[#C9972E]"></div>
+              <span className="text-[#C9972E] font-mono text-sm tracking-wider uppercase font-semibold">— WHO I BUILD FOR</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-white">Target Solutions</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-[#241B10]">Target Solutions</h2>
           </div>
 
           <div className="flex flex-wrap gap-4 justify-center max-w-4xl mx-auto">
@@ -45,7 +45,7 @@ const SolutionsSection: React.FC = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white/80 bg-white/[0.02] hover:border-primary hover:bg-primary/10 hover:text-white transition-all cursor-pointer block"
+                  className="px-6 py-3 border border-[#C9972E]/30 rounded-full text-sm font-bold text-[#241B10] bg-[#FFFDF8] hover:border-[#C9972E] hover:bg-[#FAF6EC] hover:text-[#C9972E] transition-all cursor-pointer block shadow-sm"
                 >
                   {sol}
                 </motion.a>

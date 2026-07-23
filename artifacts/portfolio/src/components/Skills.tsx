@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, PieChart, Pie, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { useIsMobile } from '../hooks/useIsMobile';
+import SectionWatermark from './SectionWatermark';
 
 const SKILLS_DATA = [
   { name: 'React', level: 90, type: 'Frontend' },
@@ -36,7 +37,7 @@ const SKILL_DETAILS: Record<string, any> = {
     projects: [
       { name: 'AI Financial Coach', slug: 'fintech' },
       { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
-      { name: 'DocuQuery', slug: 'docuquery' }
+      { name: 'DocuAI', slug: 'docuai' }
     ]
   },
   'Python': {
@@ -75,7 +76,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Advanced relational operations, spatial queries, highly resilient data structures.",
     growth: { '2023': 20, '2024': 40, '2025': 60, '2026': 78 },
     projects: [
-      { name: 'DocuQuery', slug: 'docuquery' },
+      { name: 'DocuAI', slug: 'docuai' },
       { name: 'HealAI', slug: 'healai' }
     ]
   },
@@ -135,9 +136,15 @@ const Skills: React.FC = () => {
   const detail = SKILL_DETAILS[selectedSkill] || { desc: '', growth: {}, projects: [] };
   const skillObj = SKILLS_DATA.find(s => s.name === selectedSkill) || SKILLS_DATA[0];
 
+  const handleProjectTagClick = (slug: string) => {
+    const event = new CustomEvent('select-project', { detail: { slug } });
+    window.dispatchEvent(event);
+  };
+
   return (
-    <section className="py-24 relative" id="skills">
-      <div className="container mx-auto px-6">
+    <section className="py-24 relative overflow-hidden" id="skills">
+      <SectionWatermark word="SKILLS" />
+      <div className="container mx-auto px-6 relative z-10">
         
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -148,25 +155,25 @@ const Skills: React.FC = () => {
         >
           <div className="mb-12">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-8 h-[2px] bg-primary"></div>
-              <span className="text-primary font-mono text-sm tracking-wider uppercase">— CORE ENGINEERING STACK</span>
+              <div className="w-8 h-[2px] bg-[#C9972E]"></div>
+              <span className="text-[#C9972E] font-mono text-sm tracking-wider uppercase font-semibold">— CORE ENGINEERING STACK</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-white">Core Engineering Stack</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-[#241B10]">Core Engineering Stack</h2>
           </div>
 
           <div className="grid lg:grid-cols-12 gap-8">
             
-            <div className="lg:col-span-7 hud-bracket bg-card border border-white/10 p-4 sm:p-6 flex flex-col">
+            <div className="lg:col-span-7 hud-bracket bg-[#FFFDF8] border border-[#C9972E]/25 p-4 sm:p-6 flex flex-col rounded-xl shadow-sm">
               <div className="flex flex-wrap items-center justify-between mb-8 gap-4">
-                <div className="font-mono text-primary">// SKILLS_VISUALIZER</div>
+                <div className="font-mono text-[#C9972E] font-semibold">// SKILLS_VISUALIZER</div>
                 
-                <div className="flex items-center gap-2 px-3 py-1 bg-[#0f0f15] border border-white/5 rounded">
+                <div className="flex items-center gap-2 px-3 py-1 bg-[#FAF6EC] border border-[#C9972E]/20 rounded">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="font-mono text-xs text-green-400">SYS_NOMINAL</span>
+                  <span className="font-mono text-xs text-green-700 font-semibold">SYS_NOMINAL</span>
                 </div>
               </div>
 
-              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar border-b border-white/10 pb-4 mb-8">
+              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar border-b border-[#C9972E]/20 pb-4 mb-8">
                 {[
                   { id: 'bar', label: '📊 Bar Chart' },
                   { id: 'donut', label: '🍩 Donut Chart' },
@@ -177,8 +184,8 @@ const Skills: React.FC = () => {
                     onClick={() => setActiveChart(tab.id as any)}
                     className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                       activeChart === tab.id 
-                        ? 'bg-primary text-white shadow-[0_0_10px_rgba(225,29,72,0.3)]' 
-                        : 'bg-white/5 text-muted-foreground hover:text-white hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white shadow-[0_2px_10px_rgba(201,151,46,0.3)]' 
+                        : 'bg-[#FAF6EC] text-[#7A6B55] hover:text-[#241B10] hover:bg-[#FAF6EC]/80 border border-[#C9972E]/20'
                     }`}
                   >
                     {tab.label}
@@ -200,21 +207,21 @@ const Skills: React.FC = () => {
                       <ResponsiveContainer width="100%" height="100%">
                         {isMobile ? (
                           <BarChart data={SKILLS_DATA} layout="vertical" margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-                            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }} />
-                            <YAxis dataKey="name" type="category" width={80} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }} />
+                            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 10 }} />
+                            <YAxis dataKey="name" type="category" width={80} tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 10 }} />
                             <Bar dataKey="level" onClick={(data) => setSelectedSkill(data.name)} cursor="pointer">
                               {SKILLS_DATA.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#E11D48' : '#3f3f46'} className="transition-colors hover:fill-orange-500" />
+                                <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#C9972E' : '#D9A94A'} className="transition-colors hover:fill-[#B9821F]" />
                               ))}
                             </Bar>
                           </BarChart>
                         ) : (
                           <BarChart data={SKILLS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
-                            <XAxis dataKey="name" angle={-45} textAnchor="end" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} interval={0} />
-                            <YAxis tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} domain={[0, 100]} />
+                            <XAxis dataKey="name" angle={-45} textAnchor="end" tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 12 }} interval={0} />
+                            <YAxis tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 12 }} domain={[0, 100]} />
                             <Bar dataKey="level" onClick={(data) => setSelectedSkill(data.name)} cursor="pointer">
                               {SKILLS_DATA.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#E11D48' : '#3f3f46'} className="transition-colors hover:fill-orange-500" />
+                                <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#C9972E' : '#D9A94A'} className="transition-colors hover:fill-[#B9821F]" />
                               ))}
                             </Bar>
                           </BarChart>
@@ -238,7 +245,7 @@ const Skills: React.FC = () => {
                             stroke="none"
                           >
                             {topSkills.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#E11D48' : `hsl(347, 77%, ${20 + index * 5}%)`} className="transition-colors hover:fill-orange-500" />
+                              <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#C9972E' : `hsl(41, 62%, ${30 + index * 8}%)`} className="transition-colors hover:fill-[#B9821F]" />
                             ))}
                           </Pie>
                         </PieChart>
@@ -252,21 +259,21 @@ const Skills: React.FC = () => {
                             {SKILLS_DATA.map(skill => (
                               <div key={skill.name} className="flex flex-col gap-1 cursor-pointer" onClick={() => setSelectedSkill(skill.name)}>
                                 <div className="flex justify-between text-xs font-mono">
-                                  <span className={skill.name === selectedSkill ? "text-primary font-bold" : "text-white/80"}>{skill.name}</span>
-                                  <span className="text-white/40">{skill.level}%</span>
+                                  <span className={skill.name === selectedSkill ? "text-[#C9972E] font-bold" : "text-[#241B10]"}>{skill.name}</span>
+                                  <span className="text-[#7A6B55]">{skill.level}%</span>
                                 </div>
-                                <div className="h-1.5 w-full bg-white/5 rounded overflow-hidden">
-                                  <div className={`h-full transition-all ${skill.name === selectedSkill ? 'bg-primary' : 'bg-white/20'}`} style={{ width: `${skill.level}%` }} />
+                                <div className="h-1.5 w-full bg-[#FAF6EC] rounded overflow-hidden border border-[#C9972E]/20">
+                                  <div className={`h-full transition-all ${skill.name === selectedSkill ? 'bg-[#C9972E]' : 'bg-[#D9A94A]'}`} style={{ width: `${skill.level}%` }} />
                                 </div>
                               </div>
                             ))}
                           </div>
                         ) : (
                           <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILLS_DATA}>
-                            <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                            <PolarAngleAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 10 }} />
+                            <PolarGrid stroke="rgba(201,151,46,0.25)" />
+                            <PolarAngleAxis dataKey="name" tick={{ fill: 'rgba(36,27,16,0.7)', fontSize: 10 }} />
                             <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
-                            <Radar name="Skills" dataKey="level" stroke="#E11D48" fill="#E11D48" fillOpacity={0.3} className="drop-shadow-[0_0_10px_rgba(225,29,72,0.5)]" />
+                            <Radar name="Skills" dataKey="level" stroke="#C9972E" fill="#C9972E" fillOpacity={0.3} className="drop-shadow-[0_0_10px_rgba(201,151,46,0.3)]" />
                           </RadarChart>
                         )}
                       </ResponsiveContainer>
@@ -277,57 +284,31 @@ const Skills: React.FC = () => {
             </div>
 
             <div className="lg:col-span-5 flex flex-col gap-6">
-              <div className="hud-bracket bg-[#0A0A0F] border border-primary/30 p-6 relative overflow-hidden h-full box-glow">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+              <div className="hud-bracket bg-[#FFFDF8] border border-[#C9972E]/30 p-6 relative overflow-hidden h-full rounded-xl shadow-sm">
+                <div className="font-mono text-xs text-[#C9972E] mb-2 uppercase tracking-widest font-semibold">// SKILL_PROFILES</div>
+                <h3 className="text-2xl font-bold text-[#241B10] mb-2">{skillObj.name}</h3>
+                <span className="inline-block text-xs font-mono px-2.5 py-1 bg-[#FAF6EC] border border-[#C9972E]/30 rounded text-[#C9972E] font-semibold mb-4">
+                  {skillObj.type} · {skillObj.level}% Competency
+                </span>
                 
-                <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-6 pb-4 border-b border-white/10">
-                    <h3 className="text-3xl font-display font-bold text-white">{selectedSkill}</h3>
-                    <div className="text-2xl font-mono font-bold text-primary">{skillObj.level}%</div>
-                  </div>
+                <p className="text-sm text-[#7A6B55] leading-relaxed mb-6">
+                  {detail.desc}
+                </p>
 
-                  <div className="mb-8">
-                    <div className="font-mono text-xs text-primary mb-2">// DESCRIPTION</div>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{detail.desc}</p>
-                  </div>
-
-                  <div className="mb-8">
-                    <div className="font-mono text-xs text-primary mb-3">// TIMELINE_GROWTH (2023 → 2026)</div>
-                    <div className="grid grid-cols-4 gap-2">
-                      {Object.entries(detail.growth).map(([year, val]) => (
-                        <div key={year} className="bg-card border border-white/5 p-2 rounded text-center">
-                          <div className="text-[10px] text-white/50 mb-1">{year}</div>
-                          <div className="text-sm font-bold text-white">{val as number}%</div>
-                          <div className="w-full h-1 bg-white/10 mt-2 rounded-full overflow-hidden">
-                            <div className="h-full bg-primary" style={{ width: `${val}%` }}></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="font-mono text-xs text-primary mb-3">// MAPPED_PROJECTS (PROOF)</div>
-                    <div className="flex flex-col gap-2">
-                      {detail.projects.map((proj: { name: string; slug: string }) => (
-                        <button
-                          key={proj.slug}
-                          onClick={() => {
-                            const target = document.querySelector('#projects');
-                            if (target) {
-                              target.scrollIntoView({ behavior: 'smooth' });
-                            }
-                            if (proj.slug !== 'all') {
-                              window.location.hash = `project=${proj.slug}`;
-                            }
-                          }}
-                          className="group flex items-center justify-between p-2.5 bg-card border border-white/5 rounded text-sm hover:border-white/20 hover:bg-white/[0.02] transition-colors w-full text-left cursor-pointer"
-                        >
-                          <span className="text-white/80 group-hover:text-white transition-colors">{proj.name}</span>
-                          <span className="text-white/30 font-mono text-[10px] uppercase group-hover:text-primary transition-colors">View Proof →</span>
-                        </button>
-                      ))}
-                    </div>
+                <div className="border-t border-[#C9972E]/20 pt-4 mt-auto">
+                  <div className="font-mono text-xs text-[#7A6B55] mb-3 uppercase">// KEY_IMPLEMENTATIONS</div>
+                  <div className="flex flex-col gap-2.5 w-full">
+                    {detail.projects.map((proj: any) => (
+                      <button
+                        key={proj.name}
+                        onClick={() => handleProjectTagClick(proj.slug)}
+                        title={`Jump to ${proj.name} in Projects`}
+                        className="w-full text-xs font-mono px-3.5 py-2 bg-[#FAF6EC] border border-[#C9972E]/25 rounded-lg text-[#241B10] cursor-pointer hover:border-[#C9972E] hover:text-[#C9972E] hover:bg-[#FFFDF8] hover:shadow-[0_2px_8px_rgba(201,151,46,0.2)] transition-all flex items-center justify-between group"
+                      >
+                        <span className="truncate">{proj.name}</span>
+                        <span className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[10px]">↗</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>

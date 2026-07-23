@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import HireMeButton from './HireMeButton';
+import { Mail, ArrowUp } from 'lucide-react';
+
+import SectionWatermark from './SectionWatermark';
 
 const Contact: React.FC = () => {
   const [name, setName] = useState('');
@@ -15,7 +18,6 @@ const Contact: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Reset errors
     const newErrors = { name: '', email: '', message: '' };
     let hasError = false;
 
@@ -42,89 +44,98 @@ const Contact: React.FC = () => {
 
     setIsSubmitting(true);
     
-    // Construct pre-filled Gmail compose URL
-    const subject = encodeURIComponent(name);
+    const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
     const body = encodeURIComponent(`${message}\n\n— Reply to: ${email}`);
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=madhannarayanan.t@gmail.com&su=${subject}&body=${body}`;
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=madhankumartbharathuniv@gmail.com&su=${subject}&body=${body}`;
 
-    // Open in a new tab
     window.open(gmailUrl, '_blank');
 
     setIsSubmitting(false);
     setToastMessage('Opening Gmail — finish sending from there.');
     
-    // Clear fields
     setName('');
     setEmail('');
     setMessage('');
     
-    // Clear toast after 5s
     setTimeout(() => setToastMessage(''), 5000);
   };
 
   return (
-    <section className="py-24 relative mt-12" id="contact">
-      <div className="container mx-auto px-6">
+    <section className="pt-32 pb-12 relative overflow-hidden" id="contact">
+      <SectionWatermark word="CONTACT" />
+
+      <div className="container mx-auto px-6 relative z-10">
         
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
           className="section-panel mb-16"
         >
-          <div className="grid lg:grid-cols-2 gap-16">
+          <div className="grid lg:grid-cols-12 gap-12 items-start">
           
-          {/* Left Column */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col justify-center"
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-8 h-[2px] bg-primary"></div>
-              <span className="text-primary font-mono text-sm tracking-wider uppercase">— CONTACT</span>
-            </div>
-            
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-white mb-6 leading-[1.1]">
-              Got a project, internship, or idea worth building?
-            </h2>
-            
-            <p className="text-lg text-muted-foreground mb-10 max-w-md">
-              Reach out directly below, or connect through LinkedIn and GitHub. Open to internships, full-stack roles, AI/ML collaboration, and IoT projects.
-            </p>
-            
-            <div className="flex flex-wrap gap-4">
-              <a href="mailto:madhannarayanan.t@gmail.com" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-primary hover:bg-primary/10 transition-colors">
-                Email
-              </a>
-              <a href="https://linkedin.com/in/madhankumart" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-[#0077b5] hover:bg-[#0077b5]/10 transition-colors">
-                LinkedIn
-              </a>
-              <a href="https://github.com/Madhan310301" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-white/10 rounded-full text-sm font-bold text-white hover:border-white/50 hover:bg-white/10 transition-colors">
-                GitHub
-              </a>
-              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-primary/30 rounded-full text-sm font-bold text-primary hover:bg-primary hover:text-white transition-colors">
-                Resume
-              </a>
-              <HireMeButton className="px-6 py-3 bg-primary text-white rounded-full text-sm font-bold hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.5)]" />
-            </div>
-          </motion.div>
-
-          {/* Right Column (Form) */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="hud-bracket bg-[#0A0A0F] p-8 border border-white/10 relative z-10 box-glow">
-              <div className="font-mono text-xs text-primary mb-6">// SECURE_CHANNEL_OPEN</div>
+          {/* Left Column: HOW CAN I HELP? */}
+          <div className="lg:col-span-6 flex flex-col justify-between h-full">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-[2px] bg-[#C9972E]"></div>
+                <span className="text-[#C9972E] font-mono text-xs tracking-widest uppercase font-semibold">// GET_IN_TOUCH</span>
+              </div>
               
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-[#241B10] mb-6 leading-[0.95]">
+                HOW CAN I <br />
+                <span className="text-[#C9972E]">HELP?</span>
+              </h2>
+              
+              <p className="text-base sm:text-lg text-[#7A6B55] mb-8 max-w-lg leading-relaxed">
+                Got a project, internship opportunity, hackathon collaboration, or custom software build in mind? Let's connect and transform your vision into production-grade systems.
+              </p>
+
+              {/* Direct Email CTA Button */}
+              <div className="mb-10">
+                <a 
+                  href="mailto:madhankumartbharathuniv@gmail.com"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold text-sm rounded-full hover:brightness-105 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(201,151,46,0.3)]"
+                >
+                  <Mail size={18} className="text-white" />
+                  <span>Send Direct Email</span>
+                </a>
+              </div>
+            </div>
+            
+            {/* Social & Contact Pills */}
+            <div>
+              <div className="font-mono text-xs text-[#7A6B55] mb-4 uppercase tracking-widest font-semibold">// QUICK_CHANNELS</div>
+              <div className="flex flex-wrap gap-3">
+                <a href="mailto:madhankumartbharathuniv@gmail.com" className="px-5 py-2.5 border border-[#C9972E]/30 rounded-full text-xs font-bold text-[#241B10] bg-[#FFFDF8] hover:border-[#C9972E] hover:bg-[#FAF6EC] transition-colors">
+                  Email
+                </a>
+                <a href="https://linkedin.com/in/madhankumart" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 border border-[#C9972E]/30 rounded-full text-xs font-bold text-[#241B10] bg-[#FFFDF8] hover:border-[#C9972E] hover:bg-[#FAF6EC] transition-colors">
+                  LinkedIn
+                </a>
+                <a href="https://github.com/Madhan310301" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 border border-[#C9972E]/30 rounded-full text-xs font-bold text-[#241B10] bg-[#FFFDF8] hover:border-[#C9972E] hover:bg-[#FAF6EC] transition-colors">
+                  GitHub
+                </a>
+                <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 border border-[#C9972E] rounded-full text-xs font-bold text-[#C9972E] bg-[#FFFDF8] hover:bg-[#C9972E] hover:text-white transition-colors">
+                  Resume
+                </a>
+                <HireMeButton className="px-5 py-2.5 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-full text-xs font-bold hover:brightness-105 transition-all shadow-[0_2px_10px_rgba(201,151,46,0.3)]" />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Interactive Form */}
+          <div className="lg:col-span-6">
+            <div className="hud-bracket bg-[#FFFDF8] p-6 sm:p-8 border border-[#C9972E]/30 relative z-10 shadow-[0_4px_24px_rgba(120,90,40,0.08)] rounded-xl">
+              <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#C9972E]/20">
+                <div className="font-mono text-xs text-[#C9972E] font-semibold">// SECURE_TRANSMISSION_FORM</div>
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
                 <div>
-                  <label htmlFor="name" className="block text-xs font-mono text-white/50 mb-2 uppercase">Name</label>
+                  <label htmlFor="name" className="block text-xs font-mono text-[#7A6B55] mb-2 uppercase font-semibold">Name</label>
                   <input 
                     type="text" 
                     id="name" 
@@ -133,16 +144,16 @@ const Contact: React.FC = () => {
                       setName(e.target.value);
                       if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
                     }}
-                    className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-primary'} rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary transition-all font-sans`}
-                    placeholder="John Doe"
+                    className={`w-full bg-[#FAF6EC] border ${errors.name ? 'border-red-500/50 focus:border-red-500' : 'border-[#C9972E]/30 focus:border-[#C9972E]'} rounded-lg px-4 py-3 text-[#241B10] placeholder:text-[#7A6B55]/60 focus:outline-none focus:ring-1 focus:ring-[#C9972E] transition-all font-sans text-sm`}
+                    placeholder="Your Name"
                   />
                   {errors.name && (
-                    <span className="text-red-400 text-xs mt-1 block font-mono">{errors.name}</span>
+                    <span className="text-red-600 text-xs mt-1 block font-mono">{errors.name}</span>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="email" className="block text-xs font-mono text-white/50 mb-2 uppercase">Email</label>
+                  <label htmlFor="email" className="block text-xs font-mono text-[#7A6B55] mb-2 uppercase font-semibold">Email</label>
                   <input 
                     type="email" 
                     id="email" 
@@ -151,16 +162,16 @@ const Contact: React.FC = () => {
                       setEmail(e.target.value);
                       if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
                     }}
-                    className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-primary'} rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary transition-all font-sans`}
-                    placeholder="john@example.com"
+                    className={`w-full bg-[#FAF6EC] border ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-[#C9972E]/30 focus:border-[#C9972E]'} rounded-lg px-4 py-3 text-[#241B10] placeholder:text-[#7A6B55]/60 focus:outline-none focus:ring-1 focus:ring-[#C9972E] transition-all font-sans text-sm`}
+                    placeholder="name@domain.com"
                   />
                   {errors.email && (
-                    <span className="text-red-400 text-xs mt-1 block font-mono">{errors.email}</span>
+                    <span className="text-red-600 text-xs mt-1 block font-mono">{errors.email}</span>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="message" className="block text-xs font-mono text-white/50 mb-2 uppercase">Message</label>
+                  <label htmlFor="message" className="block text-xs font-mono text-[#7A6B55] mb-2 uppercase font-semibold">Message</label>
                   <textarea 
                     id="message" 
                     value={message}
@@ -169,29 +180,30 @@ const Contact: React.FC = () => {
                       if (errors.message) setErrors(prev => ({ ...prev, message: '' }));
                     }}
                     rows={4}
-                    className={`w-full bg-white/5 border ${errors.message ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-primary'} rounded px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary transition-all font-sans resize-none`}
-                    placeholder="Tell me about your project..."
+                    className={`w-full bg-[#FAF6EC] border ${errors.message ? 'border-red-500/50 focus:border-red-500' : 'border-[#C9972E]/30 focus:border-[#C9972E]'} rounded-lg px-4 py-3 text-[#241B10] placeholder:text-[#7A6B55]/60 focus:outline-none focus:ring-1 focus:ring-[#C9972E] transition-all font-sans text-sm resize-none`}
+                    placeholder="Describe your project, timeline, or inquiry..."
                   ></textarea>
                   {errors.message && (
-                    <span className="text-red-400 text-xs mt-1 block font-mono">{errors.message}</span>
+                    <span className="text-red-600 text-xs mt-1 block font-mono">{errors.message}</span>
                   )}
                 </div>
-                
-                <div className="flex items-start gap-3 mt-2">
+
+                {/* Consent Checkbox */}
+                <div className="flex items-start gap-3 mt-1">
                   <input
                     type="checkbox"
                     id="consent"
                     checked={agreed}
                     onChange={(e) => setAgreed(e.target.checked)}
-                    className="w-4 h-4 mt-0.5 accent-primary cursor-pointer rounded border-white/10 bg-white/5"
+                    className="w-4 h-4 mt-0.5 accent-[#C9972E] cursor-pointer rounded border-[#C9972E]/30 bg-[#FAF6EC]"
                   />
-                  <label htmlFor="consent" className="text-xs text-white/60 font-sans leading-normal cursor-pointer select-none">
+                  <label htmlFor="consent" className="text-xs text-[#7A6B55] font-sans leading-normal cursor-pointer select-none">
                     I agree to the{' '}
-                    <Link to="/privacy" className="text-primary hover:underline font-semibold">
+                    <Link to="/privacy" className="text-[#C9972E] hover:underline font-semibold">
                       Privacy Policy
                     </Link>{' '}
                     and{' '}
-                    <Link to="/terms" className="text-primary hover:underline font-semibold">
+                    <Link to="/terms" className="text-[#C9972E] hover:underline font-semibold">
                       Terms &amp; Conditions
                     </Link>
                   </label>
@@ -200,41 +212,44 @@ const Contact: React.FC = () => {
                 <button 
                   type="submit" 
                   disabled={isSubmitting || !agreed}
-                  className="w-full bg-primary text-white font-bold py-4 rounded hover:bg-primary/90 transition-all hover:shadow-[0_0_15px_rgba(225,29,72,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2 cursor-pointer"
+                  className="w-full bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold py-3.5 rounded-lg hover:brightness-105 transition-all shadow-[0_4px_16px_rgba(201,151,46,0.3)] disabled:opacity-40 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2 cursor-pointer text-sm"
                 >
                   {isSubmitting ? 'Transmitting...' : '→ Send Message'}
                 </button>
 
                 {toastMessage && (
-                  <div className="mt-4 bg-green-500/20 border border-green-500/50 text-green-400 text-sm py-3 px-4 rounded text-center font-medium animate-in fade-in slide-in-from-bottom-2">
+                  <div className="mt-3 bg-green-500/10 border border-green-500/40 text-green-700 text-xs py-2.5 px-4 rounded text-center font-mono animate-in fade-in slide-in-from-bottom-2 font-semibold">
                     {toastMessage}
                   </div>
                 )}
               </form>
             </div>
-            
-            {/* Decorative background element */}
-            <div className="absolute -inset-4 bg-gradient-to-tr from-primary/5 to-transparent blur-xl -z-10 rounded-lg pointer-events-none"></div>
-          </motion.div>
+          </div>
 
         </div>
       </motion.div>
 
-        {/* Footer */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="italic text-muted-foreground text-sm">"Every idea starts as a prototype."</p>
+        {/* Footer Navigation & Copyright */}
+        <div className="border-t border-[#C9972E]/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-xs font-mono text-[#7A6B55] flex items-center gap-4 font-medium">
+            <a href="#about" className="hover:text-[#C9972E] transition-colors">About</a>
+            <a href="#projects" className="hover:text-[#C9972E] transition-colors">Projects</a>
+            <a href="#skills" className="hover:text-[#C9972E] transition-colors">Skills</a>
+            <a href="#services" className="hover:text-[#C9972E] transition-colors">Services</a>
+            <a href="#credentials" className="hover:text-[#C9972E] transition-colors">Credentials</a>
+          </div>
           
-          <p className="text-xs font-mono text-white/30">
-            © 2025 Madhan Kumar. Built with passion. ·{' '}
-            <Link to="/terms" className="hover:text-primary hover:underline transition-colors">Terms</Link> ·{' '}
-            <Link to="/privacy" className="hover:text-primary hover:underline transition-colors">Privacy</Link>
+          <p className="text-xs font-mono text-[#7A6B55] text-center">
+            © {new Date().getFullYear()} Madhan Kumar. All rights reserved. ·{' '}
+            <Link to="/terms" className="hover:text-[#C9972E] hover:underline transition-colors">Terms</Link> ·{' '}
+            <Link to="/privacy" className="hover:text-[#C9972E] hover:underline transition-colors">Privacy</Link>
           </p>
           
           <button 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-sm font-mono text-primary hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+            className="text-xs font-mono text-[#C9972E] font-bold hover:text-[#241B10] transition-colors flex items-center gap-1.5 cursor-pointer bg-[#FFFDF8] border border-[#C9972E]/30 px-3 py-1.5 rounded-full shadow-sm"
           >
-            Back to top ↑
+            Back to top <ArrowUp size={12} />
           </button>
         </div>
 

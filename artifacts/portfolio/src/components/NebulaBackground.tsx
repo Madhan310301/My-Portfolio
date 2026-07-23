@@ -17,33 +17,33 @@ const NebulaBackground: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Generate scattered star-particle field (fewer on mobile for performance)
-    const starCount = isMobile ? 30 : 80;
+    // Generate scattered gold particle dust field
+    const starCount = isMobile ? 30 : 70;
     const generatedStars = Array.from({ length: starCount }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 1.4 + 0.6, // Smaller range on mobile (0.6px to 2px) to prevent heavy paint bounds
+      size: Math.random() * 1.6 + 0.8,
       delay: Math.random() * 8,
-      duration: Math.random() * 5 + 3, // 3s to 8s pulse rate
+      duration: Math.random() * 5 + 3,
     }));
     setStars(generatedStars);
   }, [isMobile]);
 
   return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#020204]">
-      {/* 1. Star-particle field with subtle twinkle */}
+    <div className="fixed inset-0 z-[-1] overflow-hidden bg-[#FAF6EC]">
+      {/* 1. Gold-particle dust field with subtle twinkle */}
       <div className="absolute inset-0 pointer-events-none">
         {stars.map((star) => (
           <div
             key={star.id}
-            className="absolute rounded-full bg-white/70"
+            className="absolute rounded-full bg-[#C9972E]"
             style={{
               left: `${star.x}%`,
               top: `${star.y}%`,
               width: `${star.size}px`,
               height: `${star.size}px`,
-              opacity: 0.5,
+              opacity: 0.35,
               animation: prefersReducedMotion 
                 ? 'none' 
                 : `star-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite alternate`,
@@ -52,39 +52,37 @@ const NebulaBackground: React.FC = () => {
         ))}
       </div>
 
-      {/* 2. Celestial Void and Slowly Rotating Swirl Arms */}
-      {/* Positioned right-of-center and vertically centered */}
+      {/* 2. Golden Celestial Void and Slowly Rotating Swirl Arms */}
       <div 
-        className="absolute top-[45%] right-[-15%] sm:right-[-5%] md:right-[5%] lg:right-[10%] -translate-y-1/2 w-[350px] h-[350px] sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px] lg:w-[1000px] lg:h-[1000px] xl:w-[1200px] xl:h-[1200px] pointer-events-none flex items-center justify-center"
+        className="absolute top-[45%] right-[-15%] sm:right-[-5%] md:right-[5%] lg:right-[10%] -translate-y-1/2 w-[350px] h-[350px] sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px] lg:w-[1000px] lg:h-[1000px] xl:w-[1200px] xl:h-[1200px] pointer-events-none flex items-center justify-center opacity-70"
       >
         {/* Swirl Arms SVG */}
         <svg 
           viewBox="0 0 1000 1000" 
           className="absolute w-full h-full scale-[1.25] sm:scale-110 lg:scale-100"
-          style={{ mixBlendMode: 'screen' }}
+          style={{ mixBlendMode: 'multiply' }}
         >
           <defs>
-            {/* Swirl Accent Gradients (#7A0F1F deep crimson -> #E11D48 rose -> transparent) */}
-            {/* Using userSpaceOnUse so it maps to the entire 1000x1000 SVG coordinates instead of individual path bounding boxes */}
+            {/* Swirl Accent Gradients (Gold/Amber Palette) */}
             <radialGradient id="swirl-grad-inner" cx="500" cy="500" r="500" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#E11D48" stopOpacity="1.0" />
-              <stop offset="45%" stopColor="#7A0F1F" stopOpacity="0.7" />
-              <stop offset="100%" stopColor="#020204" stopOpacity="0" />
+              <stop offset="0%" stopColor="#C9972E" stopOpacity="0.45" />
+              <stop offset="45%" stopColor="#D9A94A" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#FAF6EC" stopOpacity="0" />
             </radialGradient>
 
             <radialGradient id="swirl-grad-mid" cx="500" cy="500" r="500" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#E11D48" stopOpacity="0.8" />
-              <stop offset="55%" stopColor="#7A0F1F" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#020204" stopOpacity="0" />
+              <stop offset="0%" stopColor="#D9A94A" stopOpacity="0.4" />
+              <stop offset="55%" stopColor="#B9821F" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#FAF6EC" stopOpacity="0" />
             </radialGradient>
 
             <radialGradient id="swirl-grad-outer" cx="500" cy="500" r="500" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#F97316" stopOpacity="0.6" />
-              <stop offset="65%" stopColor="#7A0F1F" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#020204" stopOpacity="0" />
+              <stop offset="0%" stopColor="#E6C575" stopOpacity="0.35" />
+              <stop offset="65%" stopColor="#C9972E" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#FAF6EC" stopOpacity="0" />
             </radialGradient>
 
-            {/* Standard blurs - disabled (stdDeviation="0") on mobile/tablet to boost GPU performance dramatically */}
+            {/* Standard blurs */}
             <filter id="blur-inner" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation={isMobile ? "5" : "30"} />
             </filter>
@@ -96,7 +94,7 @@ const NebulaBackground: React.FC = () => {
             </filter>
           </defs>
 
-          {/* Innermost Swirl Layer - Brightest & Closest (Clockwise) */}
+          {/* Innermost Swirl Layer */}
           <g 
             className="origin-center"
             style={{
@@ -113,7 +111,7 @@ const NebulaBackground: React.FC = () => {
             />
           </g>
 
-          {/* Middle Swirl Layer - Rotating Reverse (Counter-Clockwise) - Completely omitted on mobile/tablet */}
+          {/* Middle Swirl Layer */}
           {!prefersReducedMotion && !isMobile && (
             <g 
               className="origin-center"
@@ -132,7 +130,7 @@ const NebulaBackground: React.FC = () => {
             </g>
           )}
 
-          {/* Outermost Swirl Layer - Largest & Most Blurred (Clockwise) - Omitted on mobile/tablet to save layers */}
+          {/* Outermost Swirl Layer */}
           {!isMobile && (
             <g 
               className="origin-center"
@@ -152,9 +150,8 @@ const NebulaBackground: React.FC = () => {
           )}
         </svg>
 
-        {/* Central Celestial Void (Planet Silhouette / Black Hole) */}
-        {/* Desktop: 750px | Large Desktop: 850px | Tablet: 520px | Mobile: 260px */}
-        <div className="absolute rounded-full bg-[#05050A] w-[260px] h-[260px] sm:w-[380px] sm:h-[380px] md:w-[520px] md:h-[520px] lg:w-[750px] lg:h-[750px] xl:w-[850px] xl:h-[850px] z-10 border border-white/5 shadow-[inset_0_0_50px_rgba(0,0,0,1.0),0_0_30px_rgba(225,29,72,0.08)]"></div>
+        {/* Central Celestial Void (Light Golden Orbital Rim) */}
+        <div className="absolute rounded-full bg-[#FFFDF8]/40 backdrop-blur-sm w-[260px] h-[260px] sm:w-[380px] sm:h-[380px] md:w-[520px] md:h-[520px] lg:w-[750px] lg:h-[750px] xl:w-[850px] xl:h-[850px] z-10 border border-[#C9972E]/20 shadow-[0_0_40px_rgba(201,151,46,0.1)]"></div>
       </div>
 
       <style>{`
@@ -168,7 +165,7 @@ const NebulaBackground: React.FC = () => {
         }
         @keyframes star-twinkle {
           0% { opacity: 0.15; transform: scale(0.85); }
-          100% { opacity: 0.85; transform: scale(1.15); }
+          100% { opacity: 0.65; transform: scale(1.15); }
         }
       `}</style>
     </div>
