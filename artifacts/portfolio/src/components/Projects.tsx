@@ -596,7 +596,13 @@ const Projects: React.FC = () => {
 
     const activeEl = list.querySelector(`[data-project-id="${activeId}"]`) as HTMLElement;
     if (activeEl) {
-      activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      const elTop = activeEl.offsetTop - list.offsetTop;
+      const elBottom = elTop + activeEl.offsetHeight;
+      if (elTop < list.scrollTop) {
+        list.scrollTo({ top: elTop, behavior: 'smooth' });
+      } else if (elBottom > list.scrollTop + list.clientHeight) {
+        list.scrollTo({ top: elBottom - list.clientHeight, behavior: 'smooth' });
+      }
     }
   }, [activeId]);
 
