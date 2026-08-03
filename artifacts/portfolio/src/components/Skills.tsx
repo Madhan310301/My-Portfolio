@@ -44,6 +44,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Data modeling, ML pipelines, edge telemetry processing, agentic chains.",
     growth: { '2023': 30, '2024': 60, '2025': 78, '2026': 88 },
     projects: [
+      { name: 'Drishti', slug: 'drishti' },
       { name: 'SafePathAI', slug: 'safepath-ai' },
       { name: 'AgriGrade', slug: 'agrigrade' },
       { name: 'RenoAI', slug: 'renoai' }
@@ -100,6 +101,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Classical ML modeling, tabular data analytics, preprocessing, scoring models.",
     growth: { '2023': 30, '2024': 50, '2025': 68, '2026': 80 },
     projects: [
+      { name: 'Drishti', slug: 'drishti' },
       { name: 'SafePathAI', slug: 'safepath-ai' },
       { name: 'AgriGrade', slug: 'agrigrade' }
     ]

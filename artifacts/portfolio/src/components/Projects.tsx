@@ -363,6 +363,23 @@ const PROJECTS: Project[] = [
     challenge: "Designing interactive data visualizations and animations that feel cinematic without sacrificing performance.",
     liveDemo: "/",
   },
+  {
+    id: 21,
+    slug: "drishti",
+    tag: "[BUILD-21]",
+    title: "Drishti",
+    category: "Predictive Policing & Patrol Optimization",
+    desc: "Predictive command console for Real-Time Crime Centers (RTCC) combining DBSCAN hotspots, Isolation Forest surge alerts, SHAP explainable risk scores, and PuLP patrol route optimization.",
+    duration: "Completed 2026",
+    stack: ["Python", "FastAPI", "Scikit-learn", "SHAP", "PuLP", "DBSCAN", "Isolation Forest", "Pandas", "Pyvis", "Leaflet"],
+    fullDesc1: "Drishti was built for the Karnataka Police Datathon 2026 (Challenge 02) to bridge the Real-Time Crime Center (RTCC) gap — moving beyond static prediction heatmaps to actionable, optimized patrol deployment.",
+    fullDesc2: "The system combines DBSCAN spatial clustering, Isolation Forest surge anomaly detection, and real district socio-economic statistics with a supervised risk proxy. SHAP TreeExplainer provides transparent natural-language risk attributions, while a PuLP integer programming solver computes optimal patrol unit placements that maximize covered risk while minimizing response latency.",
+    milestone: "Built for Karnataka Police Datathon 2026 (Challenge 02) — Team Leader for end-to-end architecture & API integration.",
+    keyFeature: "PuLP patrol route simulator + SHAP explainable AI risk scoring + DBSCAN/Isolation Forest surge detection.",
+    problem: "Most crime analytics tools only generate static heatmaps — predicting risk without providing actionable, optimized patrol decision strategies.",
+    challenge: "Solving multi-unit integer programming constraints over real-time spatial hotspot grids while keeping API latency sub-second.",
+    github: "https://github.com/Madhan310301/Drishti",
+  },
 ];
 
 const SCROLL_THRESHOLD = 80;
