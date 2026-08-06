@@ -150,12 +150,18 @@
     height: 12px;
     pointer-events: none;
     border-color: rgba(201, 151, 46, 0.4);
-    transition: border-color 0.3s ease;
+    transition: transform 0.25s ease-out, border-color 0.25s ease-out;
     z-index: 10;
   }
-  .hud-bracket:hover::before,
-  .hud-bracket:hover::after {
-    border-color: #C9972E;
+  @media (hover: hover) {
+    .hud-bracket:hover::before {
+      border-color: #C9972E;
+      transform: translate(-3px, -3px);
+    }
+    .hud-bracket:hover::after {
+      border-color: #C9972E;
+      transform: translate(3px, 3px);
+    }
   }
   .hud-bracket::before {
     top: -1px;

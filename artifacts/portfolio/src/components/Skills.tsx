@@ -165,7 +165,11 @@ const Skills: React.FC = () => {
 
           <div className="grid lg:grid-cols-12 gap-8">
             
-            <div className="lg:col-span-7 hud-bracket bg-[#FFFDF8] border border-[#C9972E]/25 p-4 sm:p-6 flex flex-col rounded-xl shadow-sm">
+            <motion.div
+              whileHover={{ scale: 1.01, y: -3 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="lg:col-span-7 hud-bracket bg-[#FFFDF8] border border-[#C9972E]/25 p-4 sm:p-6 flex flex-col rounded-xl shadow-sm hover:shadow-[0_8px_30px_rgba(201,151,46,0.2)]"
+            >
               <div className="flex flex-wrap items-center justify-between mb-8 gap-4">
                 <div className="font-mono text-[#C9972E] font-semibold">// SKILLS_VISUALIZER</div>
                 
@@ -283,10 +287,14 @@ const Skills: React.FC = () => {
                   </motion.div>
                 </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
 
             <div className="lg:col-span-5 flex flex-col gap-6">
-              <div className="hud-bracket bg-[#FFFDF8] border border-[#C9972E]/30 p-6 relative overflow-hidden h-full rounded-xl shadow-sm">
+              <motion.div
+                whileHover={{ scale: 1.01, y: -3 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="hud-bracket bg-[#FFFDF8] border border-[#C9972E]/30 p-6 relative overflow-hidden h-full rounded-xl shadow-sm hover:shadow-[0_8px_30px_rgba(201,151,46,0.2)]"
+              >
                 <div className="font-mono text-xs text-[#C9972E] mb-2 uppercase tracking-widest font-semibold">// SKILL_PROFILES</div>
                 <h3 className="text-2xl font-bold text-[#241B10] mb-2">{skillObj.name}</h3>
                 <span className="inline-block text-xs font-mono px-2.5 py-1 bg-[#FAF6EC] border border-[#C9972E]/30 rounded text-[#C9972E] font-semibold mb-4">
@@ -313,7 +321,7 @@ const Skills: React.FC = () => {
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
           </div>

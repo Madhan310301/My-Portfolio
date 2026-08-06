@@ -164,9 +164,15 @@ const ServicesSection: React.FC = () => {
             <h3 className="text-2xl sm:text-3xl font-display font-bold text-[#241B10]">Solutions You Can Hire Me For</h3>
           </div>
 
-          {/* Services Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {SERVICES.map((service, i) => {
+          {/* Services Cards Grid with Staggered Scroll Reveal & Hover Micro-Interactions */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+          >
+            {SERVICES.map((service) => {
               const Icon = service.icon;
               const waMessage = `Hi ! Madhan I have came across your Portfolio and Saw That You provide ${service.waText} , May I know Further Details about it !`;
               const waUrl = `https://wa.me/917598036419?text=${encodeURIComponent(waMessage)}`;
@@ -176,11 +182,9 @@ const ServicesSection: React.FC = () => {
                   href={waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="hud-bracket bg-[#FFFDF8] p-6 border border-[#C9972E]/25 hover:border-[#C9972E] transition-all flex flex-col h-full shadow-[0_4px_20px_rgba(120,90,40,0.06)] group cursor-pointer block rounded-xl"
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="hud-bracket bg-[#FFFDF8] p-6 border border-[#C9972E]/25 hover:border-[#C9972E] transition-all flex flex-col h-full shadow-[0_4px_20px_rgba(120,90,40,0.06)] hover:shadow-[0_8px_30px_rgba(201,151,46,0.2)] group cursor-pointer block rounded-xl"
                 >
                   <div className="w-10 h-10 rounded bg-[#C9972E]/10 border border-[#C9972E]/30 flex items-center justify-center mb-5 text-[#C9972E] group-hover:bg-[#C9972E] group-hover:text-white transition-all duration-300">
                     <Icon size={20} />
@@ -197,7 +201,7 @@ const ServicesSection: React.FC = () => {
                 </motion.a>
               );
             })}
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

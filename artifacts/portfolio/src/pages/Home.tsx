@@ -10,6 +10,7 @@ import SolutionsSection from '@/components/SolutionsSection';
 import Credentials from '@/components/Credentials';
 import Education from '@/components/Education';
 import Contact from '@/components/Contact';
+import IdCardUnlockIntro from '@/components/IdCardUnlockIntro';
 
 const Home: React.FC = () => {
   useEffect(() => {
@@ -23,6 +24,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen text-foreground font-sans relative selection:bg-primary/30 selection:text-primary-foreground">
+      <IdCardUnlockIntro />
       <NebulaBackground />
       <Navbar />
       

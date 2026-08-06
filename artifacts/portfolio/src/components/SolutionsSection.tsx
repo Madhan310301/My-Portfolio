@@ -82,8 +82,14 @@ const SolutionsSection: React.FC = () => {
           </div>
 
           {/* 3 Sub-Offerings Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-            {INTERACTIVE_SOLUTIONS.map((exp, idx) => {
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16"
+          >
+            {INTERACTIVE_SOLUTIONS.map((exp) => {
               const IconComp = exp.icon;
               return (
                 <motion.a
@@ -91,11 +97,9 @@ const SolutionsSection: React.FC = () => {
                   href={exp.storeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="hud-bracket bg-[#FFFDF8] p-6 border border-[#C9972E]/30 hover:border-[#C9972E] transition-all flex flex-col justify-between rounded-xl group cursor-pointer shadow-sm hover:shadow-[0_6px_24px_rgba(201,151,46,0.2)]"
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="hud-bracket bg-[#FFFDF8] p-6 border border-[#C9972E]/30 hover:border-[#C9972E] transition-all flex flex-col justify-between rounded-xl group cursor-pointer shadow-sm hover:shadow-[0_8px_30px_rgba(201,151,46,0.25)]"
                 >
                   <div>
                     <div className="w-10 h-10 rounded-lg bg-[#C9972E]/10 border border-[#C9972E]/30 flex items-center justify-center mb-4 text-[#C9972E] group-hover:bg-[#C9972E] group-hover:text-white transition-all duration-300">
@@ -119,7 +123,7 @@ const SolutionsSection: React.FC = () => {
                 </motion.a>
               );
             })}
-          </div>
+          </motion.div>
 
           {/* Target Solutions Pills */}
           <div className="pt-8 border-t border-[#C9972E]/20">

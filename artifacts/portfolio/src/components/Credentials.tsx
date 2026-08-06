@@ -119,16 +119,20 @@ const Credentials: React.FC = () => {
             <h2 className="text-3xl md:text-5xl font-display font-bold text-[#241B10]">Recognition & Milestones</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            {CREDENTIALS.map((cred, i) => {
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto"
+          >
+            {CREDENTIALS.map((cred) => {
               const isFlipped = flippedId === cred.id;
               return (
                 <motion.div 
                   key={cred.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.6 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
                   className="w-full h-full min-h-[280px]"
                 >
                   <div 
@@ -204,7 +208,7 @@ const Credentials: React.FC = () => {
                 </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </motion.div>
 
       </div>

@@ -18,18 +18,33 @@ const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    let ticking = false;
 
-      const sections = NAV_LINKS.map((link) => link.href.substring(1));
-      let current = '';
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element && window.scrollY >= element.offsetTop - 200) {
-          current = section;
-        }
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 50);
+
+          const scrollPos = window.scrollY + 200;
+          const sections = NAV_LINKS.map((link) => link.href.substring(1));
+          let current = '';
+
+          for (const section of sections) {
+            const element = document.getElementById(section);
+            if (element) {
+              const top = element.offsetTop;
+              if (scrollPos >= top) {
+                current = section;
+              }
+            }
+          }
+
+          setActiveSection(current);
+          ticking = false;
+        });
+
+        ticking = true;
       }
-      setActiveSection(current);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -51,10 +66,10 @@ const Navbar: React.FC = () => {
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`max-w-6xl mx-auto rounded-2xl px-5 py-3 flex items-center justify-between pointer-events-auto transition-all duration-300 border ${
+        className={`max-w-6xl mx-auto rounded-2xl px-5 flex items-center justify-between pointer-events-auto transition-all duration-300 border ${
           isScrolled
-            ? 'bg-[#FAF6EC]/90 backdrop-blur-xl border-[#C9972E]/30 shadow-[0_8px_32px_rgba(120,90,40,0.1)]'
-            : 'bg-[#FAF6EC]/70 backdrop-blur-lg border-[#C9972E]/20 shadow-[0_4px_24px_rgba(120,90,40,0.06)]'
+            ? 'py-2.5 bg-[#FAF6EC]/92 backdrop-blur-xl border-[#C9972E]/40 shadow-[0_8px_32px_rgba(120,90,40,0.12)]'
+            : 'py-4 bg-[#FAF6EC]/75 backdrop-blur-md border-[#C9972E]/20 shadow-[0_4px_24px_rgba(120,90,40,0.06)]'
         }`}
       >
         {/* Logo */}
