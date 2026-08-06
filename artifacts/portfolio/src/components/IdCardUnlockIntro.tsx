@@ -186,6 +186,22 @@ const IdCardUnlockIntro: React.FC = () => {
                 // PORTFOLIO_SECURITY_AUTHENTICATOR
               </div>
             </div>
+
+            {/* How to Unlock Instruction Guide Banner */}
+            <div className="mt-6 p-4 rounded-xl bg-[#FAF6EC] border border-[#C9972E]/30 text-left text-xs font-mono text-[#7A6B55] space-y-2 max-w-sm sm:max-w-md shadow-sm">
+              <div className="text-[10px] text-[#C9972E] font-bold uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                <span className="w-2 h-2 rounded-full bg-[#C9972E] animate-ping"></span>
+                <span>// HOW_TO_ENTER_PORTFOLIO:</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded-full bg-[#C9972E]/20 text-[#C9972E] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">1</span>
+                <span>Tap the <strong className="text-[#241B10]">Visitor Pass</strong> peeking on the left screen edge to extract it.</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded-full bg-[#C9972E]/20 text-[#C9972E] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">2</span>
+                <span>Drag or tap the pass to <strong className="text-[#241B10]">swipe right →</strong> across the reader slot & unlock!</span>
+              </div>
+            </div>
           </div>
 
           {/* Interactive Physical Visitor Access Pass Card */}
