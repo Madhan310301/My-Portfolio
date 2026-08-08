@@ -821,33 +821,33 @@ const Projects: React.FC = () => {
                       <p className="text-[#241B10] font-medium">{activeProject.challenge}</p>
                     </div>
                   </div>
+
+                  {/* Pager controls */}
+                  <div className="flex items-center justify-between border-t border-[#C9972E]/20 pt-6 mt-auto">
+                    <button
+                      onClick={() => handleNodeClick(activeId - 1)}
+                      disabled={isFirst}
+                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] text-xs font-mono rounded-lg border border-[#C9972E]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] transition-all disabled:opacity-25 disabled:cursor-not-allowed bg-[#FFFDF8]"
+                    >
+                      <ChevronLeft size={14} /> PREV
+                    </button>
+
+                    <div className="font-mono text-sm text-[#7A6B55] tabular-nums">
+                      <span className="text-[#241B10] font-bold">{String(activeId).padStart(2, '0')}</span>
+                      <span className="mx-1.5 text-[#7A6B55]/50">/</span>
+                      {String(PROJECTS.length).padStart(2, '0')}
+                    </div>
+
+                    <button
+                      onClick={() => handleNodeClick(activeId + 1)}
+                      disabled={isLast}
+                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] text-xs font-mono rounded-lg border border-[#C9972E]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] transition-all disabled:opacity-25 disabled:cursor-not-allowed bg-[#FFFDF8]"
+                    >
+                      NEXT <ChevronRight size={14} />
+                    </button>
+                  </div>
                 </motion.div>
               </AnimatePresence>
-
-              {/* ── Counter + Prev / Next ── */}
-              <div className="flex items-center justify-between mt-4 px-1">
-                <button
-                  onClick={() => handleNodeClick(activeId - 1)}
-                  disabled={isFirst}
-                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-[#C9972E]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] transition-all disabled:opacity-25 disabled:cursor-not-allowed bg-[#FFFDF8]"
-                >
-                  <ChevronLeft size={14} /> PREV
-                </button>
-
-                <div className="font-mono text-sm text-[#7A6B55] tabular-nums">
-                  <span className="text-[#241B10] font-bold">{String(activeId).padStart(2, '0')}</span>
-                  <span className="mx-1.5 text-[#7A6B55]/50">/</span>
-                  {String(PROJECTS.length).padStart(2, '0')}
-                </div>
-
-                <button
-                  onClick={() => handleNodeClick(activeId + 1)}
-                  disabled={isLast}
-                  className="flex items-center gap-1.5 px-4 py-2 text-xs font-mono rounded-lg border border-[#C9972E]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] transition-all disabled:opacity-25 disabled:cursor-not-allowed bg-[#FFFDF8]"
-                >
-                  NEXT <ChevronRight size={14} />
-                </button>
-              </div>
             </div>
 
             {/* ── RIGHT: Node Navigator ── */}

@@ -1,168 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import HireMeButton from './HireMeButton';
-
-const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Services', href: '#services' },
-  { label: 'Credentials', href: '#credentials' },
-  { label: 'Contact', href: '#contact' },
-];
+import React, { useState } from 'react';
+import NavDrawer from './NavDrawer';
 
 const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 50);
-
-          const scrollPos = window.scrollY + 200;
-          const sections = NAV_LINKS.map((link) => link.href.substring(1));
-          let current = '';
-
-          for (const section of sections) {
-            const element = document.getElementById(section);
-            if (element) {
-              const top = element.offsetTop;
-              if (scrollPos >= top) {
-                current = section;
-              }
-            }
-          }
-
-          setActiveSection(current);
-          ticking = false;
-        });
-
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    setIsMobileMenuOpen(false);
-    if (href === '#') return;
-    const target = document.querySelector(href);
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
-  };
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
-    <nav className="fixed top-4 left-0 right-0 z-50 px-4 pointer-events-none">
-      {/* Floating glass pill */}
-      <motion.div
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`max-w-6xl mx-auto rounded-2xl px-5 flex items-center justify-between pointer-events-auto transition-all duration-300 border ${
-          isScrolled
-            ? 'py-2.5 bg-[#FAF6EC]/92 backdrop-blur-xl border-[#C9972E]/40 shadow-[0_8px_32px_rgba(120,90,40,0.12)]'
-            : 'py-4 bg-[#FAF6EC]/75 backdrop-blur-md border-[#C9972E]/20 shadow-[0_4px_24px_rgba(120,90,40,0.06)]'
-        }`}
-      >
-        {/* Logo */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="w-10 h-10 rounded-full border border-[#C9972E]/60 flex items-center justify-center bg-gradient-to-br from-[#D9A94A] to-[#B9821F] shadow-[0_2px_12px_rgba(201,151,46,0.3)]">
-            <span className="font-display font-bold text-lg tracking-tight text-white">MK</span>
-          </div>
-          <div className="hidden sm:block">
-            <h1 className="font-display font-bold text-base leading-tight text-[#241B10]">Madhan Kumar</h1>
-            <p className="text-xs text-[#C9972E] font-mono tracking-wider">Full-Stack · AI · IoT</p>
-          </div>
-        </div>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <div className="flex items-center gap-6">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => scrollTo(e, link.href)}
-                className={`text-sm font-medium tracking-wide transition-colors relative ${
-                  activeSection === link.href.substring(1)
-                    ? 'text-[#C9972E] font-bold'
-                    : 'text-[#7A6B55] hover:text-[#241B10]'
-                }`}
-              >
-                {link.label}
-                {activeSection === link.href.substring(1) && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-[#C9972E] rounded-full"
-                  />
-                )}
-              </a>
-            ))}
-          </div>
-
-          <HireMeButton className="px-5 py-2 text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg hover:brightness-105 transition-all shadow-[0_2px_12px_rgba(201,151,46,0.3)]" />
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 sm:px-10 py-6 flex items-start justify-between pointer-events-none">
+        {/* Top Left Logo & Eyebrow */}
+        <div className="pointer-events-auto flex flex-col gap-1 select-none">
           <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2 text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg hover:brightness-105 transition-all shadow-[0_2px_12px_rgba(201,151,46,0.3)]"
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="font-display text-2xl sm:text-3xl text-[#f5f5f5] tracking-wider font-bold hover:text-[#00d4ff] transition-colors"
           >
-            View Resume
+            MK<span className="text-[#00d4ff]">.</span>
           </a>
+
+          <div className="hero-eyebrow flex items-center gap-2 font-body text-[10px] sm:text-xs text-[#888888] tracking-widest uppercase font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] pulse-dot inline-block" />
+            <span>SHIPPING SYSTEMS INTO REALITY.</span>
+          </div>
         </div>
 
-        {/* Mobile Menu Toggle */}
+        {/* Top Right Menu Button */}
         <button
-          className="md:hidden text-[#241B10] p-2 pointer-events-auto"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          aria-expanded={isMobileMenuOpen}
+          onClick={() => setIsDrawerOpen(true)}
+          className="pointer-events-auto px-4 py-2 sm:px-5 sm:py-2.5 rounded-full border border-[#222] bg-[#0f0f0f]/80 backdrop-blur-md text-[#f5f5f5] hover:text-[#00d4ff] hover:border-[#00d4ff]/60 transition-all font-body text-xs font-semibold tracking-wider uppercase cursor-pointer flex items-center gap-2 shadow-lg"
+          aria-label="Open menu navigation"
         >
-          {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          <span>Menu</span>
+          <span className="text-[#00d4ff] font-bold text-sm">+</span>
         </button>
-      </motion.div>
+      </header>
 
-      {/* Mobile Menu Drawer */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-            className="max-w-6xl mx-auto mt-2 rounded-2xl bg-[#FFFDF8]/95 backdrop-blur-xl border border-[#C9972E]/30 shadow-[0_8px_32px_rgba(120,90,40,0.12)] py-4 px-6 flex flex-col gap-1 pointer-events-auto md:hidden"
-          >
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => scrollTo(e, link.href)}
-                className="text-base font-medium text-[#7A6B55] hover:text-[#C9972E] py-2.5 border-b border-[#C9972E]/10 transition-colors last:border-0"
-              >
-                {link.label}
-              </a>
-            ))}
-            <HireMeButton className="mt-3 px-5 py-3 text-center text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg" />
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 px-5 py-3 text-center text-sm font-bold bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white rounded-lg"
-            >
-              View Resume
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+      {/* Slide-out Navigation Drawer */}
+      <NavDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+    </>
   );
 };
 

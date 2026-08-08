@@ -208,31 +208,31 @@ const IdCardUnlockIntro: React.FC = () => {
           {introState === 'idle' && (
             <motion.div
               initial={{ x: -180 }}
-              animate={{ x: -110 }}
-              whileHover={{ x: -80 }}
+              animate={{ x: -120 }}
+              whileHover={{ x: -70 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
               onClick={handleCardClick}
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') handleCardClick();
               }}
-              className="fixed left-0 top-1/2 -translate-y-1/2 z-[110] cursor-pointer group select-none focus:outline-none"
+              className="fixed left-0 top-1/2 -translate-y-1/2 z-[110] cursor-pointer group select-none focus:outline-none max-w-[85vw]"
             >
               {/* Visitor Pass Peek Card */}
-              <div className="w-64 sm:w-72 hud-bracket bg-[#FFFDF8] p-5 border-2 border-[#C9972E] rounded-2xl shadow-[0_8px_32px_rgba(201,151,46,0.35)] relative transform group-hover:scale-105 transition-all">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full border-2 border-[#C9972E] bg-gradient-to-br from-[#D9A94A] to-[#B9821F] flex items-center justify-center text-white shrink-0 shadow-sm">
-                    <UserCheck size={22} />
+              <div className="w-56 sm:w-72 hud-bracket bg-[#FFFDF8] p-4 sm:p-5 border-2 border-[#C9972E] rounded-2xl shadow-[0_8px_32px_rgba(201,151,46,0.35)] relative transform group-hover:scale-105 transition-all">
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-[#C9972E] bg-gradient-to-br from-[#D9A94A] to-[#B9821F] flex items-center justify-center text-white shrink-0 shadow-sm">
+                    <UserCheck size={20} className="sm:w-[22px] sm:h-[22px]" />
                   </div>
                   <div>
-                    <div className="font-display font-bold text-sm text-[#241B10]">VISITOR ACCESS PASS</div>
-                    <div className="font-mono text-[10px] text-[#C9972E] font-semibold">LEVEL 01 · UNRESTRICTED</div>
-                    <div className="font-mono text-[9px] text-[#7A6B55] mt-0.5">// VST-2026-PASS</div>
+                    <div className="font-display font-bold text-xs sm:text-sm text-[#241B10]">VISITOR ACCESS PASS</div>
+                    <div className="font-mono text-[9px] sm:text-[10px] text-[#C9972E] font-semibold">LEVEL 01 · UNRESTRICTED</div>
+                    <div className="font-mono text-[8px] sm:text-[9px] text-[#7A6B55] mt-0.5">// VST-2026-PASS</div>
                   </div>
                 </div>
 
                 {/* Floating Tap Hint Badge */}
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 bg-[#C9972E] text-white text-[9px] font-mono font-bold px-2 py-1 rounded-full shadow-md animate-pulse">
+                <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 bg-[#C9972E] text-white text-[8px] sm:text-[9px] font-mono font-bold px-2 py-0.5 sm:py-1 rounded-full shadow-md animate-pulse">
                   <span>SWIPE</span>
                   <ArrowRight size={10} />
                 </div>
@@ -242,14 +242,14 @@ const IdCardUnlockIntro: React.FC = () => {
 
           {introState === 'extracted' && (
             <motion.div
-              initial={{ x: -300, y: '-50%', opacity: 0 }}
+              initial={{ x: -280, y: '-50%', opacity: 0 }}
               animate={{ x: 0, y: '-50%', opacity: 1 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
               drag="x"
-              dragConstraints={{ left: 0, right: 250 }}
+              dragConstraints={{ left: -10, right: 200 }}
               dragElastic={0.2}
               onDragEnd={(_, info) => {
-                if (info.offset.x > 80 || info.velocity.x > 200) {
+                if (info.offset.x > 40 || info.velocity.x > 150) {
                   triggerSwipeSequence();
                 }
               }}
@@ -258,25 +258,25 @@ const IdCardUnlockIntro: React.FC = () => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') triggerSwipeSequence();
               }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 z-[110] cursor-grab active:cursor-grabbing focus:outline-none"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 z-[110] cursor-grab active:cursor-grabbing focus:outline-none w-[90vw] max-w-[320px] sm:max-w-[340px]"
             >
-              <div className="w-72 sm:w-80 hud-bracket bg-[#FFFDF8] p-6 border-2 border-[#C9972E] rounded-2xl shadow-[0_12px_40px_rgba(201,151,46,0.4)] relative">
-                <div className="flex items-center justify-between border-b border-[#C9972E]/20 pb-3 mb-4">
+              <div className="w-full hud-bracket bg-[#FFFDF8] p-5 sm:p-6 border-2 border-[#C9972E] rounded-2xl shadow-[0_12px_40px_rgba(201,151,46,0.4)] relative">
+                <div className="flex items-center justify-between border-b border-[#C9972E]/20 pb-2.5 mb-3.5">
                   <div className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#C9972E]"></div>
-                    <span className="font-mono text-[10px] text-[#C9972E] font-bold uppercase">// READY_TO_SWIPE</span>
+                    <span className="font-mono text-[9px] sm:text-[10px] text-[#C9972E] font-bold uppercase">// READY_TO_SWIPE</span>
                   </div>
-                  <span className="font-mono text-[10px] text-[#7A6B55]">PASS: VST-2026</span>
+                  <span className="font-mono text-[9px] sm:text-[10px] text-[#7A6B55]">PASS: VST-2026</span>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full border-2 border-[#C9972E] bg-gradient-to-br from-[#D9A94A] to-[#B9821F] flex items-center justify-center text-white shrink-0 shadow-md">
-                    <Key size={26} />
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-[#C9972E] bg-gradient-to-br from-[#D9A94A] to-[#B9821F] flex items-center justify-center text-white shrink-0 shadow-md">
+                    <Key size={24} className="sm:w-[26px] sm:h-[26px]" />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-base text-[#241B10]">VISITOR CLEARANCE PASS</h3>
-                    <p className="font-mono text-xs text-[#C9972E] font-semibold">LEVEL 01 · UNRESTRICTED</p>
-                    <p className="font-mono text-[10px] text-[#7A6B55] mt-1">// SWIPE RIGHT →</p>
+                    <h3 className="font-display font-bold text-sm sm:text-base text-[#241B10]">VISITOR CLEARANCE PASS</h3>
+                    <p className="font-mono text-[10px] sm:text-xs text-[#C9972E] font-semibold">LEVEL 01 · UNRESTRICTED</p>
+                    <p className="font-mono text-[9px] sm:text-[10px] text-[#7A6B55] mt-1">// SWIPE RIGHT →</p>
                   </div>
                 </div>
               </div>

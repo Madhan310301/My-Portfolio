@@ -59,17 +59,17 @@ const Hero: React.FC = () => {
             </p>
             
             {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
               <a 
                 href="#projects" 
-                className="px-7 py-3.5 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold text-sm rounded-full hover:brightness-105 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(201,151,46,0.3)] flex items-center gap-2 cursor-pointer"
+                className="px-7 py-3.5 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold text-sm rounded-full hover:brightness-105 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(201,151,46,0.3)] flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
               >
                 → Explore Work
               </a>
 
               <a 
                 href="#contact"
-                className="px-7 py-3.5 bg-[#FFFDF8] border border-[#C9972E]/40 text-[#241B10] font-bold text-sm rounded-full hover:border-[#C9972E] hover:bg-[#FAF6EC] transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+                className="px-7 py-3.5 bg-[#FFFDF8] border border-[#C9972E]/40 text-[#241B10] font-bold text-sm rounded-full hover:border-[#C9972E] hover:bg-[#FAF6EC] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm min-h-[44px]"
               >
                 <span className="w-2 h-2 rounded-full bg-[#C9972E]"></span>
                 Contact Me
@@ -79,7 +79,7 @@ const Hero: React.FC = () => {
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3.5 border border-[#7A6B55]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] font-mono text-xs rounded-full transition-all flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 border border-[#7A6B55]/30 text-[#7A6B55] hover:text-[#241B10] hover:border-[#C9972E] font-mono text-xs rounded-full transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
               >
                 ↓ Download CV
               </a>

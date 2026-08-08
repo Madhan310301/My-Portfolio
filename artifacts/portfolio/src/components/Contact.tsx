@@ -96,7 +96,7 @@ const Contact: React.FC = () => {
               <div className="mb-10">
                 <a 
                   href="mailto:madhankumartbharathuniv@gmail.com"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold text-sm rounded-full hover:brightness-105 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(201,151,46,0.3)]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 min-h-[44px] bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold text-sm rounded-full hover:brightness-105 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(201,151,46,0.3)]"
                 >
                   <Mail size={18} className="text-white" />
                   <span>Send Direct Email</span>

@@ -179,7 +179,7 @@ const Skills: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar border-b border-[#C9972E]/20 pb-4 mb-8">
+              <div className="flex gap-2 overflow-x-auto no-scrollbar border-b border-[#C9972E]/20 pb-4 mb-8">
                 {[
                   { id: 'bar', label: '📊 Bar Chart' },
                   { id: 'donut', label: '🍩 Donut Chart' },
@@ -188,9 +188,9 @@ const Skills: React.FC = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveChart(tab.id as any)}
-                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors shrink-0 ${
+                    className={`px-4 py-2.5 min-h-[44px] flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                       activeChart === tab.id 
-                        ? 'bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white shadow-[0_2px_10px_rgba(201,151,46,0.3)]' 
+                        ? 'bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white shadow-[0_2px_10px_rgba(201,151,46,0.3)] font-bold' 
                         : 'bg-[#FAF6EC] text-[#7A6B55] hover:text-[#241B10] hover:bg-[#FAF6EC]/80 border border-[#C9972E]/20'
                     }`}
                   >
