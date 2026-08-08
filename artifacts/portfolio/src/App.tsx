@@ -8,7 +8,7 @@ import Privacy from '@/pages/Privacy';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { Analytics } from '@vercel/analytics/react';
 
-import GlobalGooeyCursor from '@/components/GlobalGooeyCursor';
+import CustomCursor from '@/components/CustomCursor';
 
 const queryClient = new QueryClient();
 
@@ -27,7 +27,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <GlobalGooeyCursor />
+        <CustomCursor />
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
           <Router />
         </WouterRouter>
