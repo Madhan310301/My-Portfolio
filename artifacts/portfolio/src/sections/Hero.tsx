@@ -59,48 +59,70 @@ const Hero: React.FC<HeroProps> = ({ loaderDone }) => {
       const tl = gsap.timeline({ delay: 0.1 });
 
       // 1. Letters drop in from top with stagger & rotateX
-      tl.from('.hero-letter', {
-        y: -200,
-        opacity: 0,
-        rotateX: 90,
-        stagger: 0.06,
-        duration: 0.9,
-        ease: 'back.out(1.4)',
-      })
+      const letters = gsap.utils.toArray<HTMLElement>('.hero-letter');
+      if (letters.length > 0) {
+        tl.from(letters, {
+          y: -200,
+          opacity: 0,
+          rotateX: 90,
+          stagger: 0.06,
+          duration: 0.9,
+          ease: 'back.out(1.4)',
+        });
+      }
+
       // 2. Tagline fades in
-      .from('.hero-tagline', {
-        opacity: 0,
-        duration: 0.5,
-      }, '-=0.3')
+      const tagline = heroRef.current?.querySelector('.hero-tagline');
+      if (tagline) {
+        tl.from(tagline, {
+          opacity: 0,
+          duration: 0.5,
+        }, '-=0.3');
+      }
+
       // 3. Descriptor slides up
-      .from('.hero-descriptor', {
-        y: 40,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power2.out',
-      }, '-=0.4')
+      const descriptor = heroRef.current?.querySelector('.hero-descriptor');
+      if (descriptor) {
+        tl.from(descriptor, {
+          y: 40,
+          opacity: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+        }, '-=0.4');
+      }
+
       // 4. CTA buttons scale in
-      .from('.hero-ctas', {
-        scale: 0.85,
-        opacity: 0,
-        duration: 0.5,
-        ease: 'back.out(1.2)',
-      }, '-=0.3')
+      const ctas = heroRef.current?.querySelector('.hero-ctas');
+      if (ctas) {
+        tl.from(ctas, {
+          scale: 0.85,
+          opacity: 0,
+          duration: 0.5,
+          ease: 'back.out(1.2)',
+        }, '-=0.3');
+      }
+
       // 5. Eyebrow text
-      .from('.hero-eyebrow', {
-        x: -30,
-        opacity: 0,
-        duration: 0.5,
-      }, '-=0.6')
+      const eyebrow = heroRef.current?.querySelector('.hero-eyebrow');
+      if (eyebrow) {
+        tl.from(eyebrow, {
+          x: -30,
+          opacity: 0,
+          duration: 0.5,
+        }, '-=0.6');
+      }
+
       // 6. Blob fades in
-      .from('.hero-blob', {
-        opacity: 0,
-        duration: 1.2,
-      }, 0);
+      const blob = heroRef.current?.querySelector('.hero-blob');
+      if (blob) {
+        tl.from(blob, {
+          opacity: 0,
+          duration: 1.2,
+        }, 0);
+      }
 
       // ScrollTrigger Scatter effect for letters on desktop (>768px)
-      if (!isMobile) {
-        const letters = gsap.utils.toArray<HTMLElement>('.hero-letter');
+      if (!isMobile && letters.length > 0) {
         letters.forEach((letter, i) => {
           gsap.to(letter, {
             scrollTrigger: {
@@ -116,16 +138,19 @@ const Hero: React.FC<HeroProps> = ({ loaderDone }) => {
         });
 
         // Bottom UI elements fade fast on scroll
-        gsap.to(['.hero-descriptor', '.hero-ctas', '.hero-tagline', '.hero-scroll-indicator'], {
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: '40% top',
-            scrub: 0.8,
-          },
-          opacity: 0,
-          y: -40,
-        });
+        const fadeTargets = [descriptor, ctas, tagline, heroRef.current?.querySelector('.hero-scroll-indicator')].filter(Boolean);
+        if (fadeTargets.length > 0) {
+          gsap.to(fadeTargets, {
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: '40% top',
+              scrub: 0.8,
+            },
+            opacity: 0,
+            y: -40,
+          });
+        }
       }
     }, heroRef);
 
@@ -141,7 +166,7 @@ const Hero: React.FC<HeroProps> = ({ loaderDone }) => {
     <section
       ref={heroRef}
       id="hero"
-      className="relative min-h-screen w-full flex flex-col justify-between pt-36 pb-12 px-6 sm:px-10 overflow-hidden select-none"
+      className="relative min-h-screen w-full flex flex-col justify-between pt-28 sm:pt-32 pb-12 px-6 sm:px-10 overflow-hidden select-none"
     >
       {/* Volumetric Ambient Cyan Blob */}
       <div
@@ -154,6 +179,12 @@ const Hero: React.FC<HeroProps> = ({ loaderDone }) => {
         }}
       />
 
+      {/* Top Eyebrow Text */}
+      <div className="hero-eyebrow relative z-10 max-w-7xl mx-auto w-full flex items-center gap-2 font-body text-[10px] sm:text-xs text-[#888888] tracking-widest uppercase font-medium mt-4">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] pulse-dot inline-block" />
+        <span>SHIPPING SYSTEMS INTO REALITY.</span>
+      </div>
+
       {/* Main Oversized Name Row */}
       <div className="relative z-10 my-auto w-full max-w-7xl mx-auto flex items-center justify-center">
         <div className="w-full flex justify-between items-center relative">
@@ -161,7 +192,8 @@ const Hero: React.FC<HeroProps> = ({ loaderDone }) => {
           {nameLetters.map((char, index) => (
             <span
               key={index}
-              className="hero-letter"
+              className="hero-letter font-display text-[clamp(6rem,17vw,22rem)] text-[#f5f5f5] leading-none inline-block relative select-none"
+              style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               data-index={index}
             >
               {char}

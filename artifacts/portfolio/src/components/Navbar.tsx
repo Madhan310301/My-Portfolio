@@ -6,9 +6,9 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 sm:px-10 py-6 flex items-start justify-between pointer-events-none">
-        {/* Top Left Logo & Eyebrow */}
-        <div className="pointer-events-auto flex flex-col gap-1 select-none">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 sm:px-10 py-6 flex items-center justify-between pointer-events-none">
+        {/* Top Left Logo */}
+        <div className="pointer-events-auto flex items-center gap-4 select-none">
           <a
             href="#"
             onClick={(e) => {
@@ -19,11 +19,6 @@ const Navbar: React.FC = () => {
           >
             MK<span className="text-[#00d4ff]">.</span>
           </a>
-
-          <div className="hero-eyebrow flex items-center gap-2 font-body text-[10px] sm:text-xs text-[#888888] tracking-widest uppercase font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] pulse-dot inline-block" />
-            <span>SHIPPING SYSTEMS INTO REALITY.</span>
-          </div>
         </div>
 
         {/* Top Right Menu Button */}
