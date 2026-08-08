@@ -382,8 +382,6 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const SCROLL_THRESHOLD = 80;
-
 const Projects: React.FC = () => {
   const [activeId, setActiveId] = useState(1);
   const [direction, setDirection] = useState(1);
@@ -422,34 +420,12 @@ const Projects: React.FC = () => {
     return () => window.removeEventListener('select-project', handleSelectProject);
   }, []);
 
-  /* ── scroll-jack state refs (must be refs, not state, for event handlers) ── */
-  const isLockedRef = useRef(false);       // is page scroll currently locked?
-  const scrollAccRef = useRef(0);          // accumulated wheel delta
-  const cooldownRef = useRef(false);       // prevents re-entry flicker at boundary
-  const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastNavTimeRef = useRef(0);        // debounce rapid-fire nav
+  const lastNavTimeRef = useRef(0);
 
   // Keep ref in sync with state
   useEffect(() => {
     activeIdRef.current = activeId;
   }, [activeId]);
-
-  /* ── helpers ─────────────────────────────────────────────────────────────── */
-
-  /** Lock page scroll by hiding overflow on documentElement */
-  const lockScroll = () => {
-    if (isLockedRef.current) return;
-    isLockedRef.current = true;
-    document.documentElement.style.overflow = 'hidden';
-  };
-
-  /** Unlock page scroll */
-  const unlockScroll = () => {
-    if (!isLockedRef.current) return;
-    isLockedRef.current = false;
-    scrollAccRef.current = 0;
-    document.documentElement.style.overflow = '';
-  };
 
   /** Navigate to a specific project index with direction animation */
   const navigateTo = (id: number) => {
@@ -462,146 +438,6 @@ const Projects: React.FC = () => {
     setActiveId(clamped);
   };
 
-  /** Release the lock and set a cooldown so we don't re-lock immediately */
-  const releaseWithCooldown = () => {
-    unlockScroll();
-    cooldownRef.current = true;
-    if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
-    cooldownTimerRef.current = setTimeout(() => {
-      cooldownRef.current = false;
-    }, 600);
-  };
-
-  /* ── IntersectionObserver: engage lock when section is ~fully in view ──── */
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (cooldownRef.current) return; // don't re-engage during cooldown
-
-        if (entry.isIntersecting && entry.intersectionRatio > 0.85) {
-          // Section is nearly fully visible — snap it into view and lock
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setTimeout(() => {
-            if (!cooldownRef.current) lockScroll();
-          }, 350);
-        }
-      },
-      { threshold: [0.85] }
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
-  /* ── Wheel handler: intercept scroll while locked ─────────────────────── */
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (!isLockedRef.current) return;
-
-      e.preventDefault();
-      scrollAccRef.current += e.deltaY;
-
-      const curr = activeIdRef.current;
-
-      if (scrollAccRef.current >= SCROLL_THRESHOLD) {
-        scrollAccRef.current = 0;
-        if (curr >= PROJECTS.length) {
-          // At last project, scrolling down → release
-          releaseWithCooldown();
-          return;
-        }
-        navigateTo(curr + 1);
-      } else if (scrollAccRef.current <= -SCROLL_THRESHOLD) {
-        scrollAccRef.current = 0;
-        if (curr <= 1) {
-          // At first project, scrolling up → release
-          releaseWithCooldown();
-          return;
-        }
-        navigateTo(curr - 1);
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    return () => window.removeEventListener('wheel', handleWheel);
-  }, []);
-
-  /* ── Touch handlers: same logic for swipe on mobile ───────────────────── */
-  useEffect(() => {
-    let touchStartY = 0;
-    let touchAccY = 0;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (!isLockedRef.current) return;
-      touchStartY = e.touches[0].clientY;
-      touchAccY = 0;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isLockedRef.current) return;
-      e.preventDefault();
-
-      const deltaY = touchStartY - e.touches[0].clientY;
-      touchStartY = e.touches[0].clientY;
-      touchAccY += deltaY;
-
-      const curr = activeIdRef.current;
-
-      if (touchAccY >= SCROLL_THRESHOLD) {
-        touchAccY = 0;
-        if (curr >= PROJECTS.length) {
-          releaseWithCooldown();
-          return;
-        }
-        navigateTo(curr + 1);
-      } else if (touchAccY <= -SCROLL_THRESHOLD) {
-        touchAccY = 0;
-        if (curr <= 1) {
-          releaseWithCooldown();
-          return;
-        }
-        navigateTo(curr - 1);
-      }
-    };
-
-    window.addEventListener('touchstart', handleTouchStart, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
-
-  /* ── Keyboard navigation (arrows, Page Down/Up) ───────────────────────── */
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isLockedRef.current) return;
-
-      if (['ArrowRight', 'ArrowDown', 'PageDown'].includes(e.key)) {
-        e.preventDefault();
-        const curr = activeIdRef.current;
-        if (curr >= PROJECTS.length) {
-          releaseWithCooldown();
-          return;
-        }
-        navigateTo(curr + 1);
-      } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) {
-        e.preventDefault();
-        const curr = activeIdRef.current;
-        if (curr <= 1) {
-          releaseWithCooldown();
-          return;
-        }
-        navigateTo(curr - 1);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   /* ── Synchronize active project from URL hash ─────────────────────────── */
   useEffect(() => {
     const handleHashChange = () => {
@@ -611,9 +447,7 @@ const Projects: React.FC = () => {
         const project = PROJECTS.find(p => p.slug === slug);
         if (project && project.id !== activeIdRef.current) {
           navigateTo(project.id);
-          // Scroll section into view + lock
           sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setTimeout(() => lockScroll(), 400);
         }
       }
     };
@@ -627,7 +461,6 @@ const Projects: React.FC = () => {
         setTimeout(() => {
           setActiveId(project.id);
           sectionRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
-          setTimeout(() => lockScroll(), 200);
         }, 150);
       }
     }
@@ -653,14 +486,6 @@ const Projects: React.FC = () => {
     }
   }, [activeId]);
 
-  /* ── Cleanup on unmount ───────────────────────────────────────────────── */
-  useEffect(() => {
-    return () => {
-      unlockScroll();
-      if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
-    };
-  }, []);
-
   /* ── Card swipe on mobile (horizontal swipe on the card itself) ──────── */
   const handleCardTouchStart = (e: React.TouchEvent) => {
     touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -678,11 +503,6 @@ const Projects: React.FC = () => {
   /* ── Click handler for node list and prev/next buttons ────────────────── */
   const handleNodeClick = (id: number) => {
     navigateTo(id);
-    // If not locked yet, scroll section into view and lock
-    if (!isLockedRef.current) {
-      sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(() => lockScroll(), 400);
-    }
   };
 
   /* ── Derived values ───────────────────────────────────────────────────── */
