@@ -6,6 +6,16 @@ import SectionWatermark from './SectionWatermark';
 
 const Hero: React.FC = () => {
   const [terminalTextIndex, setTerminalTextIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile viewport to disable drag/float on the ID card
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
   const terminalLines = [
     "Currently building full-stack, AI, and IoT systems — one prototype at a time.",
     "Training predictive ML models for the AI Financial Coach.",
@@ -114,19 +124,19 @@ const Hero: React.FC = () => {
             className="relative flex flex-col items-center justify-center pt-6 lg:pt-0"
           >
             <motion.div
-              drag
+              drag={!isMobile}
               dragElastic={0.2}
               dragConstraints={{ left: -30, right: 30, top: -30, bottom: 30 }}
-              animate={{ 
+              animate={isMobile ? {} : { 
                 y: [0, -12, 0], 
                 rotateZ: [-1, 1, -1] 
               }}
-              transition={{ 
+              transition={isMobile ? {} : { 
                 duration: 6, 
                 repeat: Infinity, 
                 ease: 'easeInOut' 
               }}
-              className="w-full max-w-sm sm:max-w-md hud-bracket bg-[#FFFDF8]/95 p-6 border-2 border-[#C9972E]/30 hover:border-[#C9972E] transition-colors shadow-[0_8px_32px_rgba(120,90,40,0.12)] backdrop-blur-xl relative cursor-grab active:cursor-grabbing rounded-xl"
+              className={`w-full max-w-sm sm:max-w-md hud-bracket bg-[#FFFDF8]/95 p-6 border-2 border-[#C9972E]/30 hover:border-[#C9972E] transition-colors shadow-[0_8px_32px_rgba(120,90,40,0.12)] backdrop-blur-xl relative rounded-xl ${!isMobile ? 'cursor-grab active:cursor-grabbing' : ''}`}
             >
               {/* Header Badge Strip */}
               <div className="flex items-center justify-between border-b border-[#C9972E]/20 pb-4 mb-4">
@@ -175,7 +185,7 @@ const Hero: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                <div className="text-[9px] font-mono text-[#7A6B55] uppercase">// DRAG_TO_MOVE</div>
+                {!isMobile && <div className="text-[9px] font-mono text-[#7A6B55] uppercase">// DRAG_TO_MOVE</div>}
               </div>
             </motion.div>
           </motion.div>

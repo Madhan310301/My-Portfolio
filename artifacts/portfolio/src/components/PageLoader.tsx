@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 
 interface PageLoaderProps {
@@ -46,70 +46,27 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
 
   const numberRef = useRef<HTMLSpanElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const [isDone, setIsDone] = useState(false);
 
-  useEffect(() => {
-    // Respect prefers-reduced-motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Track whether conditions are met for the counter to start
+  const timerReadyRef = useRef(false);
+  const hasClickedRef = useRef(false);
+  const counterStartedRef = useRef(false);
 
-    if (prefersReducedMotion) {
-      document.body.style.overflow = '';
-      setIsDone(true);
-      if (onDone) onDone();
-      return;
+  // Store ambient tween references for cleanup
+  const ambientTweensRef = useRef<gsap.core.Tween[]>([]);
+
+  // The counter animation callback — called once both conditions are met
+  const startCounterAnimation = useCallback(() => {
+    if (counterStartedRef.current) return;
+    counterStartedRef.current = true;
+
+    // Hide CTA prompt
+    if (ctaRef.current) {
+      gsap.to(ctaRef.current, { opacity: 0, y: -8, duration: 0.3, ease: 'power2.in' });
     }
 
-    // Lock page scroll while loader is active
-    document.body.style.overflow = 'hidden';
-
-    // 1. GPU-accelerated continuous rotations (using CSS transform on compositor thread)
-    const radarTween = gsap.to(radarBgRef.current, {
-      rotation: 360,
-      duration: 40,
-      repeat: -1,
-      ease: 'none',
-      transformOrigin: '50% 50%',
-    });
-    const ring1Tween = gsap.to(ring1Ref.current, {
-      rotation: 360,
-      duration: 20,
-      repeat: -1,
-      ease: 'none',
-      transformOrigin: '50% 50%',
-    });
-    const ring2Tween = gsap.to(ring2Ref.current, {
-      rotation: -360,
-      duration: 15,
-      repeat: -1,
-      ease: 'none',
-      transformOrigin: '50% 50%',
-    });
-    const ring3Tween = gsap.to(ring3Ref.current, {
-      rotation: 360,
-      duration: 25,
-      repeat: -1,
-      ease: 'none',
-      transformOrigin: '50% 50%',
-    });
-    const ring4Tween = gsap.to(ring4Ref.current, {
-      rotation: -360,
-      duration: 30,
-      repeat: -1,
-      ease: 'none',
-      transformOrigin: '50% 50%',
-    });
-
-    // 2. GPU Core breathing animation
-    const corePulse = gsap.to(coreRef.current, {
-      scale: 1.06,
-      opacity: 0.95,
-      duration: 1.6,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.easeInOut',
-    });
-
-    // Shockwave emission pulse
     const triggerShockwave = (waveEl: SVGCircleElement | null) => {
       if (!waveEl) return;
       gsap.fromTo(
@@ -134,12 +91,9 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
 
     const timeline = gsap.timeline({
       onComplete: () => {
-        radarTween.kill();
-        ring1Tween.kill();
-        ring2Tween.kill();
-        ring3Tween.kill();
-        ring4Tween.kill();
-        corePulse.kill();
+        // Kill all ambient tweens
+        ambientTweensRef.current.forEach((t) => t.kill());
+        ambientTweensRef.current = [];
         document.body.style.overflow = '';
         setIsDone(true);
         if (onDone) onDone();
@@ -214,25 +168,128 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
       duration: 0.7,
       ease: 'power3.inOut',
     });
+  }, [onDone]);
+
+  // Check if both conditions are met and start the counter
+  const tryStartCounter = useCallback(() => {
+    if (timerReadyRef.current && hasClickedRef.current && !counterStartedRef.current) {
+      startCounterAnimation();
+    }
+  }, [startCounterAnimation]);
+
+  useEffect(() => {
+    // Respect prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      document.body.style.overflow = '';
+      setIsDone(true);
+      if (onDone) onDone();
+      return;
+    }
+
+    // Lock page scroll while loader is active
+    document.body.style.overflow = 'hidden';
+
+    // ── Phase 1: Ambient idle visuals (spinning rings, breathing core) ──
+
+    const radarTween = gsap.to(radarBgRef.current, {
+      rotation: 360,
+      duration: 40,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%',
+    });
+    const ring1Tween = gsap.to(ring1Ref.current, {
+      rotation: 360,
+      duration: 20,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%',
+    });
+    const ring2Tween = gsap.to(ring2Ref.current, {
+      rotation: -360,
+      duration: 15,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%',
+    });
+    const ring3Tween = gsap.to(ring3Ref.current, {
+      rotation: 360,
+      duration: 25,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%',
+    });
+    const ring4Tween = gsap.to(ring4Ref.current, {
+      rotation: -360,
+      duration: 30,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%',
+    });
+    const corePulse = gsap.to(coreRef.current, {
+      scale: 1.06,
+      opacity: 0.95,
+      duration: 1.6,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.easeInOut',
+    });
+
+    ambientTweensRef.current = [radarTween, ring1Tween, ring2Tween, ring3Tween, ring4Tween, corePulse];
+
+    // ── Phase 1 triggers: 5-second timer + click listener ──
+
+    // 5-second delay timer
+    const delayTimer = setTimeout(() => {
+      timerReadyRef.current = true;
+
+      // Fade in the CTA prompt after 5 seconds
+      if (ctaRef.current) {
+        gsap.to(ctaRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+        });
+      }
+
+      // Check if click already happened (race-safe)
+      tryStartCounter();
+    }, 5000);
+
+    // Click / tap listener on the entire container
+    const handleClick = () => {
+      if (hasClickedRef.current) return;
+      hasClickedRef.current = true;
+      tryStartCounter();
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('click', handleClick);
+      container.addEventListener('touchstart', handleClick, { passive: true });
+    }
 
     return () => {
-      timeline.kill();
-      radarTween.kill();
-      ring1Tween.kill();
-      ring2Tween.kill();
-      ring3Tween.kill();
-      ring4Tween.kill();
-      corePulse.kill();
+      clearTimeout(delayTimer);
+      if (container) {
+        container.removeEventListener('click', handleClick);
+        container.removeEventListener('touchstart', handleClick);
+      }
+      ambientTweensRef.current.forEach((t) => t.kill());
+      ambientTweensRef.current = [];
       document.body.style.overflow = '';
     };
-  }, [onDone]);
+  }, [onDone, tryStartCounter]);
 
   if (isDone) return null;
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[99999] flex flex-col items-center justify-between py-6 sm:py-10 px-4 sm:px-8 bg-[#FAF6EC] text-[#241B10] selection:bg-none select-none pointer-events-auto overflow-hidden will-change-transform"
+      className="fixed inset-0 z-[99999] flex flex-col items-center justify-between py-6 sm:py-10 px-4 sm:px-8 bg-[#FAF6EC] text-[#241B10] selection:bg-none select-none pointer-events-auto overflow-hidden will-change-transform cursor-pointer"
       style={{ clipPath: 'inset(0 0 0% 0)' }}
     >
       {/* ── Motion Graphics Background Radar Grid ── */}
@@ -444,7 +501,7 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
         </div>
       </div>
 
-      {/* ── Bottom Section: Counter, Name & Progress Bar ── */}
+      {/* ── Bottom Section: Counter, Name, CTA & Progress Bar ── */}
       <div className="pb-2 sm:pb-4 flex flex-col items-center w-full max-w-xs relative z-20">
         {/* Counter Number (Explicitly starting from 0 to 100%) */}
         <div className="font-display text-4xl sm:text-6xl font-bold tracking-tight text-[#241B10] tabular-nums flex items-baseline">
@@ -455,6 +512,29 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
         {/* Name */}
         <div className="mt-1.5 sm:mt-2 font-mono text-[11px] sm:text-xs tracking-[0.35em] text-[#7A6B55] uppercase font-semibold text-center">
           MADHAN KUMAR T
+        </div>
+
+        {/* "Click anywhere to enter" CTA — hidden initially, fades in after 5s */}
+        <div
+          ref={ctaRef}
+          className="mt-3 sm:mt-4 flex flex-col items-center gap-1.5 opacity-0 translate-y-2"
+          style={{ willChange: 'opacity, transform' }}
+        >
+          <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.3em] text-[#C9972E] uppercase animate-pulse">
+            Click anywhere to enter
+          </span>
+          {/* Small animated chevron */}
+          <svg
+            className="w-4 h-4 text-[#C9972E]/60 animate-bounce"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 6l4 4 4-4" />
+          </svg>
         </div>
 
         {/* Thin Progress Line */}
@@ -470,3 +550,4 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
 };
 
 export default PageLoader;
+
