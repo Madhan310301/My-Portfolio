@@ -58,7 +58,7 @@ const About: React.FC = () => {
               {/* Stats Row */}
               <div className="flex items-center gap-8 py-6 my-2 border-y border-[#C9972E]/20">
                 <div>
-                  <div className="text-3xl sm:text-4xl font-display font-bold text-[#241B10]">20+</div>
+                  <div className="text-3xl sm:text-4xl font-display font-bold text-[#241B10]">22+</div>
                   <div className="text-xs font-mono text-[#C9972E] uppercase mt-1 font-semibold">// Projects Shipped</div>
                 </div>
                 <div className="w-[1px] h-12 bg-[#C9972E]/20"></div>
@@ -130,7 +130,7 @@ const About: React.FC = () => {
 
               <div className="mt-8 pt-4 border-t border-[#C9972E]/20 flex justify-between items-center text-xs font-mono text-[#7A6B55]">
                 <span>// CONTINUOUS_LEARNING</span>
-                <span className="text-[#C9972E] font-bold">20+ SHIPPED BUILDS</span>
+                <span className="text-[#C9972E] font-bold">22+ SHIPPED BUILDS</span>
               </div>
             </div>
 

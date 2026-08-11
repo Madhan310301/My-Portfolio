@@ -110,7 +110,8 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Microcontroller logic, sensor telemetry processing, peripheral communications.",
     growth: { '2023': 20, '2024': 40, '2025': 55, '2026': 70 },
     projects: [
-      { name: 'SafePathAI', slug: 'safepath-ai' }
+      { name: 'SafePathAI', slug: 'safepath-ai' },
+      { name: 'CrashGuard-AI', slug: 'crashguard-ai' }
     ]
   },
   'Git': {

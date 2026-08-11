@@ -65,7 +65,7 @@ const Hero: React.FC = () => {
             
             {/* Intro Paragraph */}
             <p className="text-base sm:text-lg md:text-xl text-[#7A6B55] leading-relaxed max-w-xl">
-              I'm Madhan Kumar, a 3rd-year B.Tech Computer Science student at BIHER (Chennai) who loves building real, working systems — across web, AI, and hardware. I've shipped 20+ projects, from hackathon-winning IoT safety wearables to cross-modal AI systems.
+              I'm Madhan Kumar, a 3rd-year B.Tech Computer Science student at BIHER (Chennai) who loves building real, working systems — across web, AI, and hardware. I've shipped 22+ projects, from hackathon-winning IoT safety wearables to cross-modal AI systems.
             </p>
             
             {/* CTA Buttons */}
@@ -98,7 +98,7 @@ const Hero: React.FC = () => {
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-[#C9972E]/20">
               {[
-                { value: "20+", label: "Projects Shipped" },
+                { value: "22+", label: "Projects Shipped" },
                 { value: "25+", label: "Skills Mapped" },
                 { value: "9.5", label: "Current CGPA" }
               ].map((stat, i) => (
