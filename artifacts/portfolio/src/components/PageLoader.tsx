@@ -241,20 +241,19 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
 
     // ── Phase 1 triggers: 5-second timer + click listener ──
 
+    // Ensure CTA prompt is visible right away during the 5-second gap
+    if (ctaRef.current) {
+      gsap.to(ctaRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+      });
+    }
+
     // 5-second delay timer
     const delayTimer = setTimeout(() => {
       timerReadyRef.current = true;
-
-      // Fade in the CTA prompt after 5 seconds
-      if (ctaRef.current) {
-        gsap.to(ctaRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: 'power2.out',
-        });
-      }
-
       // Check if click already happened (race-safe)
       tryStartCounter();
     }, 5000);
@@ -289,8 +288,8 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[99999] flex flex-col items-center justify-between py-6 sm:py-10 px-4 sm:px-8 bg-[#FAF6EC] text-[#241B10] selection:bg-none select-none pointer-events-auto overflow-hidden will-change-transform cursor-pointer"
-      style={{ clipPath: 'inset(0 0 0% 0)' }}
+      className="fixed inset-0 h-[100dvh] w-full z-[99999] flex flex-col items-center justify-between pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] px-[max(1rem,env(safe-area-inset-left))] bg-[#FAF6EC] text-[#241B10] selection:bg-none select-none pointer-events-auto overflow-hidden will-change-transform cursor-pointer gpu-composited"
+      style={{ clipPath: 'inset(0 0 0% 0)', WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
     >
       {/* ── Motion Graphics Background Radar Grid ── */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-20 sm:opacity-25">
@@ -514,18 +513,18 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
           MADHAN KUMAR T
         </div>
 
-        {/* "Click anywhere to enter" CTA — hidden initially, fades in after 5s */}
+        {/* "Click anywhere to continue" CTA — visible during 5s gap before click */}
         <div
           ref={ctaRef}
-          className="mt-3 sm:mt-4 flex flex-col items-center gap-1.5 opacity-0 translate-y-2"
+          className="mt-3 sm:mt-4 flex flex-col items-center gap-1.5 opacity-100 translate-y-0"
           style={{ willChange: 'opacity, transform' }}
         >
-          <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.3em] text-[#C9972E] uppercase animate-pulse">
-            Click anywhere to enter
+          <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.3em] text-[#C9972E] uppercase animate-pulse font-semibold">
+            Click anywhere to continue
           </span>
           {/* Small animated chevron */}
           <svg
-            className="w-4 h-4 text-[#C9972E]/60 animate-bounce"
+            className="w-4 h-4 text-[#C9972E]/70 animate-bounce"
             viewBox="0 0 16 16"
             fill="none"
             stroke="currentColor"

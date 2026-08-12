@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, PieChart, Pie, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Cell,
+  PieChart,
+  Pie,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  Tooltip
+} from 'recharts';
 import { useIsMobile } from '../hooks/useIsMobile';
 import SectionWatermark from './SectionWatermark';
 
@@ -130,18 +145,39 @@ const SKILL_DETAILS: Record<string, any> = {
   }
 };
 
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload || payload[0];
+    return (
+      <div className="bg-[#FAF6EC] border border-[#C9972E] p-2.5 rounded-lg shadow-lg font-mono text-xs text-[#241B10] z-50">
+        <p className="font-bold text-[#C9972E] text-sm mb-1">{data.name}</p>
+        <p className="text-[#7A6B55]">Category: <span className="text-[#241B10] font-semibold">{data.type}</span></p>
+        <p className="text-[#7A6B55]">Competency: <span className="font-bold text-[#C9972E]">{data.level}%</span></p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const Skills: React.FC = () => {
   const [activeChart, setActiveChart] = useState<'bar' | 'donut' | 'spider'>('bar');
   const [selectedSkill, setSelectedSkill] = useState('React');
-  const isMobile = useIsMobile(640); 
+  const isMobile = useIsMobile(640);
 
-  const topSkills = SKILLS_DATA.slice(0, 6);
   const detail = SKILL_DETAILS[selectedSkill] || { desc: '', growth: {}, projects: [] };
   const skillObj = SKILLS_DATA.find(s => s.name === selectedSkill) || SKILLS_DATA[0];
 
   const handleProjectTagClick = (slug: string) => {
     const event = new CustomEvent('select-project', { detail: { slug } });
     window.dispatchEvent(event);
+  };
+
+  const handleSkillSelect = (entry: any) => {
+    if (!entry) return;
+    const name = typeof entry === 'string' ? entry : entry.name || entry.payload?.name || entry.activeLabel;
+    if (name && SKILL_DETAILS[name]) {
+      setSelectedSkill(name);
+    }
   };
 
   return (
@@ -200,33 +236,35 @@ const Skills: React.FC = () => {
                 ))}
               </div>
 
-              <div className="flex-1 min-h-[320px] sm:min-h-[350px] w-full">
+              <div className="flex-1 min-h-[340px] sm:min-h-[380px] w-full relative flex items-center justify-center">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeChart}
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.3 }}
-                    className="w-full h-full"
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.25 }}
+                    className="w-full h-full min-h-[340px] sm:min-h-[380px] flex items-center justify-center"
                   >
                     {activeChart === 'bar' && (
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer width="100%" height={360}>
                         {isMobile ? (
-                          <BarChart data={SKILLS_DATA} layout="vertical" margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-                            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 10 }} />
-                            <YAxis dataKey="name" type="category" width={80} tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 10 }} />
-                            <Bar dataKey="level" onClick={(data) => setSelectedSkill(data.name)} cursor="pointer">
+                          <BarChart data={SKILLS_DATA} layout="vertical" margin={{ top: 10, right: 15, left: 10, bottom: 10 }}>
+                            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'rgba(36,27,16,0.7)', fontSize: 10 }} />
+                            <YAxis dataKey="name" type="category" width={85} tick={{ fill: 'rgba(36,27,16,0.85)', fontSize: 11, fontWeight: 500 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar dataKey="level" onClick={handleSkillSelect} cursor="pointer" radius={[0, 4, 4, 0]}>
                               {SKILLS_DATA.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#C9972E' : '#D9A94A'} className="transition-colors hover:fill-[#B9821F]" />
                               ))}
                             </Bar>
                           </BarChart>
                         ) : (
-                          <BarChart data={SKILLS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
-                            <XAxis dataKey="name" angle={-45} textAnchor="end" tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 12 }} interval={0} />
-                            <YAxis tick={{ fill: 'rgba(36,27,16,0.6)', fontSize: 12 }} domain={[0, 100]} />
-                            <Bar dataKey="level" onClick={(data) => setSelectedSkill(data.name)} cursor="pointer">
+                          <BarChart data={SKILLS_DATA} margin={{ top: 10, right: 10, left: -15, bottom: 45 }}>
+                            <XAxis dataKey="name" angle={-45} textAnchor="end" tick={{ fill: 'rgba(36,27,16,0.85)', fontSize: 11, fontWeight: 500 }} interval={0} />
+                            <YAxis tick={{ fill: 'rgba(36,27,16,0.7)', fontSize: 11 }} domain={[0, 100]} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar dataKey="level" onClick={handleSkillSelect} cursor="pointer" radius={[4, 4, 0, 0]}>
                               {SKILLS_DATA.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#C9972E' : '#D9A94A'} className="transition-colors hover:fill-[#B9821F]" />
                               ))}
@@ -237,53 +275,84 @@ const Skills: React.FC = () => {
                     )}
 
                     {activeChart === 'donut' && (
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={topSkills}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={isMobile ? 50 : 80}
-                            outerRadius={isMobile ? 80 : 130}
-                            paddingAngle={2}
-                            dataKey="level"
-                            onClick={(data) => setSelectedSkill(data.name)}
-                            cursor="pointer"
-                            stroke="none"
-                          >
-                            {topSkills.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.name === selectedSkill ? '#C9972E' : `hsl(41, 62%, ${30 + index * 8}%)`} className="transition-colors hover:fill-[#B9821F]" />
-                            ))}
-                          </Pie>
-                        </PieChart>
-                      </ResponsiveContainer>
+                      <div className="relative w-full h-[360px] flex items-center justify-center">
+                        <ResponsiveContainer width="100%" height={360}>
+                          <PieChart>
+                            <Pie
+                              data={SKILLS_DATA}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={isMobile ? 55 : 85}
+                              outerRadius={isMobile ? 95 : 135}
+                              paddingAngle={3}
+                              dataKey="level"
+                              onClick={handleSkillSelect}
+                              cursor="pointer"
+                              stroke="#FFFDF8"
+                              strokeWidth={2}
+                            >
+                              {SKILLS_DATA.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={entry.name === selectedSkill ? '#C9972E' : `hsl(41, ${50 + (index % 4) * 12}%, ${32 + (index % 6) * 7}%)`}
+                                  className="transition-all hover:opacity-90"
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip content={<CustomTooltip />} />
+                          </PieChart>
+                        </ResponsiveContainer>
+
+                        {/* Interactive Center Badge for Donut Chart */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                          <span className="font-mono text-[10px] text-[#7A6B55] uppercase tracking-widest font-semibold mb-0.5">SELECTED</span>
+                          <span className="font-display font-bold text-lg sm:text-2xl text-[#241B10] leading-tight">{skillObj.name}</span>
+                          <span className="font-mono text-xs sm:text-sm font-bold text-[#C9972E]">{skillObj.level}%</span>
+                        </div>
+                      </div>
                     )}
 
                     {activeChart === 'spider' && (
-                      <ResponsiveContainer width="100%" height="100%">
-                        {isMobile ? (
-                          <div className="w-full h-full flex flex-col gap-3 justify-center px-4 max-h-[300px] overflow-y-auto no-scrollbar">
-                            {SKILLS_DATA.map(skill => (
-                              <div key={skill.name} className="flex flex-col gap-1 cursor-pointer" onClick={() => setSelectedSkill(skill.name)}>
-                                <div className="flex justify-between text-xs font-mono">
-                                  <span className={skill.name === selectedSkill ? "text-[#C9972E] font-bold" : "text-[#241B10]"}>{skill.name}</span>
-                                  <span className="text-[#7A6B55]">{skill.level}%</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-[#FAF6EC] rounded overflow-hidden border border-[#C9972E]/20">
-                                  <div className={`h-full transition-all ${skill.name === selectedSkill ? 'bg-[#C9972E]' : 'bg-[#D9A94A]'}`} style={{ width: `${skill.level}%` }} />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <RadarChart cx="50%" cy="50%" outerRadius="70%" data={SKILLS_DATA}>
-                            <PolarGrid stroke="rgba(201,151,46,0.25)" />
-                            <PolarAngleAxis dataKey="name" tick={{ fill: 'rgba(36,27,16,0.7)', fontSize: 10 }} />
-                            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
-                            <Radar name="Skills" dataKey="level" stroke="#C9972E" fill="#C9972E" fillOpacity={0.3} className="drop-shadow-[0_0_10px_rgba(201,151,46,0.3)]" />
+                      <div className="w-full h-[360px] flex flex-col items-center justify-center">
+                        <ResponsiveContainer width="100%" height={360}>
+                          <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? '48%' : '56%'} data={SKILLS_DATA}>
+                            <PolarGrid stroke="rgba(201,151,46,0.3)" />
+                            <PolarAngleAxis
+                              dataKey="name"
+                              tick={(props) => {
+                                const { x, y, payload } = props;
+                                const isSelected = payload.value === selectedSkill;
+                                return (
+                                  <text
+                                    x={x}
+                                    y={y}
+                                    textAnchor="middle"
+                                    fill={isSelected ? '#C9972E' : 'rgba(36,27,16,0.85)'}
+                                    fontSize={isMobile ? 9 : 11}
+                                    fontWeight={isSelected ? 700 : 500}
+                                    className="cursor-pointer font-mono hover:fill-[#C9972E] transition-colors"
+                                    onClick={() => handleSkillSelect(payload.value)}
+                                  >
+                                    {payload.value}
+                                  </text>
+                                );
+                              }}
+                            />
+                            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Radar
+                              name="Skills"
+                              dataKey="level"
+                              stroke="#C9972E"
+                              strokeWidth={2}
+                              fill="#C9972E"
+                              fillOpacity={0.35}
+                              dot={{ r: 4, fill: '#C9972E', stroke: '#FFFDF8', strokeWidth: 1.5, cursor: 'pointer' }}
+                              onClick={(e: any) => handleSkillSelect(e?.name || e?.activeLabel)}
+                            />
                           </RadarChart>
-                        )}
-                      </ResponsiveContainer>
+                        </ResponsiveContainer>
+                      </div>
                     )}
                   </motion.div>
                 </AnimatePresence>

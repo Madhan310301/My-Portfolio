@@ -30,7 +30,7 @@ const Hero: React.FC = () => {
   }, [terminalLines.length]);
 
   return (
-    <section className="relative min-h-[100dvh] pt-32 pb-20 flex items-center overflow-hidden" id="hero">
+    <section className="relative min-h-[100dvh] pt-[max(8rem,calc(env(safe-area-inset-top)+5rem))] pb-[max(5rem,env(safe-area-inset-bottom))] flex items-center overflow-hidden" id="hero">
       <SectionWatermark word="BUILD" />
 
       <div className="container mx-auto px-6 relative z-10">

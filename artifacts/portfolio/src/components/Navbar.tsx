@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-4 left-0 right-0 z-50 px-4 pointer-events-none">
+    <nav className="fixed top-[max(1rem,env(safe-area-inset-top))] left-0 right-0 z-50 px-4 pointer-events-none">
       {/* Floating glass pill */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
@@ -68,8 +68,8 @@ const Navbar: React.FC = () => {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className={`max-w-6xl mx-auto rounded-2xl px-5 flex items-center justify-between pointer-events-auto transition-all duration-300 border ${
           isScrolled
-            ? 'py-2.5 bg-[#FAF6EC]/92 backdrop-blur-xl border-[#C9972E]/40 shadow-[0_8px_32px_rgba(120,90,40,0.12)]'
-            : 'py-4 bg-[#FAF6EC]/75 backdrop-blur-md border-[#C9972E]/20 shadow-[0_4px_24px_rgba(120,90,40,0.06)]'
+            ? 'py-2.5 bg-[#FAF6EC]/92 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] border-[#C9972E]/40 shadow-[0_8px_32px_rgba(120,90,40,0.12)]'
+            : 'py-4 bg-[#FAF6EC]/75 backdrop-blur-md [-webkit-backdrop-filter:blur(12px)] border-[#C9972E]/20 shadow-[0_4px_24px_rgba(120,90,40,0.06)]'
         }`}
       >
         {/* Logo */}
@@ -138,7 +138,7 @@ const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.2 }}
-            className="max-w-6xl mx-auto mt-2 rounded-2xl bg-[#FFFDF8]/95 backdrop-blur-xl border border-[#C9972E]/30 shadow-[0_8px_32px_rgba(120,90,40,0.12)] py-4 px-6 flex flex-col gap-1 pointer-events-auto md:hidden"
+            className="max-w-6xl mx-auto mt-2 rounded-2xl bg-[#FFFDF8]/95 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] border border-[#C9972E]/30 shadow-[0_8px_32px_rgba(120,90,40,0.12)] py-4 px-6 flex flex-col gap-1 pointer-events-auto md:hidden"
           >
             {NAV_LINKS.map((link) => (
               <a
