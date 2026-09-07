@@ -41,15 +41,17 @@ const SKILL_DETAILS: Record<string, any> = {
     growth: { '2023': 15, '2024': 50, '2025': 75, '2026': 90 },
     projects: [
       { name: 'SafePathAI', slug: 'safepath-ai' },
-      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
-      { name: 'AI Financial Coach', slug: 'fintech' },
-      { name: 'RM Online App', slug: 'rm-online-app' }
+      { name: 'Shakthi Dental', slug: 'dental-clinic-web' },
+      { name: 'GigSave', slug: 'gigsave' },
+      { name: 'QuantaRAG', slug: 'quantarag' },
+      { name: 'TriageCN', slug: 'triagecn' }
     ]
   },
   'Node.js': {
     desc: "Backend engine, microservices API architectures, socket integrations.",
     growth: { '2023': 20, '2024': 45, '2025': 65, '2026': 85 },
     projects: [
+      { name: 'TriageCN', slug: 'triagecn' },
       { name: 'AI Financial Coach', slug: 'fintech' },
       { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
       { name: 'DocuAI', slug: 'docuai' }
@@ -59,6 +61,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Data modeling, ML pipelines, edge telemetry processing, agentic chains.",
     growth: { '2023': 30, '2024': 60, '2025': 78, '2026': 88 },
     projects: [
+      { name: 'QuantaRAG', slug: 'quantarag' },
       { name: 'Drishti', slug: 'drishti' },
       { name: 'SafePathAI', slug: 'safepath-ai' },
       { name: 'AgriGrade', slug: 'agrigrade' },
@@ -69,8 +72,11 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Strict type safety across large enterprise apps and frontend interfaces.",
     growth: { '2023': 10, '2024': 40, '2025': 60, '2026': 80 },
     projects: [
-      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' },
-      { name: 'HabiAI', slug: 'habiai' }
+      { name: 'TriageCN', slug: 'triagecn' },
+      { name: 'GigSave', slug: 'gigsave' },
+      { name: 'Shakthi Dental', slug: 'dental-clinic-web' },
+      { name: 'Cert Generator', slug: 'certificate-generator' },
+      { name: 'SarvaJeevaID', slug: 'sarvajeevaid' }
     ]
   },
   'MongoDB': {
@@ -92,6 +98,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Advanced relational operations, spatial queries, highly resilient data structures.",
     growth: { '2023': 20, '2024': 40, '2025': 60, '2026': 78 },
     projects: [
+      { name: 'Shakthi Dental', slug: 'dental-clinic-web' },
       { name: 'DocuAI', slug: 'docuai' },
       { name: 'HealAI', slug: 'healai' }
     ]
