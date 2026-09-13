@@ -71,7 +71,6 @@
     "zod": "catalog:"
   },
   "dependencies": {
-    "@emailjs/browser": "^4.4.1",
     "@fontsource/bebas-neue": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",

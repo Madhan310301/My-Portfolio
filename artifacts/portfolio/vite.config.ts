@@ -11,12 +11,15 @@ if (Number.isNaN(port) || port <= 0) {
 
 const basePath = process.env.BASE_PATH || '/';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: basePath,
   plugins: [
     react(),
     tailwindcss(),
   ],
+  esbuild: {
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
+  },
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, 'src'),
@@ -48,4 +51,4 @@ export default defineConfig({
     host: '0.0.0.0',
     allowedHosts: true,
   },
-});
+}));

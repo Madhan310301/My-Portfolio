@@ -41,6 +41,16 @@ const CREDENTIALS = [
     description: "As a Google Student Ambassador (GID: 3150) for the past 4 months, I represent Google's developer programs — including GDG, Gemini, and Google Cloud — within my campus community. My responsibilities include organizing developer sessions, promoting Google's learning programs, conducting hands-on workshops, and driving student participation in Google-led initiatives and events."
   },
   {
+    id: "HCL_AI_2026",
+    year: "August 2026",
+    badgeType: "HCLTech",
+    badgeColor: "bg-[#D9A94A]/15 text-[#B9821F] border-[#D9A94A]/40",
+    title: "AI Skills for the Future Masterclass — HCLTech × The Economic Times",
+    desc: "Completed the AI Masterclass; engineered the QuantaRAG financial auditing workspace during the workshop.",
+    description: "Awarded Certificate of Completion for successfully finishing the 'AI Skills for the Future Masterclass' conducted by HCLTech in collaboration with The Economic Times. During this intensive masterclass workshop, engineered QuantaRAG — an enterprise-grade financial Retrieval-Augmented Generation platform for analyzing quarterly corporate filings.",
+    certificate: "/media/certificates/hcltech-ai-masterclass-certificate.jpg"
+  },
+  {
     id: "HCL_CA_2026",
     year: "2026",
     badgeType: "HCLTech",
@@ -193,6 +203,20 @@ const Credentials: React.FC = () => {
                         <p className="text-[#241B10] text-sm leading-relaxed flex-grow font-sans overflow-y-auto no-scrollbar mb-4">
                           {cred.description}
                         </p>
+
+                        {'certificate' in cred && (cred as any).certificate && (
+                          <div className="mb-3">
+                            <a
+                              href={(cred as any).certificate}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white text-xs font-mono font-bold rounded-lg hover:brightness-105 transition-all shadow-sm"
+                            >
+                              <span>View Verified Certificate ↗</span>
+                            </a>
+                          </div>
+                        )}
                         
                         <div className="pt-4 border-t border-[#C9972E]/20 mt-auto flex justify-between items-center text-[9px] font-mono text-[#7A6B55]">
                           <span>// SECURE_PREVIEW</span>

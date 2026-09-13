@@ -170,9 +170,9 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
     });
   }, [onDone]);
 
-  // Check if both conditions are met and start the counter
+  // Check if conditions are met and start the counter
   const tryStartCounter = useCallback(() => {
-    if (timerReadyRef.current && hasClickedRef.current && !counterStartedRef.current) {
+    if ((timerReadyRef.current || hasClickedRef.current) && !counterStartedRef.current) {
       startCounterAnimation();
     }
   }, [startCounterAnimation]);
@@ -239,28 +239,27 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
 
     ambientTweensRef.current = [radarTween, ring1Tween, ring2Tween, ring3Tween, ring4Tween, corePulse];
 
-    // ── Phase 1 triggers: 5-second timer + click listener ──
+    // ── Phase 1 triggers: 1.5-second break or click listener ──
 
-    // Ensure CTA prompt is visible right away during the 5-second gap
+    // Ensure CTA prompt is visible right away during the 1.5-second gap
     if (ctaRef.current) {
       gsap.to(ctaRef.current, {
         opacity: 1,
         y: 0,
-        duration: 0.4,
+        duration: 0.3,
         ease: 'power2.out',
       });
     }
 
-    // 5-second delay timer
+    // 1.5-second delay timer (starts counter automatically after 1.5 seconds)
     const delayTimer = setTimeout(() => {
       timerReadyRef.current = true;
-      // Check if click already happened (race-safe)
       tryStartCounter();
-    }, 5000);
+    }, 1500);
 
-    // Click / tap listener on the entire container
+    // Click / tap listener on the entire container (skips the 1.5s break immediately)
     const handleClick = () => {
-      if (hasClickedRef.current) return;
+      if (counterStartedRef.current) return;
       hasClickedRef.current = true;
       tryStartCounter();
     };
@@ -513,7 +512,7 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
           MADHAN KUMAR T
         </div>
 
-        {/* "Click anywhere to continue" CTA — visible during 5s gap before click */}
+        {/* "Click anywhere to continue" CTA — visible during 1.5s break before counter starts */}
         <div
           ref={ctaRef}
           className="mt-3 sm:mt-4 flex flex-col items-center gap-1.5 opacity-100 translate-y-0"

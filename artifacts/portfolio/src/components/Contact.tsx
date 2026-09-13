@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import HireMeButton from './HireMeButton';
-import { Mail, ArrowUp } from 'lucide-react';
+import { Mail, ArrowUp, Copy, Check } from 'lucide-react';
 
 import SectionWatermark from './SectionWatermark';
 
@@ -10,32 +10,76 @@ const Contact: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [errors, setErrors] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [agreed, setAgreed] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const directEmailAddress = 'madhankumartbharathuniv@gmail.com';
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(directEmailAddress);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 3000);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Silently reject bot submissions filling the hidden honeypot
+    if (honeypot) {
+      setName('');
+      setEmail('');
+      setMessage('');
+      return;
+    }
     
     const newErrors = { name: '', email: '', message: '' };
     let hasError = false;
 
-    if (!name.trim()) {
+    // Sanitize single-line header fields: strip CR/LF, null bytes, and control chars
+    const sanitizeHeader = (val: string) =>
+      val
+        .replace(/%0[ad]/gi, '')
+        .replace(/[\r\n\t\x00-\x1f\x7f]/g, ' ')
+        .trim();
+
+    const cleanName = sanitizeHeader(name);
+    const cleanEmail = sanitizeHeader(email);
+
+    if (!cleanName) {
       newErrors.name = 'Name is required';
+      hasError = true;
+    } else if (cleanName.length > 100) {
+      newErrors.name = 'Name must be under 100 characters';
       hasError = true;
     }
     
-    if (!email.trim()) {
+    if (!cleanEmail) {
       newErrors.email = 'Email is required';
       hasError = true;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       newErrors.email = 'Please enter a valid email address';
+      hasError = true;
+    } else if (cleanEmail.length > 120) {
+      newErrors.email = 'Email must be under 120 characters';
       hasError = true;
     }
 
-    if (!message.trim()) {
+    // Sanitize multiline body: strip dangerous null bytes and control chars while keeping line breaks
+    const cleanMessage = message
+      .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .trim();
+
+    if (!cleanMessage) {
       newErrors.message = 'Message is required';
+      hasError = true;
+    } else if (cleanMessage.length > 3000) {
+      newErrors.message = 'Message must be under 3000 characters';
       hasError = true;
     }
 
@@ -44,20 +88,25 @@ const Contact: React.FC = () => {
 
     setIsSubmitting(true);
     
-    const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
-    const body = encodeURIComponent(`${message}\n\n— Reply to: ${email}`);
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=madhankumartbharathuniv@gmail.com&su=${subject}&body=${body}`;
+    const subject = encodeURIComponent(`Portfolio Inquiry from ${cleanName.slice(0, 100)}`);
+    const body = encodeURIComponent(`${cleanMessage.slice(0, 3000)}\n\n— Reply to: ${cleanEmail.slice(0, 120)}`);
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(directEmailAddress)}&su=${subject}&body=${body}`;
+    const mailtoUrl = `mailto:${directEmailAddress}?subject=${subject}&body=${body}`;
 
-    window.open(gmailUrl, '_blank');
+    // Attempt to open Gmail client in new tab; fallback to mailto if blocked
+    const newWindow = window.open(gmailUrl, '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      window.location.href = mailtoUrl;
+    }
 
     setIsSubmitting(false);
-    setToastMessage('Opening Gmail — finish sending from there.');
+    setToastMessage('Opening mail client — you can also use 1-click copy below anytime.');
     
     setName('');
     setEmail('');
     setMessage('');
     
-    setTimeout(() => setToastMessage(''), 5000);
+    setTimeout(() => setToastMessage(''), 6000);
   };
 
   return (
@@ -92,15 +141,33 @@ const Contact: React.FC = () => {
                 Got a project, internship opportunity, hackathon collaboration, or custom software build in mind? Let's connect and transform your vision into production-grade systems.
               </p>
 
-              {/* Direct Email CTA Button */}
-              <div className="mb-10">
+              {/* Direct Email CTA Button & Copy Fallback */}
+              <div className="mb-10 flex flex-col sm:flex-row gap-3">
                 <a 
-                  href="mailto:madhankumartbharathuniv@gmail.com"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 min-h-[44px] bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold text-sm rounded-full hover:brightness-105 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(201,151,46,0.3)]"
+                  href={`mailto:${directEmailAddress}`}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 min-h-[44px] bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white font-bold text-sm rounded-full hover:brightness-105 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(201,151,46,0.3)]"
                 >
                   <Mail size={18} className="text-white" />
                   <span>Send Direct Email</span>
                 </a>
+                <button
+                  type="button"
+                  onClick={copyToClipboard}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 min-h-[44px] bg-[#FFFDF8] border border-[#C9972E]/40 text-[#241B10] font-mono font-semibold text-xs rounded-full hover:border-[#C9972E] hover:bg-[#FAF6EC] transition-all cursor-pointer shadow-sm"
+                  title="Copy email address to clipboard"
+                >
+                  {copiedEmail ? (
+                    <>
+                      <Check size={16} className="text-green-600" />
+                      <span className="text-green-700 font-bold">Copied to Clipboard!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} className="text-[#C9972E]" />
+                      <span>Copy Email Address</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
             
@@ -134,11 +201,29 @@ const Contact: React.FC = () => {
               </div>
               
               <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+                {/* Honeypot field to suppress automated spam bots */}
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="_gotcha">Leave this field blank</label>
+                  <input
+                    type="text"
+                    id="_gotcha"
+                    name="_gotcha"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </div>
+
                 <div>
-                  <label htmlFor="name" className="block text-xs font-mono text-[#7A6B55] mb-2 uppercase font-semibold">Name</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label htmlFor="name" className="block text-xs font-mono text-[#7A6B55] uppercase font-semibold">Name</label>
+                    <span className="text-[10px] font-mono text-[#7A6B55]/70">{name.length}/100</span>
+                  </div>
                   <input 
                     type="text" 
                     id="name" 
+                    maxLength={100}
                     value={name}
                     onChange={(e) => {
                       setName(e.target.value);
@@ -153,10 +238,14 @@ const Contact: React.FC = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="email" className="block text-xs font-mono text-[#7A6B55] mb-2 uppercase font-semibold">Email</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label htmlFor="email" className="block text-xs font-mono text-[#7A6B55] uppercase font-semibold">Email</label>
+                    <span className="text-[10px] font-mono text-[#7A6B55]/70">{email.length}/120</span>
+                  </div>
                   <input 
                     type="email" 
                     id="email" 
+                    maxLength={120}
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -171,9 +260,13 @@ const Contact: React.FC = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="message" className="block text-xs font-mono text-[#7A6B55] mb-2 uppercase font-semibold">Message</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label htmlFor="message" className="block text-xs font-mono text-[#7A6B55] uppercase font-semibold">Message</label>
+                    <span className="text-[10px] font-mono text-[#7A6B55]/70">{message.length}/3000</span>
+                  </div>
                   <textarea 
                     id="message" 
+                    maxLength={3000}
                     value={message}
                     onChange={(e) => {
                       setMessage(e.target.value);
@@ -237,6 +330,7 @@ const Contact: React.FC = () => {
             <a href="#skills" className="hover:text-[#C9972E] transition-colors">Skills</a>
             <a href="#services" className="hover:text-[#C9972E] transition-colors">Services</a>
             <a href="#credentials" className="hover:text-[#C9972E] transition-colors">Credentials</a>
+            <a href="#hackathons" className="hover:text-[#C9972E] transition-colors">Hackathons</a>
           </div>
           
           <p className="text-xs font-mono text-[#7A6B55] text-center">

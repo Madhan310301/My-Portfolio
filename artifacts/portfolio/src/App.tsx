@@ -5,10 +5,12 @@ import NotFound from '@/pages/not-found';
 import Home from '@/pages/Home';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
+import HackathonDetail from '@/pages/HackathonDetail';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { Analytics } from '@vercel/analytics/react';
 
 import GlobalGooeyCursor from '@/components/GlobalGooeyCursor';
+import SectionErrorBoundary from '@/components/SectionErrorBoundary';
 
 const queryClient = new QueryClient();
 
@@ -18,6 +20,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/hackathons/:id" component={HackathonDetail} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -29,7 +32,9 @@ function App() {
       <TooltipProvider>
         <GlobalGooeyCursor />
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
+          <SectionErrorBoundary sectionName="Page Navigation">
+            <Router />
+          </SectionErrorBoundary>
         </WouterRouter>
         <Toaster />
         <Analytics />

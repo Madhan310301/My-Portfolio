@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Github, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Github, ExternalLink, Award } from 'lucide-react';
 import SectionWatermark from './SectionWatermark';
 
 interface Project {
@@ -20,6 +20,7 @@ interface Project {
   challenge: string;
   github?: string;
   liveDemo?: string;
+  certificate?: string;
 }
 
 const PROJECTS: Project[] = [
@@ -473,16 +474,17 @@ const PROJECTS: Project[] = [
     tag: "[BUILD-27]",
     title: "QuantaRAG Workspace",
     category: "Financial RAG & Auditing Platform",
-    desc: "Enterprise-grade financial Retrieval-Augmented Generation (RAG) platform processing quarterly filings (HCLTech) with zero cross-quarter hallucination, regex quarter identity injection, 1000-char sliding window chunking, and ChromaDB vector search.",
+    desc: "Enterprise-grade financial Retrieval-Augmented Generation (RAG) platform engineered during the HCLTech AI Masterclass workshop, processing quarterly corporate filings with zero cross-quarter hallucination, regex quarter identity injection, 1000-char sliding window chunking, and ChromaDB vector search.",
     duration: "Completed 2026",
     stack: ["FastAPI", "Python", "PyMuPDF", "ChromaDB", "OpenAI GPT-4o", "React", "TypeScript", "Vite", "Tailwind CSS"],
-    fullDesc1: "QuantaRAG Workspace is an AI-powered financial research platform designed for auditors, analysts, and investors querying complex corporate quarterly filings. Generic RAG systems fail on financial documents by confusing quarterly figures; QuantaRAG solves this by injecting regex-extracted reporting periods (e.g., Q1 FY27) directly into chunk prefixes before vectorization.",
+    fullDesc1: "QuantaRAG Workspace is an AI-powered financial research platform designed for auditors, analysts, and investors querying complex corporate quarterly filings. Engineered as part of the hands-on HCLTech 'AI Skills for the Future Masterclass' workshop (in collaboration with The Economic Times), QuantaRAG addresses the critical flaw in standard RAG: cross-quarter hallucination.",
     fullDesc2: "The backend uses PyMuPDF for table and text extraction, a custom 1000-char sliding window chunker with 150-char overlap to preserve tabular context, OpenAI text-embedding-3-small vectors persisted in ChromaDB, and GPT-4o (temp=0.0) with strict refusal guardrails and page-level source citations. A modern React dashboard provides document queue inspection and saved research streams.",
-    milestone: "Complete financial RAG platform tested across multiple fiscal quarters with zero cross-quarter hallucination.",
+    milestone: "Engineered during the HCLTech × The Economic Times AI Masterclass workshop; tested across quarterly filings with zero cross-quarter hallucination.",
     keyFeature: "Quarter-aware chunk prefix injection + 1000-char sliding window table preservation + ChromaDB top-4 retrieval.",
     problem: "Generic RAG models shred financial tables, confuse revenue numbers across consecutive quarters, and invent figures when data is absent.",
     challenge: "Preserving tabular integrity from dense financial PDFs and guaranteeing zero-hallucination answers via deterministic temperature=0.0 prompt constraints.",
     github: "https://github.com/Madhan310301/QuantaRAG",
+    certificate: "/media/certificates/hcltech-ai-masterclass-certificate.jpg",
   },
 ];
 
@@ -690,6 +692,16 @@ const Projects: React.FC = () => {
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-[#D9A94A] to-[#B9821F] text-white text-xs font-bold rounded-full hover:brightness-105 transition-all shadow-sm"
                         >
                           <ExternalLink size={12} /> LIVE DEMO
+                        </a>
+                      )}
+                      {activeProject.certificate && (
+                        <a
+                          href={activeProject.certificate}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 border border-[#C9972E] text-[#C9972E] text-xs font-bold rounded-full hover:bg-[#C9972E] hover:text-white transition-colors bg-[#FAF6EC]"
+                        >
+                          <Award size={12} /> CERTIFICATE
                         </a>
                       )}
                     </div>

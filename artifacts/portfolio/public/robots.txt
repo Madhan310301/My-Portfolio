@@ -1,2 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /*?*preview=true
+
+Sitemap: https://www.madhankumart.in/sitemap.xml
+Host: https://www.madhankumart.in

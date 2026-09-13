@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: 'Skills', href: '#skills' },
   { label: 'Services', href: '#services' },
   { label: 'Credentials', href: '#credentials' },
+  { label: 'Hackathons', href: '#hackathons' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -73,12 +74,16 @@ const Navbar: React.FC = () => {
         }`}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="w-10 h-10 rounded-full border border-[#C9972E]/60 flex items-center justify-center bg-gradient-to-br from-[#D9A94A] to-[#B9821F] shadow-[0_2px_12px_rgba(201,151,46,0.3)]">
-            <span className="font-display font-bold text-lg tracking-tight text-white">MK</span>
+        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="w-10 h-10 rounded-full border border-[#C9972E]/60 overflow-hidden bg-[#FAF6EC] shadow-[0_2px_12px_rgba(201,151,46,0.3)] flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <img
+              src="/logo.png"
+              alt="Madhan Kumar Logo"
+              className="w-full h-full object-cover select-none"
+            />
           </div>
           <div className="hidden sm:block">
-            <h1 className="font-display font-bold text-base leading-tight text-[#241B10]">Madhan Kumar</h1>
+            <h1 className="font-display font-bold text-base leading-tight text-[#241B10] group-hover:text-[#C9972E] transition-colors">Madhan Kumar</h1>
             <p className="text-xs text-[#C9972E] font-mono tracking-wider">Full-Stack · AI · IoT</p>
           </div>
         </div>

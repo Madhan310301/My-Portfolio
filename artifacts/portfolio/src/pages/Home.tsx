@@ -7,9 +7,11 @@ import Projects from '@/components/Projects';
 import Skills from '@/components/Skills';
 import ServicesSection from '@/components/ServicesSection';
 import Credentials from '@/components/Credentials';
+import HackathonsSection from '@/components/hackathons/HackathonsSection';
 import Education from '@/components/Education';
 import Contact from '@/components/Contact';
 import PageLoader from '@/components/PageLoader';
+import SectionErrorBoundary from '@/components/SectionErrorBoundary';
 
 const Home: React.FC = () => {
   useEffect(() => {
@@ -28,14 +30,33 @@ const Home: React.FC = () => {
       <Navbar />
       
       <main>
-        <Hero />
-        <About />
-        <Projects />
-        <Skills />
-        <ServicesSection />
-        <Credentials />
-        <Education />
-        <Contact />
+        <SectionErrorBoundary sectionName="Hero">
+          <Hero />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="About">
+          <About />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Projects">
+          <Projects />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Skills">
+          <Skills />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Services">
+          <ServicesSection />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Credentials">
+          <Credentials />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Hackathons">
+          <HackathonsSection />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Education">
+          <Education />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary sectionName="Contact">
+          <Contact />
+        </SectionErrorBoundary>
       </main>
     </div>
   );
