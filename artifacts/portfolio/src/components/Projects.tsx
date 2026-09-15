@@ -640,9 +640,9 @@ const Projects: React.FC = () => {
           {/* Section Header */}
           <div className="mb-8">
             <div className="font-mono text-sm text-[#C9972E] mb-2 font-semibold">// LAUNCHED MISSIONS</div>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-[#241B10]">PROJECT LOG</h2>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-[#241B10]">Selected work. Real impact.</h2>
             <p className="text-xs font-mono text-[#7A6B55] mt-2 hidden md:block">
-              scroll · ←→ arrow keys · or click a node to navigate projects
+              Explore the full catalog using the project list or previous / next controls.
             </p>
             <p className="text-xs font-mono text-[#7A6B55] mt-2 md:hidden">
               swipe the card or tap a node to navigate

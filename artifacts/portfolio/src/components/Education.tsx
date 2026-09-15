@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Rocket } from 'lucide-react';
+import SectionWatermark from './SectionWatermark';
 
 const ED_STAGES = [
   {
@@ -59,6 +60,7 @@ const Education: React.FC = () => {
 
   return (
     <section className="py-24 relative" id="education">
+      <SectionWatermark word="EDUCATION" />
       <div className="container mx-auto px-6">
         
         <motion.div 
@@ -74,7 +76,7 @@ const Education: React.FC = () => {
               <span className="text-[#C9972E] font-mono text-sm tracking-wider uppercase font-semibold">— EDUCATION</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-display font-bold text-[#241B10] max-w-3xl leading-tight">
-              The academic runway behind every project I've shipped.
+              The academic runway behind every project I&apos;ve shipped.
             </h2>
           </div>
 
@@ -176,7 +178,7 @@ const Education: React.FC = () => {
               </div>
 
               <div className="mt-6 text-center text-xs text-[#7A6B55] relative z-10">
-                Hover or tap launch trajectory stages to update cockpit flight logs.
+                Select a stage to explore the academic journey.
               </div>
             </motion.div>
           </div>

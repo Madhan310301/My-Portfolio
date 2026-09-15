@@ -128,6 +128,8 @@ const ServicesSection: React.FC = () => {
                 >
                   <button
                     onClick={() => toggleStage(stage.num)}
+                    aria-expanded={isOpen}
+                    aria-controls={`process-${stage.num}`}
                     className="w-full p-5 sm:p-6 flex items-center justify-between text-left cursor-pointer select-none"
                   >
                     <div className="flex items-center gap-4 sm:gap-6">
@@ -147,7 +149,7 @@ const ServicesSection: React.FC = () => {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                       >
-                        <div className="px-6 pb-6 pt-2 text-[#7A6B55] text-sm leading-relaxed border-t border-[#C9972E]/15">
+                        <div id={`process-${stage.num}`} className="px-6 pb-6 pt-2 text-[#7A6B55] text-sm leading-relaxed border-t border-[#C9972E]/15">
                           {stage.desc}
                         </div>
                       </motion.div>

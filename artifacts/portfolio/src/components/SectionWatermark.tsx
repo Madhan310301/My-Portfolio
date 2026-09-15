@@ -1,18 +1,5 @@
-import React from 'react';
+const sectionNumbers: Record<string, string> = { ABOUT: '01', WORK: '02', SKILLS: '03', SERVICES: '04', PROOF: '05', HACK: '06', EDUCATION: '07', CONTACT: '08' };
 
-interface SectionWatermarkProps {
-  word: string;
-  className?: string;
+export default function SectionWatermark({ word, className = '' }: { word: string; className?: string }) {
+  return <div className={`section-watermark ${className}`} aria-hidden="true"><span>{sectionNumbers[word] ?? '—'}</span><span>{word}</span></div>;
 }
-
-const SectionWatermark: React.FC<SectionWatermarkProps> = ({ word, className = '' }) => {
-  return (
-    <div className={`absolute inset-0 flex items-center justify-center pointer-events-none z-0 select-none overflow-hidden ${className}`}>
-      <span className="text-[20vw] font-display font-black text-[#241B10] opacity-[0.03] tracking-tighter leading-none uppercase">
-        {word}
-      </span>
-    </div>
-  );
-};
-
-export default SectionWatermark;

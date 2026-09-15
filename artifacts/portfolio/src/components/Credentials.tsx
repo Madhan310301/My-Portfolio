@@ -147,6 +147,17 @@ const Credentials: React.FC = () => {
                 >
                   <div 
                     onClick={() => handleCardClick(cred.id)}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`${isFlipped ? 'Close' : 'Read'} details: ${cred.title}`}
+                    aria-expanded={isFlipped}
+                    onKeyDown={(event) => {
+                      if (event.target !== event.currentTarget) return;
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        handleCardClick(cred.id);
+                      }
+                    }}
                     className="w-full h-full min-h-[280px] perspective-1000 cursor-pointer select-none"
                   >
                     <div 
@@ -155,7 +166,7 @@ const Credentials: React.FC = () => {
                       }`}
                     >
                       {/* FRONT FACE */}
-                      <div className="absolute inset-0 w-full h-full backface-hidden bg-[#FFFDF8] p-6 border border-[#C9972E]/30 hover:border-[#C9972E] transition-all flex flex-col shadow-[0_4px_20px_rgba(120,90,40,0.06)] group rounded-xl">
+                      <div aria-hidden={isFlipped} inert={isFlipped} className="absolute inset-0 w-full h-full backface-hidden bg-[#FFFDF8] p-6 border border-[#C9972E]/30 hover:border-[#C9972E] transition-all flex flex-col shadow-[0_4px_20px_rgba(120,90,40,0.06)] group rounded-xl">
                         <div className="flex justify-between items-start mb-4">
                           <span className="font-mono text-sm font-bold text-[#C9972E]">{cred.year}</span>
                           <span className={`text-xs px-2.5 py-1 rounded-full border font-semibold ${cred.badgeColor}`}>
@@ -182,13 +193,13 @@ const Credentials: React.FC = () => {
                           
                           <span className="font-mono text-[9px] text-[#C9972E] font-bold flex items-center gap-1.5 hover:text-[#241B10] transition-colors">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#C9972E] inline-block animate-pulse"></span>
-                            TAP FOR DETAILS 🔄
+                            EXPLORE DETAILS ↗
                           </span>
                         </div>
                       </div>
 
                       {/* BACK FACE */}
-                      <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-[#FAF6EC] border-2 border-[#C9972E] p-6 flex flex-col shadow-[0_4px_24px_rgba(201,151,46,0.2)] rounded-xl">
+                      <div aria-hidden={!isFlipped} inert={!isFlipped} className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-[#FAF6EC] border-2 border-[#C9972E] p-6 flex flex-col shadow-[0_4px_24px_rgba(201,151,46,0.2)] rounded-xl">
                         <div className="flex justify-between items-start mb-4">
                           <span className="font-mono text-sm font-bold text-[#C9972E]">// PREVIEW_DETAILS</span>
                           <span className="text-[9px] font-mono text-[#7A6B55] bg-[#FFFDF8] border border-[#C9972E]/30 px-2 py-0.5 rounded font-semibold">

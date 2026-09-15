@@ -10,7 +10,7 @@ import Credentials from '@/components/Credentials';
 import HackathonsSection from '@/components/hackathons/HackathonsSection';
 import Education from '@/components/Education';
 import Contact from '@/components/Contact';
-import PageLoader from '@/components/PageLoader';
+
 import SectionErrorBoundary from '@/components/SectionErrorBoundary';
 
 const Home: React.FC = () => {
@@ -25,11 +25,11 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen text-foreground font-sans relative selection:bg-primary/30 selection:text-primary-foreground">
-      <PageLoader />
+
       <NebulaBackground />
       <Navbar />
       
-      <main>
+      <main id="main-content" className="portfolio-main" tabIndex={-1}>
         <SectionErrorBoundary sectionName="Hero">
           <Hero />
         </SectionErrorBoundary>

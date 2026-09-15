@@ -8,6 +8,7 @@ import Privacy from '@/pages/Privacy';
 import HackathonDetail from '@/pages/HackathonDetail';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { Analytics } from '@vercel/analytics/react';
+import { MotionConfig } from 'framer-motion';
 
 import GlobalGooeyCursor from '@/components/GlobalGooeyCursor';
 import SectionErrorBoundary from '@/components/SectionErrorBoundary';
@@ -29,7 +30,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+      <MotionConfig reducedMotion="user"><TooltipProvider>
         <GlobalGooeyCursor />
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
           <SectionErrorBoundary sectionName="Page Navigation">
@@ -38,7 +39,7 @@ function App() {
         </WouterRouter>
         <Toaster />
         <Analytics />
-      </TooltipProvider>
+      </TooltipProvider></MotionConfig>
     </QueryClientProvider>
   );
 }
