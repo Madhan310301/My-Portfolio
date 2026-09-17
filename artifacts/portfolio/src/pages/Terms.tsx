@@ -3,11 +3,18 @@ import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import NebulaBackground from '@/components/NebulaBackground';
 import { ArrowLeft } from 'lucide-react';
+import { usePageSEO } from '@/hooks/usePageSEO';
 
 const Terms: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  usePageSEO({
+    title: 'Terms & Conditions | Madhan Kumar T',
+    description: 'Terms and Conditions for accessing the personal engineering portfolio of Madhan Kumar T at madhankumart.in.',
+    canonicalPath: '/terms'
+  });
 
   return (
     <div className="min-h-screen text-[#241B10] font-sans relative selection:bg-[#C9972E]/30 selection:text-[#241B10] py-16 px-6 bg-[#FAF6EC]">
@@ -32,7 +39,7 @@ const Terms: React.FC = () => {
 
           <div className="max-w-none text-[#7A6B55] text-sm md:text-base leading-relaxed space-y-8 font-sans">
             <p>
-              Welcome to <span className="text-[#241B10] font-bold">madhan-developer.vercel.app</span> ("the Site"), owned and operated by Madhan Kumar T ("I", "me", "my"). By accessing or using this Site, you agree to these Terms &amp; Conditions.
+              Welcome to <span className="text-[#241B10] font-bold">madhankumart.in</span> ("the Site"), owned and operated by Madhan Kumar T ("I", "me", "my"). By accessing or using this Site, you agree to these Terms &amp; Conditions.
             </p>
 
             <section className="space-y-3">

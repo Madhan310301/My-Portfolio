@@ -24,6 +24,7 @@ import { HACKATHONS_DATA, HackathonEntry } from '@/data/hackathons';
 import { ImageGallery } from '@/components/hackathons/ImageGallery';
 import { HackathonVideoPlayer } from '@/components/hackathons/HackathonVideoPlayer';
 import { CertificateLightbox } from '@/components/hackathons/CertificateLightbox';
+import { usePageSEO } from '@/hooks/usePageSEO';
 
 export const HackathonDetail: React.FC = () => {
   const [, params] = useRoute('/hackathons/:id');
@@ -39,6 +40,16 @@ export const HackathonDetail: React.FC = () => {
   const entry: HackathonEntry | undefined = HACKATHONS_DATA.find(
     (h) => h.id.toLowerCase() === hackathonId?.toLowerCase()
   );
+
+  usePageSEO({
+    title: entry ? `${entry.name} | Madhan Kumar T` : 'Hackathon Dossier | Madhan Kumar T',
+    description: entry 
+      ? `${entry.name} (${entry.date}) at ${entry.organizer}: ${entry.whatWeBuilt.slice(0, 140)}... Built by Madhan Kumar T.`
+      : 'Technical hackathon dossier and mission archive of Madhan Kumar T.',
+    canonicalPath: entry ? `/hackathons/${entry.id}` : '/hackathons',
+    ogImage: entry?.photos?.[0] ? `https://www.madhankumart.in${entry.photos[0]}` : undefined,
+    type: 'article'
+  });
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);

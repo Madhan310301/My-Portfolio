@@ -12,8 +12,15 @@ import Education from '@/components/Education';
 import Contact from '@/components/Contact';
 import PageLoader from '@/components/PageLoader';
 import SectionErrorBoundary from '@/components/SectionErrorBoundary';
+import { usePageSEO } from '@/hooks/usePageSEO';
 
 const Home: React.FC = () => {
+  usePageSEO({
+    title: 'Madhan Kumar T | Full-Stack Developer & AI Systems Engineer',
+    description: 'Portfolio of Madhan Kumar T — Full-Stack Developer, AI Systems Engineer & IoT Builder (BIHER Chennai, 9.5 CGPA). Discover 28+ production projects, healthcare AI diagnostics (MediHelpAI), RAG pipelines, and award-winning hackathon prototypes.',
+    canonicalPath: '/'
+  });
+
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';

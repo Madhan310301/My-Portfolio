@@ -1,4 +1,4 @@
-﻿export interface HackathonEntry {
+export interface HackathonEntry {
   id: string;
   name: string;
   organizer: string;
@@ -34,15 +34,15 @@ export const HACKATHONS_DATA: HackathonEntry[] = [
     location: "SRM Easwari, Chennai",
     mode: "Offline",
     status: "Past",
-    result: "Overall 2nd Prize & Domain 1st Prize (IoT) â€” â‚¹7,000 Cash Award",
-    tag: "ðŸ¥ˆ 2nd Place Â· â‚¹7K Prize",
+    result: "Overall 2nd Prize & Domain 1st Prize (IoT) — ₹7,000 Cash Award",
+    tag: "🥈 2nd Place · ₹7K Prize",
     badgeType: "winner",
     role: "Team Lead & Embedded Firmware Architect",
     category: "IoT & Child Safety",
     problemStatement: "Children playing or commuting in unsupervised outdoor environments have no accessible, autonomous safety device that works reliably when cellular data is weak or smartphones are prohibited.",
-    whatWeBuilt: "We engineered SafePathAI â€” a physical child safety pendant integrating GPS telemetry, an MPU6050 accelerometer for fall and abnormal motion detection, and an emergency GSM module that dispatches instant SOS SMS coordinates to parents without needing active internet.",
+    whatWeBuilt: "We engineered SafePathAI — a physical child safety pendant integrating GPS telemetry, an MPU6050 accelerometer for fall and abnormal motion detection, and an emergency GSM module that dispatches instant SOS SMS coordinates to parents without needing active internet.",
     technicalHighlights: [
-      "Secured 2nd Place Among 111 competitive teams and â‚¹7,000 cash prize",
+      "Secured 2nd Place Among 111 competitive teams and ₹7,000 cash prize",
       "Hardware telemetry pipeline on ESP32 + MPU6050 with dual g-force & tilt thresholding",
       "Offline GSM SIM800L failover dispatcher sending GPS coordinates directly to parent phones",
       "Live React dashboard showing real-time child location tracking on Leaflet maps"
@@ -65,6 +65,45 @@ export const HACKATHONS_DATA: HackathonEntry[] = [
     githubUrl: "https://github.com/Madhan310301/safepathAI"
   },
   {
+    id: "vmedithon-2026",
+    name: "VMedithon 2026",
+    organizer: "Vels Medical College & Hospital / VISTAS, Chennai",
+    date: "16/09/2026",
+    location: "Madurapakkam, Chennai",
+    mode: "Offline",
+    status: "Past",
+    result: "Healthcare AI Finalist & Innovation Showcase — MediHelpAI",
+    tag: "🩺 Healthcare AI Finalist",
+    badgeType: "finalist",
+    role: "Lead AI & Vision Systems Architect (Team DiuFounders)",
+    category: "AI Healthcare & Vision Vitals",
+    problemStatement: "Over 50% of pregnant women in rural and underserved communities suffer from undetected anemia, while low-income households lack affordable clinical monitoring tools for cardiovascular vitals and jaundice detection.",
+    whatWeBuilt: "Engineered MediHelpAI (DiuMed) — 'A Clinic in Your Pocket: Observe, Interpret, Act'. It converts any ordinary smartphone camera into a non-invasive vital signs diagnostic station without external hardware. Delivers contact-free rPPG pulse rate extraction (Bio-Aura), lower-eyelid conjunctival anemia screening, sclera jaundice detection, and Gemini-powered clinical symptom triage with 100% offline emergency SOS dispatch.",
+    technicalHighlights: [
+      "Contact-free facial rPPG photoplethysmography (Bio-Aura) measuring pulse rate in seconds via smartphone camera",
+      "Non-invasive anemia screening analyzing lower eyelid conjunctiva vascularity to estimate hemoglobin levels for maternal care",
+      "Sclera colorimetric computer vision analyzing eye white for early bilirubin and jaundice detection",
+      "On-device TensorFlow Lite and Google MediaPipe vision pipelines executing client-side with 100% offline capability",
+      "Google Gemini edge assistant delivering localized symptom triage in English, Tamil, and Hindi",
+      "One-tap Emergency SOS dispatcher with automated location transmission to designated contacts and emergency clinics",
+      "Supports daily fitness and recovery cardio baseline tracking before and after physical exercise"
+    ],
+    linkedProjectSlug: "medihelpai",
+    linkedProjectTitle: "MediHelpAI",
+    photos: [
+      "/media/hackathons/vmedithon-2026/vmedithon-2.jpg",
+      "/media/hackathons/vmedithon-2026/vmedithon-1.jpg",
+      "/media/hackathons/vmedithon-2026/vmedithon-3.jpg"
+    ],
+    videos: [
+      "/media/hackathons/vmedithon-2026/vmedithon-demo-1.mp4",
+      "/media/hackathons/vmedithon-2026/vmedithon-demo-2.mp4"
+    ],
+    presentationFile: "/media/hackathons/vmedithon-2026/diumed-presentation.pdf",
+    presentationType: "pdf",
+    githubUrl: "https://github.com/Madhan310301/MediHelpAI"
+  },
+  {
     id: "cih-2026",
     name: "Coimbatore Innovation Hackathon (CIH '26)",
     organizer: "AIC RAISE & Rathinam Global University, Coimbatore",
@@ -73,15 +112,15 @@ export const HACKATHONS_DATA: HackathonEntry[] = [
     mode: "Offline",
     status: "Past",
     result: "Hardware Domain Finalist & Innovator Recognition",
-    tag: "ðŸš¨ Hardware Finalist",
+    tag: "🚨 Hardware Finalist",
     badgeType: "finalist",
-    role: "Team Code Nest â€” Firmware & Telemetry Lead",
+    role: "Team Code Nest — Firmware & Telemetry Lead",
     category: "Embedded IoT & Emergency Dispatch",
     problemStatement: "Over 1.19 million annual road crash fatalities worldwide often stem from delayed medical response when victims are unconscious and crash scenes have no mobile internet connectivity.",
-    whatWeBuilt: "Created CrashGuard-AI â€” an offline-first vehicle crash detection and environmental hazard monitoring unit. Uses dual microcontrollers (ESP32-C3 + Arduino Mega) with multi-sensor validation (G-force, tilt, acoustic microphone, MQ gas/smoke), a 10-second rider cancel timer, SIM800L emergency SMS dispatch, and a Supabase Realtime rescue command room.",
+    whatWeBuilt: "Created CrashGuard-AI — an offline-first vehicle crash detection and environmental hazard monitoring unit. Uses dual microcontrollers (ESP32-C3 + Arduino Mega) with multi-sensor validation (G-force, tilt, acoustic microphone, MQ gas/smoke), a 10-second rider cancel timer, SIM800L emergency SMS dispatch, and a Supabase Realtime rescue command room.",
     technicalHighlights: [
       "24-Hour on-site innovation challenge completed at Rathinam College campus",
-      "Multi-sensor fusion (MPU6050 >4g, tilt >65Â°, acoustic threshold) preventing false triggers",
+      "Multi-sensor fusion (MPU6050 >4g, tilt >65°, acoustic threshold) preventing false triggers",
       "Dual-channel telemetry: direct GSM SMS with GPS coordinates + WebSocket Supabase cloud sync",
       "Live control room dashboard with real-time incident telemetry and automated hazard classification"
     ],
@@ -111,12 +150,12 @@ export const HACKATHONS_DATA: HackathonEntry[] = [
     mode: "Virtual",
     status: "Past",
     result: "Cybersecurity Domain Finalist",
-    tag: "ðŸ”’ Security Finalist",
+    tag: "🔒 Security Finalist",
     badgeType: "finalist",
     role: "Solo Architect & Full-Stack Engineer (Team Code Nest)",
     category: "Cybersecurity & Vulnerability Management",
     problemStatement: "Security teams suffer from severe CVE alert fatigue, wasting hundreds of hours triaging vulnerabilities ranked naively by CVSS that are completely absent from their active software stack.",
-    whatWeBuilt: "Built TriageCN â€” a 100% client-side, zero-backend vulnerability triage cockpit. It evaluates 540 bundled CVE records against 6 distinct organizational technology profiles through a deterministic three-layer funnel (Alias normalization, SemVer matching, Dice fuzzy similarity) to produce a defensible Top 5 Actionable Remediation Queue with zero network calls.",
+    whatWeBuilt: "Built TriageCN — a 100% client-side, zero-backend vulnerability triage cockpit. It evaluates 540 bundled CVE records against 6 distinct organizational technology profiles through a deterministic three-layer funnel (Alias normalization, SemVer matching, Dice fuzzy similarity) to produce a defensible Top 5 Actionable Remediation Queue with zero network calls.",
     technicalHighlights: [
       "100% offline-first execution with zero external runtime API or live LLM dependencies",
       "Multi-signal scoring synthesizing CVSS, CISA KEV active exploitation, and FIRST EPSS probability",

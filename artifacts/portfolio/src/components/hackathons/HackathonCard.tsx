@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy,
@@ -90,7 +90,7 @@ export const HackathonCard: React.FC<HackathonCardProps> = ({ entry, onClick, in
             <MapPin size={12} className="text-[#C9972E] shrink-0" />
             <span className="line-clamp-1">{entry.organizer}</span>
           </span>
-          <span className="text-[#C9972E]/50">Â·</span>
+          <span className="text-[#C9972E]/50">·</span>
           <span className="px-1.5 py-0.5 rounded bg-[#FAF6EC] border border-[#C9972E]/20 text-[10px]">
             {entry.mode}
           </span>

@@ -40,6 +40,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Primary frontend framework across web apps, dashboards, and real-time UIs.",
     growth: { '2023': 15, '2024': 50, '2025': 75, '2026': 90 },
     projects: [
+      { name: 'MediHelpAI', slug: 'medihelpai' },
       { name: 'SafePathAI', slug: 'safepath-ai' },
       { name: 'Shakthi Dental', slug: 'dental-clinic-web' },
       { name: 'GigSave', slug: 'gigsave' },
@@ -72,6 +73,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Strict type safety across large enterprise apps and frontend interfaces.",
     growth: { '2023': 10, '2024': 40, '2025': 60, '2026': 80 },
     projects: [
+      { name: 'MediHelpAI', slug: 'medihelpai' },
       { name: 'TriageCN', slug: 'triagecn' },
       { name: 'GigSave', slug: 'gigsave' },
       { name: 'Shakthi Dental', slug: 'dental-clinic-web' },
@@ -107,6 +109,7 @@ const SKILL_DETAILS: Record<string, any> = {
     desc: "Training convolutional nets, computer vision model logic, edge optimizations.",
     growth: { '2023': 15, '2024': 35, '2025': 55, '2026': 72 },
     projects: [
+      { name: 'MediHelpAI', slug: 'medihelpai' },
       { name: 'AgriGrade', slug: 'agrigrade' },
       { name: 'SafePathAI', slug: 'safepath-ai' }
     ]

@@ -53,6 +53,7 @@ const Hero: React.FC = () => {
             
             {/* Main Heading with Gold Text Stroke */}
             <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.95] tracking-tight text-[#241B10]">
+              <span className="sr-only">Madhan Kumar T — Full-Stack Developer &amp; AI Systems Engineer — </span>
               BUILDING <br />
               <span 
                 className="text-transparent transition-all"
@@ -65,7 +66,7 @@ const Hero: React.FC = () => {
             
             {/* Intro Paragraph */}
             <p className="text-base sm:text-lg md:text-xl text-[#7A6B55] leading-relaxed max-w-xl">
-              I'm Madhan Kumar, a 3rd-year B.Tech Computer Science student at BIHER (Chennai) who loves building real, working systems — across web, AI, and hardware. I've shipped 25+ projects successfully, from hackathon-winning IoT safety wearables to cross-modal AI systems.
+              I'm Madhan Kumar, a 3rd-year B.Tech Computer Science student at BIHER (Chennai) who loves building real, working systems — across web, AI, and hardware. I've shipped 28+ projects successfully, from hackathon-winning IoT safety wearables to cross-modal AI systems and non-invasive health diagnostics.
             </p>
             
             {/* CTA Buttons */}

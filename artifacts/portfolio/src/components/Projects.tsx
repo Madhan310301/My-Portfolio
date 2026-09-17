@@ -486,6 +486,23 @@ const PROJECTS: Project[] = [
     github: "https://github.com/Madhan310301/QuantaRAG",
     certificate: "/media/certificates/hcltech-ai-masterclass-certificate.jpg",
   },
+  {
+    id: 28,
+    slug: "medihelpai",
+    tag: "[BUILD-28]",
+    title: "MediHelpAI",
+    category: "AI Vitals & Vision Diagnostics",
+    desc: "Mobile-first AI healthcare web application transforming ordinary smartphone cameras into personal health monitors — featuring contact-free rPPG face pulse detection, conjunctival anemia screening, sclera jaundice detection, on-device MediaPipe/TensorFlow, and Gemini clinical triage with 100% offline emergency SOS.",
+    duration: "Completed 2026",
+    stack: ["React", "TypeScript", "Tailwind CSS", "TensorFlow.js", "MediaPipe", "Gemini 1.5 Flash", "PWA"],
+    fullDesc1: "MediHelpAI ('A Clinic in Your Pocket: Observe, Interpret, Act') transforms ordinary smartphone cameras into clinical-grade diagnostic tools without external wearables. Conceived and engineered to bridge healthcare gaps for low-income households and rural maternal care, it delivers non-invasive hemoglobin estimation via lower eyelid conjunctiva colorimetry, scleral jaundice detection, and contact-free face pulse rate extraction (Bio-Aura).",
+    fullDesc2: "Powered by on-device MediaPipe Face & Iris mesh tracking combined with TensorFlow.js signal processing, biometric video feeds remain entirely client-side for zero privacy leakage. An edge Gemini 1.5 Flash assistant conducts multi-turn clinical triage in English, Tamil, and Hindi, supported by a 1-tap offline Emergency SOS dispatcher with automated GPS coordinates and daily physical fitness baseline tracking. Finalist at VMedithon 2026.",
+    milestone: "Healthcare AI Finalist & Innovation Showcase at VMedithon 2026 (Vels Medical College & Hospital / VISTAS).",
+    keyFeature: "Contact-free face rPPG pulse (Bio-Aura) + conjunctival anemia check + on-device MediaPipe/TF.js vision pipeline.",
+    problem: "Expensive diagnostic equipment and medical delays leave conditions like maternal anemia and jaundice undetected in underserved communities.",
+    challenge: "Executing real-time face landmark mesh tracking and subtle micro-vascular rPPG colorimetry client-side on mobile browsers with zero lag and zero privacy leakage.",
+    github: "https://github.com/Madhan310301/MediHelpAI",
+  },
 ];
 
 const Projects: React.FC = () => {

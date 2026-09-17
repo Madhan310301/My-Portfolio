@@ -3,11 +3,18 @@ import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import NebulaBackground from '@/components/NebulaBackground';
 import { ArrowLeft } from 'lucide-react';
+import { usePageSEO } from '@/hooks/usePageSEO';
 
 const Privacy: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  usePageSEO({
+    title: 'Privacy Policy | Madhan Kumar T',
+    description: 'Privacy Policy for the personal engineering portfolio of Madhan Kumar T at madhankumart.in.',
+    canonicalPath: '/privacy'
+  });
 
   return (
     <div className="min-h-screen text-[#241B10] font-sans relative selection:bg-[#C9972E]/30 selection:text-[#241B10] py-16 px-6 bg-[#FAF6EC]">
