@@ -57,6 +57,31 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
   // Store ambient tween references for cleanup
   const ambientTweensRef = useRef<gsap.core.Tween[]>([]);
 
+  // Store scroll lock listeners for guaranteed cleanup
+  const scrollLockListenersRef = useRef<{
+    preventScroll: (e: Event) => void;
+    enforceTopScroll: () => void;
+  } | null>(null);
+
+  const unlockScroll = useCallback(() => {
+    document.documentElement.classList.remove('loading-lock');
+    document.body.classList.remove('loading-lock');
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.overscrollBehavior = '';
+    document.body.style.overflow = '';
+    document.body.style.overscrollBehavior = '';
+    document.body.style.touchAction = '';
+
+    if (scrollLockListenersRef.current) {
+      const { preventScroll, enforceTopScroll } = scrollLockListenersRef.current;
+      window.removeEventListener('touchmove', preventScroll);
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('scroll', enforceTopScroll);
+      document.removeEventListener('touchmove', preventScroll);
+      scrollLockListenersRef.current = null;
+    }
+  }, []);
+
   // The counter animation callback — called once both conditions are met
   const startCounterAnimation = useCallback(() => {
     if (counterStartedRef.current) return;
@@ -94,7 +119,7 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
         // Kill all ambient tweens
         ambientTweensRef.current.forEach((t) => t.kill());
         ambientTweensRef.current = [];
-        document.body.style.overflow = '';
+        unlockScroll();
         setIsDone(true);
         if (onDone) onDone();
       },
@@ -182,14 +207,40 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReducedMotion) {
-      document.body.style.overflow = '';
+      unlockScroll();
       setIsDone(true);
       if (onDone) onDone();
       return;
     }
 
-    // Lock page scroll while loader is active
+    // ── Hard Mobile & Desktop Scroll Lock ──
+    document.documentElement.classList.add('loading-lock');
+    document.body.classList.add('loading-lock');
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.overscrollBehavior = 'none';
     document.body.style.overflow = 'hidden';
+    document.body.style.overscrollBehavior = 'none';
+    document.body.style.touchAction = 'none';
+    window.scrollTo(0, 0);
+
+    const preventScroll = (e: Event) => {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    };
+
+    const enforceTopScroll = () => {
+      if (window.scrollY !== 0 || window.scrollX !== 0) {
+        window.scrollTo(0, 0);
+      }
+    };
+
+    scrollLockListenersRef.current = { preventScroll, enforceTopScroll };
+
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('scroll', enforceTopScroll, { passive: false });
+    document.addEventListener('touchmove', preventScroll, { passive: false });
 
     // ── Phase 1: Ambient idle visuals (spinning rings, breathing core) ──
 
@@ -278,9 +329,9 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
       }
       ambientTweensRef.current.forEach((t) => t.kill());
       ambientTweensRef.current = [];
-      document.body.style.overflow = '';
+      unlockScroll();
     };
-  }, [onDone, tryStartCounter]);
+  }, [onDone, tryStartCounter, unlockScroll]);
 
   if (isDone) return null;
 
@@ -288,7 +339,13 @@ const PageLoader: React.FC<PageLoaderProps> = ({ onDone }) => {
     <div
       ref={containerRef}
       className="fixed inset-0 h-[100dvh] w-full z-[99999] flex flex-col items-center justify-between pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] px-[max(1rem,env(safe-area-inset-left))] bg-[#FAF6EC] text-[#241B10] selection:bg-none select-none pointer-events-auto overflow-hidden will-change-transform cursor-pointer gpu-composited"
-      style={{ clipPath: 'inset(0 0 0% 0)', WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+      style={{ clipPath: 'inset(0 0 0% 0)', WebkitTapHighlightColor: 'transparent', touchAction: 'none', overscrollBehavior: 'none' }}
+      onTouchMove={(e) => {
+        if (e.cancelable) e.preventDefault();
+      }}
+      onWheel={(e) => {
+        if (e.cancelable) e.preventDefault();
+      }}
     >
       {/* ── Motion Graphics Background Radar Grid ── */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-20 sm:opacity-25">

@@ -170,6 +170,17 @@
     -webkit-appearance: none;
     border-radius: var(--radius);
   }
+
+  /* Full viewport scroll lock during loading screen (iOS & Android safe) */
+  html.loading-lock,
+  body.loading-lock {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+  }
 }
 
 @layer utilities {
